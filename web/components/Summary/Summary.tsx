@@ -1,9 +1,6 @@
 import React from 'react';
+import { ItemsSummary } from './Summary.types';
 
-interface ItemsSummary {
-  title: string;
-  result: string;
-}
 const Summary = ({ itemsSummary }: { itemsSummary: ItemsSummary[] }) => {
   return (
     <div>
