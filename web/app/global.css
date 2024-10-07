@@ -5,6 +5,7 @@
 html,
 body {
   height: 100%;
+  font-family: 'ClashDisplay', sans-serif;
 }
 
 .wallet-adapter-button-trigger {
@@ -16,4 +17,25 @@ body {
 .wallet-adapter-dropdown-list,
 .wallet-adapter-button {
   font-family: inherit !important;
+}
+
+@font-face {
+  font-family: 'ClashDisplay';
+  src: url('/fonts/ClashDisplay/ClashDisplay.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi/Satoshi.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi/Satoshi.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }

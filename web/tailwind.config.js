@@ -27,6 +27,10 @@ module.exports = {
         'warning-yellow': '#FFD032'
       }
     },
+    fontFamily: {
+      clash: ['ClashDisplay', 'sans-serif'],
+      satoshi: ['Satoshi', 'sans-serif'],
+    }
   },
   plugins: [require('daisyui')],
 };
