@@ -1,4 +1,6 @@
 import Message from '@/components/message/Message';
+import BuildingStatus from '@/components/status/BuildingStatus';
+import StatusStarted from '@/components/status/started/StatusStarted';
 import Summary from '@/components/Summary/Summary';
 import SummaryFooter from '@/components/SummaryFooter/SummaryFooter';
 import React from 'react';
@@ -50,11 +52,16 @@ const page = () => {
     },
   ];
   const messageText = "It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately"
+
+  const showFirst = false; 
+  const showSecond = false;
+  const showThird = false; 
   return (
     <div>
       <Summary itemsSummary={itemsSummary} />
       <SummaryFooter itemsSummary={itemsSummaryFooter}/>
       <Message messageText={messageText}/>
+      <BuildingStatus value1={showFirst} value2={showSecond} value3={showThird} />
     </div>
   );
 };
