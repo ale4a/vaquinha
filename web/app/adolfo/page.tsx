@@ -1,3 +1,4 @@
+import Message from '@/components/message/Message';
 import Summary from '@/components/Summary/Summary';
 import SummaryFooter from '@/components/SummaryFooter/SummaryFooter';
 import React from 'react';
@@ -48,10 +49,12 @@ const page = () => {
       result: '341 USDT',
     },
   ];
+  const messageText = "It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately"
   return (
     <div>
       <Summary itemsSummary={itemsSummary} />
       <SummaryFooter itemsSummary={itemsSummaryFooter}/>
+      <Message messageText={messageText}/>
     </div>
   );
 };
