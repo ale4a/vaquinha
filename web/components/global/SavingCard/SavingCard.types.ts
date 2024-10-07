@@ -1,4 +1,5 @@
 export interface ISavingData {
+  groupId: string;
   name: string;
   amount: number;
   collateral: number;

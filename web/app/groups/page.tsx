@@ -32,8 +32,8 @@ const page = () => {
         {isLoading ? (
           <p>Loading...</p>
         ) : (
-          savingData?.map((saving, index) => (
-            <SavingCard key={index} {...saving} />
+          savingData?.map((saving) => (
+            <SavingCard key={saving.groupId} {...saving} />
           ))
         )}
       </div>

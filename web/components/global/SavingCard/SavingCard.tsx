@@ -1,5 +1,7 @@
 'use client';
 import Image from 'next/image';
+import ButtonComponent from '../ButtonComponent/ButtonComponent';
+import Link from 'next/link';
 
 interface Props {
   name: string;
@@ -8,6 +10,7 @@ interface Props {
   startIn: string;
   period: string;
   peopleCount: number;
+  groupId: string;
 }
 
 export default function SavingCard({
@@ -17,7 +20,12 @@ export default function SavingCard({
   startIn,
   period,
   peopleCount,
+  groupId,
 }: Props) {
+  const handleViewDetails = (groupId: string) => {
+    console.log(groupId);
+  };
+
   return (
     <div className="flex justify-between bg-bg-100 p-1 pb-4 border-b-2 border-white/25">
       <div>
@@ -51,9 +59,14 @@ export default function SavingCard({
             <p className="opacity-85">{period}</p>
           </div>
         </div>
-        <button className="rounded-xl px-6 py-1 bg-primary-200 text-2xl text-bg-100 font-medium">
-          Save
-        </button>
+
+        <Link href={`/groups/${groupId}`} passHref>
+          <ButtonComponent
+            label={'Save'}
+            type={'primary'}
+            onClick={() => handleViewDetails(groupId)}
+          />
+        </Link>
       </div>
     </div>
   );

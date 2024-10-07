@@ -2,6 +2,7 @@ import { ISavingData } from './SavingCard.types';
 
 const dummyDataUSDT: ISavingData[] = [
   {
+    groupId: 'usdt-1', // Se añade el identificador único
     name: 'El Pasanaku',
     amount: 68,
     collateral: 341,
@@ -10,6 +11,7 @@ const dummyDataUSDT: ISavingData[] = [
     period: 'monthly',
   },
   {
+    groupId: 'usdt-2', // Se añade el identificador único
     name: 'El Pasanaku 2',
     amount: 120,
     collateral: 400,
@@ -18,6 +20,7 @@ const dummyDataUSDT: ISavingData[] = [
     period: 'monthly',
   },
   {
+    groupId: 'usdt-3', // Se añade el identificador único
     name: 'El Pasanaku 3',
     amount: 90,
     collateral: 350,
@@ -26,6 +29,7 @@ const dummyDataUSDT: ISavingData[] = [
     period: 'monthly',
   },
   {
+    groupId: 'usdt-4', // Se añade el identificador único
     name: 'El Pasanaku 4',
     amount: 100,
     collateral: 380,
@@ -37,6 +41,7 @@ const dummyDataUSDT: ISavingData[] = [
 
 const dummyDataSOL: ISavingData[] = [
   {
+    groupId: 'sol-1', // Se añade el identificador único
     name: 'El Sol Pasanaku',
     amount: 68,
     collateral: 341,
@@ -45,6 +50,7 @@ const dummyDataSOL: ISavingData[] = [
     period: 'monthly',
   },
   {
+    groupId: 'sol-2', // Se añade el identificador único
     name: 'El Sol Pasanaku 2',
     amount: 120,
     collateral: 400,
@@ -53,7 +59,6 @@ const dummyDataSOL: ISavingData[] = [
     period: 'monthly',
   },
 ];
-
 const fetchSavingData = async (tab: string): Promise<ISavingData[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
