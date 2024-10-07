@@ -14,9 +14,5 @@ const links: { label: string; href: string }[] = [
 ];
 
 export default function DashboardFeature() {
-  return (
-    <div>
-      <AppHero title="gm" subtitle="Say hi to your new Solana dApp." />
-    </div>
-  );
+  return <AppHero title="gm" subtitle="Say hi to your new Solana dApp." />;
 }

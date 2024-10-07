@@ -26,7 +26,7 @@ export function UiLayout({
 
   return (
     <div className="h-full flex justify-center bg-black">
-      <div className="w-[375px] h-full bg-white flex flex-col">
+      <div className="h-full bg-white flex flex-col">
         <div className="navbar bg-base-300 text-neutral-content flex-col space-y-2">
           <div className="flex-1">
             <Link className="btn btn-ghost normal-case text-xl" href="/">
