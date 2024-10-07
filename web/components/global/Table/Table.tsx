@@ -11,12 +11,12 @@ export default function Table({ items }: Props) {
             </div>
             {
                 items.map((item, i) => {
-                    return <div className='grid grid-cols-[45px_1fr_1fr_1fr] py-2 bg-bg-200' key={item.id}>
+                    return <div className='grid grid-cols-[45px_1fr_1fr_1fr] py-2 bg-bg-200 text-center' key={item.id}>
                         <span className='text-center'>{i + 1}</span>
                         <span>{item.amount} USDT</span>
                         <span>{item.paymentDeadline}</span>
                         <span>
-                            <div className={'border rounded-xl py-1 px-3 mx-1 text-center' + `${item.status === 'Play Now' ? 'text-white border-transparent bg-success-green' : ''}`}
+                            <div className={'border rounded-xl py-1 px-3 mx-1 text-center ' + `${item.status === 'Play Now' ? 'text-white border-transparent bg-success-green' : ''}`}
                             >
                                 {item.status}
                             </div>
