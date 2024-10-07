@@ -1,7 +1,9 @@
 'use client';
 
+import { Suspense } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 interface ITab {
   label: string;
@@ -52,4 +54,10 @@ const TabsComponent = ({
   );
 };
 
-export default TabsComponent;
+const TabsWithSuspense = (props: TabsComponentProps) => (
+  <Suspense fallback={<LoadingSpinner />}>
+    <TabsComponent {...props} />
+  </Suspense>
+);
+
+export default TabsWithSuspense;
