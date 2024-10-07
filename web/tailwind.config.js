@@ -30,7 +30,10 @@ module.exports = {
     fontFamily: {
       clash: ['ClashDisplay', 'sans-serif'],
       satoshi: ['Satoshi', 'sans-serif'],
-    }
+    },
+    boxShadow: {
+      'top-custom': '0 -4px 6px -2px rgba(245, 245, 245, 0.1)', 
+    },
   },
   plugins: [require('daisyui')],
 };
