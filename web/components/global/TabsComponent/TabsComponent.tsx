@@ -31,7 +31,7 @@ const TabsComponent = ({ tabs }: { tabs: ITab[] }) => {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between border-b border-accent-200">
+      <div className="flex gap-2 justify-between px-2 relative">
         {tabs.map((tab) => (
           <button
             key={tab.value}
