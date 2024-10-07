@@ -1,5 +1,4 @@
-import SavingCard from '@/components/SavingCard/SavingCard';
-import React from 'react';
+import SavingCard from '@/components/global/SavingCard/SavingCard';
 
 const page = () => {
   return <div>

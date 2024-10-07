@@ -1,3 +1,5 @@
+import Image from "next/image"
+
 interface Props {
   name: string
   amount: number
@@ -19,15 +21,15 @@ export default function SavingCard({ name, amount, collateral, startIn, period, 
       <div className="flex flex-col justify-between">
         <div className="flex flex-col items-end">
           <div className="flex items-center gap-1">
-            <img src="icons/PeopleIcon.svg" alt="people icon" />
+            <Image src="icons/PeopleIcon.svg" alt="people icon" height='15' width='15' />
             <p className="opacity-85">{peopleCount}/5</p>
           </div>
           <div className="flex items-center gap-1">
-            <img src="icons/DateIcon.svg" alt="people icon" />
+            <Image src="icons/DateIcon.svg" alt="date icon" height='15' width='15' />
             <p className="opacity-85">{period}</p>
           </div>
         </div>
-        <button className="rounded-xl px-6 py-1 bg-primary-200 text-2xl">Save</button>
+        <button className="rounded-xl px-6 py-1 bg-primary-200 text-2xl text-bg-100 font-bold">Save</button>
       </div>
     </div>
   )
