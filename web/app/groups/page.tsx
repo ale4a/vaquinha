@@ -1,7 +1,8 @@
-import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
+'use client';
 import SavingCard from '@/components/global/SavingCard/SavingCard';
+import { useSavingData } from '@/components/global/SavingCard/useSavingData';
 import TabsComponent from '@/components/global/TabsComponent/TabsComponent';
-import React from 'react';
+import React, { useState } from 'react';
 
 const tabs = [
   { label: 'USDT', value: 'usdt' },
@@ -9,69 +10,32 @@ const tabs = [
 ];
 
 const page = () => {
+  const [currentTab, setCurrentTab] = useState('usdt');
+
+  const { data: savingData, isLoading } = useSavingData(currentTab);
+
+  const handleTabClick = (tabValue: string) => {
+    setCurrentTab(tabValue);
+  };
+
   return (
     <div className="flex flex-col gap-2">
-      {/* <ButtonComponent label={'Deposit Collateral'} type={'primary'} />
-      <ButtonComponent label={'Back'} type={'secondary'} />
-      <ButtonComponent label={"It's Your Turn to Receive"} type={'outline'} />
-      <ButtonComponent label={'Payout Received'} type={'disabled'} />
-      <ButtonComponent label={'Leave the Group'} type={'danger'} />
-      <ButtonComponent label={'View Group'} type={'info'} />
-      <ButtonComponent label={'Pay Now'} type={'success'} />
-      <ButtonComponent label={'Pending'} type={'muted'} disabled /> */}
-
-      <div className="flex justify-center">
-        <TabsComponent tabs={tabs} />
+      <div className="flex  justify-center w-full">
+        <TabsComponent
+          tabs={tabs}
+          onTabClick={handleTabClick}
+          currentTab={currentTab}
+        />
       </div>
+
       <div className="flex flex-col gap-4">
-        <SavingCard
-          name={'El Pasanaku'}
-          amount={68}
-          collateral={341}
-          startIn="10-10-2024"
-          peopleCount={3}
-          period="montly"
-        />
-        <SavingCard
-          name={'El Pasanaku'}
-          amount={68}
-          collateral={341}
-          startIn="10-10-2024"
-          peopleCount={3}
-          period="montly"
-        />
-        <SavingCard
-          name={'El Pasanaku'}
-          amount={68}
-          collateral={341}
-          startIn="10-10-2024"
-          peopleCount={3}
-          period="montly"
-        />
-        <SavingCard
-          name={'El Pasanaku'}
-          amount={68}
-          collateral={341}
-          startIn="10-10-2024"
-          peopleCount={3}
-          period="montly"
-        />
-        <SavingCard
-          name={'El Pasanaku'}
-          amount={68}
-          collateral={341}
-          startIn="10-10-2024"
-          peopleCount={3}
-          period="montly"
-        />
-        <SavingCard
-          name={'El Pasanaku'}
-          amount={68}
-          collateral={341}
-          startIn="10-10-2024"
-          peopleCount={3}
-          period="montly"
-        />
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          savingData?.map((saving, index) => (
+            <SavingCard key={index} {...saving} />
+          ))
+        )}
       </div>
     </div>
   );

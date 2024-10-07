@@ -1,3 +1,4 @@
+import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
 import Message from '@/components/message/Message';
 import BuildingStatus from '@/components/status/BuildingStatus';
 import StatusStarted from '@/components/status/started/StatusStarted';
@@ -51,17 +52,30 @@ const page = () => {
       result: '341 USDT',
     },
   ];
-  const messageText = "It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately"
+  const messageText =
+    'It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately';
 
-  const showFirst = false; 
+  const showFirst = false;
   const showSecond = false;
-  const showThird = false; 
+  const showThird = false;
   return (
     <div>
       <Summary itemsSummary={itemsSummary} />
-      <SummaryFooter itemsSummary={itemsSummaryFooter}/>
-      <Message messageText={messageText}/>
-      <BuildingStatus value1={showFirst} value2={showSecond} value3={showThird} />
+      <SummaryFooter itemsSummary={itemsSummaryFooter} />
+      <Message messageText={messageText} />
+      <BuildingStatus
+        value1={showFirst}
+        value2={showSecond}
+        value3={showThird}
+      />
+      <ButtonComponent label={'Deposit Collateral'} type={'primary'} />
+      <ButtonComponent label={'Back'} type={'secondary'} />
+      <ButtonComponent label={"It's Your Turn to Receive"} type={'outline'} />
+      <ButtonComponent label={'Payout Received'} type={'disabled'} />
+      <ButtonComponent label={'Leave the Group'} type={'danger'} />
+      <ButtonComponent label={'View Group'} type={'info'} />
+      <ButtonComponent label={'Pay Now'} type={'success'} />
+      <ButtonComponent label={'Pending'} type={'muted'} disabled />
     </div>
   );
 };
