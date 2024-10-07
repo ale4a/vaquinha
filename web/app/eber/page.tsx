@@ -2,6 +2,7 @@ import SavingCard from '@/components/global/SavingCard/SavingCard';
 import DetailsCard from '../../components/global/DetailsCard/DetailsCard';
 import Table from '@/components/global/Table/Table';
 import { item } from '@/components/global/Table/Table.types';
+import InputText from '@/components/global/form/InputText/InputText';
 
 const items: item[] = [
   {
@@ -38,6 +39,9 @@ const items: item[] = [
 
 const page = () => {
   return <div>
+    <InputText label='Group Name' type='text' />
+    <InputText label='Amount' type='number' />
+    <br />
     <SavingCard name={'El Pasanaku'} amount={68} collateral={341} startIn='10-10-2024' peopleCount={3} period='montly' />
     <br />
     <hr />
