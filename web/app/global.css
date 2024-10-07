@@ -22,20 +22,20 @@ body {
 @font-face {
   font-family: 'ClashDisplay';
   src: url('/fonts/ClashDisplay/ClashDisplay.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 200 700;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Satoshi';
   src: url('/fonts/Satoshi/Satoshi.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 200 700;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Satoshi';
   src: url('/fonts/Satoshi/Satoshi.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 200 700;
   font-style: normal;
 }
