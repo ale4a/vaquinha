@@ -30,23 +30,21 @@ const TabsComponent = ({ tabs }: { tabs: ITab[] }) => {
   }, [searchParams, pathname, router, tabs]);
 
   return (
-    <div className="w-full">
-      <div className="flex gap-2 justify-between px-2 relative">
-        {tabs.map((tab) => (
-          <button
-            key={tab.value}
-            onClick={() => handleTabClick(tab.value)}
-            className={`relative px-4 py-2 font-medium ${
-              currentTab === tab.value ? 'text-white' : 'text-accent-200'
-            }`}
-          >
-            {tab.label}
-            {currentTab === tab.value && (
-              <span className="absolute bottom-0 left-0 w-full h-1 bg-primary-200"></span>
-            )}
-          </button>
-        ))}
-      </div>
+    <div className="flex gap-8 px-2 relative ">
+      {tabs.map((tab) => (
+        <button
+          key={tab.value}
+          onClick={() => handleTabClick(tab.value)}
+          className={`relative px-4 py-2 font-medium ${
+            currentTab === tab.value ? 'text-white' : 'text-accent-200'
+          }`}
+        >
+          {tab.label}
+          {currentTab === tab.value && (
+            <span className="absolute bottom-0 left-0 w-full h-1 bg-primary-200"></span>
+          )}
+        </button>
+      ))}
     </div>
   );
 };
