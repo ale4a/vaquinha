@@ -1,4 +1,5 @@
 'use client';
+import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import SavingCard from '@/components/global/SavingCard/SavingCard';
 import { useSavingData } from '@/components/global/SavingCard/useSavingData';
 import TabsComponent from '@/components/global/TabsComponent/TabsComponent';
@@ -17,6 +18,9 @@ const page = () => {
   const handleTabClick = (tabValue: string) => {
     setCurrentTab(tabValue);
   };
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -29,13 +33,9 @@ const page = () => {
       </div>
 
       <div className="flex flex-col gap-4">
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          savingData?.map((saving) => (
-            <SavingCard key={saving.groupId} {...saving} />
-          ))
-        )}
+        {savingData?.map((saving) => (
+          <SavingCard key={saving.groupId} {...saving} />
+        ))}
       </div>
     </div>
   );
