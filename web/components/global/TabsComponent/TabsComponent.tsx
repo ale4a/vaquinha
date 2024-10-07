@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useCallback } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
@@ -25,21 +25,35 @@ const TabsComponent = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams);
+      params.set(name, value);
+      return params.toString();
+    },
+    [searchParams]
+  );
+
   useEffect(() => {
     if (!searchParams.get('tab')) {
       const defaultTab = tabs[0]?.value;
       if (defaultTab) {
-        router.push(`${pathname}?tab=${defaultTab}`);
+        router.replace(`${pathname}?${createQueryString('tab', defaultTab)}`);
       }
     }
-  }, [searchParams, pathname, router, tabs]);
+  }, [searchParams, pathname, router, tabs, createQueryString]);
+
+  const handleTabClick = (tabValue: string) => {
+    router.push(`${pathname}?${createQueryString('tab', tabValue)}`);
+    onTabClick(tabValue);
+  };
 
   return (
     <div className="flex gap-8 px-2 overflow-auto">
       {tabs.map((tab) => (
         <button
           key={tab.value}
-          onClick={() => onTabClick(tab.value)}
+          onClick={() => handleTabClick(tab.value)}
           className={`relative px-4 py-2 font-medium ${
             currentTab === tab.value ? 'text-white' : 'text-accent-200'
           }`}
