@@ -13,7 +13,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'primary-100': '#FF6600',
+        'primary-100': '#ff8f00',
         'primary-200': '#FFA109',
         'primary-300': '#FEF0C7',
         'accent-100': '#F5F5F5',
@@ -24,7 +24,8 @@ module.exports = {
         'bg-200': '#2C2E30',
         'bg-300': '#444648',
         'success-green': '#01BC8D',
-        'warning-yellow': '#FFD032'
+        'warning-yellow': '#FFD032',
+        'error-red': '#FF3B30'
       }
     },
     fontFamily: {
