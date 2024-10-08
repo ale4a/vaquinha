@@ -57,7 +57,7 @@ const ButtonComponent = ({
       disabled={disabled}
       onClick={onClick}
     >
-      <span className="font-medium text-lg">{label}</span>
+      <span className="font-medium text-base px-3">{label}</span>
     </button>
   );
 };

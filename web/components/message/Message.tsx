@@ -5,10 +5,10 @@ import Image from 'next/image';
 
 const Message = ({ messageText }: MessageText) => {
   return (
-    <div className='mx-3 bg-bg-200'>
-      <div className='py-2 px-3 border-dashed border border-primary-300'>
+    <div className='bg-bg-200'>
+      <div className='py-2 px-3 border-dashed border-2 border-primary-300'>
         <div className='flex justify-between py-2 flex-col'>
-            <div className='mb-4 flex items-center'>
+            <div className='mb-2 flex items-center'>
                 <Image 
                     src="/icons/danger.svg"
                     alt='Group Active'
