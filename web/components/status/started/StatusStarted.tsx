@@ -5,7 +5,7 @@ import { NameStatus } from './Started.types';
 
 const StatusStarted = ( { nameStatus }: NameStatus) => {
   return (
-    <div className='flex justify-evenly py-2 px-2 flex'>
+    <div className='flex justify-evenly py-2 px-2'>
         <div className='mb-5 flex items-center flex-col text-center'>
             <Image 
                 src="/icons/circle-status-started.svg"
@@ -14,7 +14,7 @@ const StatusStarted = ( { nameStatus }: NameStatus) => {
                 height={28}
                 className='pb-2'
             />
-            <span>{nameStatus}</span> {}
+            <span className='text-xs'>{nameStatus}</span> {}
         </div>
     </div>
   );

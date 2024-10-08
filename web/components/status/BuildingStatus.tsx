@@ -17,7 +17,7 @@ const BuildingStatus = ({ value1, value2, value3 }: BuildingStatusProps) => {
     const statusNameSecond = "Pending Group"
     const statusNameThird = "Active Group"
     return (
-      <div className='flex justify-evenly py-2 px-2 flex'>
+      <div className='flex justify-evenly'>
           {value1 ? (
                 <>
                     <StatusCompleted nameStatus={statusNameFirst} />
