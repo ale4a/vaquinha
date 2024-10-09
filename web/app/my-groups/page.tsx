@@ -2,6 +2,7 @@
 
 import Button from '@/components/global/ButtonComponent/ButtonComponent';
 import GroupCard from '@/components/global/GroupCard/GroupCard';
+import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
 import Tabs from '@/components/global/Tabs/TabsComponent';
 import { GroupState } from '@/store';
 import { useQuery } from '@tanstack/react-query';
@@ -62,6 +63,9 @@ const Page = () => {
 
   return (
     <>
+      <div className="h-20 ">
+        <MainTabsHeader />
+      </div>
       <Tabs tabs={tabs} onTabClick={setCurrentTab} currentTab={currentTab} />
       {!loading && data?.contents?.length > 0 && (
         <div

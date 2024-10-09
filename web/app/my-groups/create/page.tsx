@@ -4,6 +4,7 @@ import Button from '@/components/global/ButtonComponent/ButtonComponent';
 import InputSelect from '@/components/global/form/InputSelect/InputSelect';
 import { Option } from '@/components/global/form/InputSelect/InputSelect.types';
 import InputText from '@/components/global/form/InputText/InputText';
+import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import Message from '@/components/message/Message';
 import Summary from '@/components/Summary/Summary';
 import { Group, GroupCrypto } from '@/store';
@@ -148,138 +149,141 @@ const Page = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center">
-      <div>
-        <div className="mb-3">
-          <InputText
-            label="Group Name"
-            type="text"
-            value={newGroup.name}
-            onChange={(name) =>
-              setNewGroup((prevState) => ({ ...prevState, name }))
-            }
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-2 mb-3">
-          <InputText<number>
-            label="Amount"
-            type="number"
-            value={newGroup.amount}
-            onChange={(amount) =>
-              setNewGroup((prevState) => ({ ...prevState, amount }))
-            }
-          />
-          <InputSelect
-            label="Crypto"
-            options={optionsCrypto}
-            defaultValue={optionsCrypto[0].value}
-            value={newGroup.crypto}
-            onChange={(crypto) =>
-              setNewGroup((prevState) => ({ ...prevState, crypto }))
-            }
-          />
-        </div>
-        <div className="grid grid-cols-3 gap-5 mb-4">
-          <InputSelect<number>
-            label="Members"
-            options={optionsMembers}
-            value={newGroup.members}
-            onChange={(members) =>
-              setNewGroup((prevState) => ({ ...prevState, members }))
-            }
-          />
-          <InputSelect
-            label="Payment period"
-            options={[
-              {
-                text: 'Monthly',
-                value: 'monthly',
-              },
-              {
-                text: 'Weekly',
-                value: 'weekly',
-              },
-            ]}
-            value={newGroup.period}
-            onChange={(period) =>
-              setNewGroup((prevState) => ({ ...prevState, period }))
-            }
-          />
-          <InputSelect
-            label="Start in"
-            options={[
-              {
-                text: '1 day',
-                value: ONE_DAY,
-              },
-              {
-                text: '2 days',
-                value: ONE_DAY * 2,
-              },
-              {
-                text: '5 days',
-                value: ONE_DAY * 5,
-              },
-            ]}
-            value={newGroup.startIn}
-            onChange={(startIn) =>
-              setNewGroup((prevState) => ({ ...prevState, startIn }))
-            }
-          />
-        </div>
-        <div className="flex justify-center text-2xl text-accent-100">
-          Group Information
-        </div>
-        <div className="mb-5 text-accent-100">
-          <Summary
-            itemsSummary={[
-              {
-                title: 'Crypto',
-                result: newGroup.crypto,
-              },
-              {
-                title: 'Group name',
-                result: newGroup.name,
-              },
-              {
-                title: 'Amount',
-                result: newGroup.amount,
-              },
-              {
-                title: 'Collateral',
-                result: newGroup.amount * newGroup.members,
-              },
-              {
-                title: 'Members',
-                result: newGroup.members,
-              },
-              {
-                title: 'Payment period',
-                result: newGroup.period,
-              },
-              {
-                title: 'Start In',
-                result:
-                  newGroup.startIn === ONE_DAY
-                    ? '1 day'
-                    : newGroup.startIn / ONE_DAY + ' days',
-              },
-            ]}
-          />
-        </div>
-        <Message messageText={messageText} />
-        <div className="flex gap-5 my-5">
-          <div className="w-9/12">
-            <Link href="/my-groups">
-              <Button label="Cancel" type="secondary" size="large" />
-            </Link>
+    <div>
+      <TabTitleHeader text="Group Information" />
+      <div className="flex flex-col justify-center">
+        <div>
+          <div className="mb-3">
+            <InputText
+              label="Group Name"
+              type="text"
+              value={newGroup.name}
+              onChange={(name) =>
+                setNewGroup((prevState) => ({ ...prevState, name }))
+              }
+            />
           </div>
-          <Button
-            label="Deposit Collateral"
-            type="primary"
-            size="large"
-            onClick={onSave}
-          />
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            <InputText<number>
+              label="Amount"
+              type="number"
+              value={newGroup.amount}
+              onChange={(amount) =>
+                setNewGroup((prevState) => ({ ...prevState, amount }))
+              }
+            />
+            <InputSelect
+              label="Crypto"
+              options={optionsCrypto}
+              defaultValue={optionsCrypto[0].value}
+              value={newGroup.crypto}
+              onChange={(crypto) =>
+                setNewGroup((prevState) => ({ ...prevState, crypto }))
+              }
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-5 mb-4">
+            <InputSelect<number>
+              label="Members"
+              options={optionsMembers}
+              value={newGroup.members}
+              onChange={(members) =>
+                setNewGroup((prevState) => ({ ...prevState, members }))
+              }
+            />
+            <InputSelect
+              label="Payment period"
+              options={[
+                {
+                  text: 'Monthly',
+                  value: 'monthly',
+                },
+                {
+                  text: 'Weekly',
+                  value: 'weekly',
+                },
+              ]}
+              value={newGroup.period}
+              onChange={(period) =>
+                setNewGroup((prevState) => ({ ...prevState, period }))
+              }
+            />
+            <InputSelect
+              label="Start in"
+              options={[
+                {
+                  text: '1 day',
+                  value: ONE_DAY,
+                },
+                {
+                  text: '2 days',
+                  value: ONE_DAY * 2,
+                },
+                {
+                  text: '5 days',
+                  value: ONE_DAY * 5,
+                },
+              ]}
+              value={newGroup.startIn}
+              onChange={(startIn) =>
+                setNewGroup((prevState) => ({ ...prevState, startIn }))
+              }
+            />
+          </div>
+          <div className="flex justify-center text-2xl text-accent-100">
+            Group Information
+          </div>
+          <div className="mb-5 text-accent-100">
+            <Summary
+              itemsSummary={[
+                {
+                  title: 'Crypto',
+                  result: newGroup.crypto,
+                },
+                {
+                  title: 'Group name',
+                  result: newGroup.name,
+                },
+                {
+                  title: 'Amount',
+                  result: newGroup.amount,
+                },
+                {
+                  title: 'Collateral',
+                  result: newGroup.amount * newGroup.members,
+                },
+                {
+                  title: 'Members',
+                  result: newGroup.members,
+                },
+                {
+                  title: 'Payment period',
+                  result: newGroup.period,
+                },
+                {
+                  title: 'Start In',
+                  result:
+                    newGroup.startIn === ONE_DAY
+                      ? '1 day'
+                      : newGroup.startIn / ONE_DAY + ' days',
+                },
+              ]}
+            />
+          </div>
+          <Message messageText={messageText} />
+          <div className="flex gap-5 my-5">
+            <div className="w-9/12">
+              <Link href="/my-groups">
+                <Button label="Cancel" type="secondary" size="large" />
+              </Link>
+            </div>
+            <Button
+              label="Deposit Collateral"
+              type="primary"
+              size="large"
+              onClick={onSave}
+            />
+          </div>
         </div>
       </div>
     </div>

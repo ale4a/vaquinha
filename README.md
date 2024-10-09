@@ -104,3 +104,7 @@ npm run build
 ## Added Information:
 
 1. Description: Vaquita is a protocol for rotating savings based on informal and traditional savings systems used in various countries, including Bolivia (Pasanaku), Argentina (Vaquita), Peru (Junta), and others. [Pitch Deck](https://www.canva.com/design/DAGTBA2Xyd0/dPTy43Ze_Q4nlW3oXM7yjA/edit?utm_content=DAGTBA2Xyd0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
+2. In this folder, you will find videos showcasing the functionality of our project. These videos provide an overview of key features and demonstrate how the project operates in practice. [Drive](https://drive.google.com/drive/folders/1LzhAUhjTEN72tB0uCMhH9dTVydrg0A7C)
+
+3. Soon, we will share more detailed information about the functionality of our project here. In the meantime, you can follow us on Twitter to stay updated with the latest news. [@VaquitaProtocol](https://x.com/VaquitaProtocol)

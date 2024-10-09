@@ -1,4 +1,5 @@
 'use client';
+import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import SavingCard from '@/components/global/SavingCard/SavingCard';
 import { useSavingData } from '@/components/global/SavingCard/useSavingData';
@@ -23,21 +24,26 @@ const page = () => {
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex  justify-center w-full">
-        <TabsComponent
-          tabs={tabs}
-          onTabClick={handleTabClick}
-          currentTab={currentTab}
-        />
+    <>
+      <div className="h-20 ">
+        <MainTabsHeader />
       </div>
+      <div className="flex flex-col gap-2">
+        <div className="flex  justify-center w-full">
+          <TabsComponent
+            tabs={tabs}
+            onTabClick={handleTabClick}
+            currentTab={currentTab}
+          />
+        </div>
 
-      <div className="flex flex-col gap-4">
-        {savingData?.map((saving) => (
-          <SavingCard key={saving.groupId} {...saving} />
-        ))}
+        <div className="flex flex-col gap-4">
+          {savingData?.map((saving) => (
+            <SavingCard key={saving.groupId} {...saving} />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

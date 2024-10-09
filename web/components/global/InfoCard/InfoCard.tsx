@@ -2,7 +2,7 @@ import { Props } from './InfoCards.types';
 
 export default function InfoCard({ address, growth, savedAmount }: Props) {
   return (
-    <div className="flex flex-col justify-between rounded-lg min-h-36 p-3 bg-bg-200">
+    <div className="flex flex-col justify-between rounded-lg min-h-44 p-3 bg-bg-200">
       <div className="flex items-center gap-2">
         <span>{address}</span>
         <svg

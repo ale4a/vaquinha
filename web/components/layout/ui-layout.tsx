@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import Header from '../global/Header/Header';
+import MainTabsHeader from '../global/Header/MainTabsHeader';
 import Navbar from '../global/Navbar/Navbar';
 
 export function UiLayout({
@@ -14,9 +14,9 @@ export function UiLayout({
   return (
     <div className="h-full flex justify-center bg-black">
       <div className="w-full h-full bg-bg-100 flex flex-col">
-        <div className="h-20 ">
-          <Header />
-        </div>
+        {/* <div className="h-20 ">
+          <MainTabsHeader />
+        </div> */}
         {/* <div className="navbar bg-base-300 text-neutral-content flex-col space-y-2">
           <div className="flex-none space-x-2">
             <WalletButton />
