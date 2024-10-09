@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Protocol Vaquinha
 
 ![Texto alternativo](/vaquina.png)
@@ -7,87 +8,50 @@ Protocol Vaquinha is a community savings protocol inspired by the traditional An
 You can view the demo (under construction) [Vaquinha.com](https://www.google.com)
 
 This project is generated with the [create-solana-dapp](https://vaquinha-seven.vercel.app/) generator.
+=======
+# Vaquita
 
-## Getting Started
+## Introduction
+>>>>>>> 13b5849 (update readme)
 
-### Prerequisites
+In Argentina and across Latin America, financial exclusion is rampant. High poverty rates, lack of trust in banks, and limited access to financial services hinder people from saving, investing, and building wealth. _Vaquita_ is here to change that.
 
-- Node v18.18.0 or higher
+## The Problem
 
-- Rust v1.77.2 or higher
-- Anchor CLI 0.30.1 or higher
-- Solana CLI 1.18.17 or higher
+### Financial Exclusion Crisis
 
-### Installation
+50% Poverty Rate: Half the population in Argentina struggles below the poverty line, making traditional financial services inaccessible.
+High Borrowing Costs: Exorbitant interest rates burden those in need of credit, while savings options yield minimal returns.
+Distrust in Institutions: Economic instability has eroded trust in banks and financial institutions.
 
-#### Clone the repo
+## Our Solution
 
-```shell
-git clone <repo-url>
-cd <repo-name>
-```
+VAQUITA is a decentralized savings and investment protocol inspired by Andes savings circles. Utilizing blockchain technology and smart contracts, VAQUITA creates a secure, community-driven platform for collective financial growth.
 
-#### Install Dependencies
+## How It Works
 
-```shell
-npm install
-```
+- Create Savings Rounds: Users form groups, agreeing on contribution amounts and frequency.
+- Stake Collateral: Participants stake collateral in a smart contract (e.g., $80 for $20 monthly contribution).
+- Generate Yield: Collateral is invested in secure protocols (e.g., Solend), earning competitive returns (11%+ APY).
+- Contribute & Withdraw: Regular contributions are made, and yields are accessible once criteria are met.
 
-#### Start the web app
+## Market Opportunity
 
-```
-npm run dev
-```
+- Superior Returns: Vaquinha aims for ~17% APY compared to traditional savings options of 5-12%.
+- Decentralized Trust: Smart contracts automate and secure transactions, minimizing fraud and intermediary costs.
+- Inclusive Access: Bridges the gap for those excluded from conventional banking, fostering financial inclusion.
 
-## Apps
+## Future Opportunities
 
-### anchor
+- Credit Building: Users can build a credit history within Vaquita, unlocking more financial opportunities.
+- DeFi Retirement Funds: Potential to develop decentralized, community-managed retirement solutions.
+- Innovative Financial Tools: Vaquita can lead to new decentralized financial applications, enhancing security and inclusion.
 
-This is a Solana program written in Rust using the Anchor framework.
+## Conclusion
 
-#### Commands
+We are redefining financial inclusion and empowerment in Latin America. With Vaquita, individuals can save, invest, and thrive in a community-driven, blockchain-based system. Let's build a financially independent future together
 
-You can use any normal anchor commands. Either move to the `anchor` directory and run the `anchor` command or prefix the command with `npm run`, eg: `npm run anchor`.
-
-#### Sync the program id:
-
-Running this command will create a new keypair in the `anchor/target/deploy` directory and save the address to the Anchor config file and update the `declare_id!` macro in the `./src/lib.rs` file of the program.
-
-You will manually need to update the constant in `anchor/lib/counter-exports.ts` to match the new program id.
-
-```shell
-npm run anchor keys sync
-```
-
-#### Build the program:
-
-```shell
-npm run anchor-build
-```
-
-#### Start the test validator with the program deployed:
-
-```shell
-npm run anchor-localnet
-```
-
-#### Run the tests
-
-```shell
-npm run anchor-test
-```
-
-#### Deploy to Devnet
-
-```shell
-npm run anchor deploy --provider.cluster devnet
-```
-
-### web
-
-This is a React app that uses the Anchor generated client to interact with the Solana program.
-
-#### Commands
+#### Set Up
 
 Start the web app
 
@@ -101,6 +65,7 @@ Build the web app
 npm run build
 ```
 
+<<<<<<< HEAD
 ## Added Information:
 
 1. Description: Vaquita is a protocol for rotating savings based on informal and traditional savings systems used in various countries, including Bolivia (Pasanaku), Argentina (Vaquita), Peru (Junta), and others. [Pitch Deck](https://www.canva.com/design/DAGTBA2Xyd0/dPTy43Ze_Q4nlW3oXM7yjA/edit?utm_content=DAGTBA2Xyd0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
@@ -108,3 +73,17 @@ npm run build
 2. In this folder, you will find videos showcasing the functionality of our project. These videos provide an overview of key features and demonstrate how the project operates in practice. [Drive](https://drive.google.com/drive/folders/1LzhAUhjTEN72tB0uCMhH9dTVydrg0A7C)
 
 3. Soon, we will share more detailed information about the functionality of our project here. In the meantime, you can follow us on Twitter to stay updated with the latest news. [@VaquitaProtocol](https://x.com/VaquitaProtocol)
+=======
+#### Test
+
+Add env variables to your .env file
+
+ANCHOR_PROVIDER_URL=https://api.devnet.solana.com
+ANCHOR_WALLET=<Your id.json file>
+
+Initialize round
+
+```shell
+npm run play
+```
+>>>>>>> 13b5849 (update readme)
