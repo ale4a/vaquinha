@@ -1,5 +1,5 @@
 {
-  "address": "7a1h4J18HkFYM98bHXAG7U2uejztW4HnCnHbH5DbgQwY",
+  "address": "qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f",
   "metadata": {
     "name": "vaquinha",
     "version": "0.1.0",
@@ -8,96 +8,243 @@
   },
   "instructions": [
     {
-      "name": "close",
-      "discriminator": [98, 165, 201, 177, 108, 65, 206, 96],
+      "name": "add_player",
+      "discriminator": [
+        254,
+        109,
+        36,
+        5,
+        85,
+        174,
+        122,
+        93
+      ],
       "accounts": [
         {
-          "name": "payer",
+          "name": "round",
+          "writable": true
+        },
+        {
+          "name": "player",
+          "signer": true
+        },
+        {
+          "name": "player_token_account",
+          "writable": true
+        },
+        {
+          "name": "round_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_round",
+      "discriminator": [
+        43,
+        135,
+        19,
+        93,
+        14,
+        225,
+        131,
+        188
+      ],
+      "accounts": [
+        {
+          "name": "round",
           "writable": true,
           "signer": true
         },
         {
-          "name": "vaquinha",
-          "writable": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "decrement",
-      "discriminator": [106, 227, 168, 59, 248, 27, 150, 101],
-      "accounts": [
-        {
-          "name": "vaquinha",
-          "writable": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "increment",
-      "discriminator": [11, 18, 104, 9, 104, 174, 59, 33],
-      "accounts": [
-        {
-          "name": "vaquinha",
-          "writable": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "initialize",
-      "discriminator": [175, 175, 109, 31, 13, 152, 155, 237],
-      "accounts": [
-        {
-          "name": "payer",
+          "name": "initializer",
           "writable": true,
           "signer": true
         },
         {
-          "name": "vaquinha",
-          "writable": true,
-          "signer": true
+          "name": "token_mint"
+        },
+        {
+          "name": "initializer_token_account",
+          "writable": true
+        },
+        {
+          "name": "round_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
-      "args": []
-    },
-    {
-      "name": "set",
-      "discriminator": [198, 51, 53, 241, 116, 29, 126, 194],
-      "accounts": [
-        {
-          "name": "vaquinha",
-          "writable": true
-        }
-      ],
       "args": [
         {
-          "name": "value",
+          "name": "payment_amount",
+          "type": "u64"
+        },
+        {
+          "name": "number_of_players",
           "type": "u8"
+        },
+        {
+          "name": "frequency_of_turns",
+          "type": "i64"
         }
       ]
+    },
+    {
+      "name": "pay_turn",
+      "discriminator": [
+        22,
+        144,
+        153,
+        31,
+        248,
+        112,
+        93,
+        14
+      ],
+      "accounts": [
+        {
+          "name": "round",
+          "writable": true
+        },
+        {
+          "name": "player",
+          "signer": true
+        },
+        {
+          "name": "round_token_account",
+          "writable": true
+        },
+        {
+          "name": "recipient_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
     {
-      "name": "Vaquinha",
-      "discriminator": [135, 64, 223, 168, 233, 143, 162, 215]
+      "name": "Round",
+      "discriminator": [
+        87,
+        127,
+        165,
+        51,
+        73,
+        78,
+        116,
+        174
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "RoundNotPending",
+      "msg": "The round is not in pending status"
+    },
+    {
+      "code": 6001,
+      "name": "RoundFull",
+      "msg": "The round is full"
+    },
+    {
+      "code": 6002,
+      "name": "RoundNotActive",
+      "msg": "The round is not active"
+    },
+    {
+      "code": 6003,
+      "name": "NotPlayersTurn",
+      "msg": "It's not this player's turn to pay"
     }
   ],
   "types": [
     {
-      "name": "Vaquinha",
+      "name": "Round",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "count",
+            "name": "payment_amount",
+            "type": "u64"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "number_of_players",
             "type": "u8"
+          },
+          {
+            "name": "players",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "current_index_of_player",
+            "type": "u8"
+          },
+          {
+            "name": "order_of_turns",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "total_amount_locked",
+            "type": "u64"
+          },
+          {
+            "name": "available_slots",
+            "type": "u8"
+          },
+          {
+            "name": "frequency_of_turns",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "RoundStatus"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoundStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Completed"
           }
         ]
       }

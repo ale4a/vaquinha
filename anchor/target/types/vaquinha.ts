@@ -5,108 +5,255 @@
  * IDL can be found at `target/idl/vaquinha.json`.
  */
 export type Vaquinha = {
-  address: '7a1h4J18HkFYM98bHXAG7U2uejztW4HnCnHbH5DbgQwY';
-  metadata: {
-    name: 'vaquinha';
-    version: '0.1.0';
-    spec: '0.1.0';
-    description: 'Created with Anchor';
-  };
-  instructions: [
+  "address": "qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f",
+  "metadata": {
+    "name": "vaquinha",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
     {
-      name: 'close';
-      discriminator: [98, 165, 201, 177, 108, 65, 206, 96];
-      accounts: [
+      "name": "addPlayer",
+      "discriminator": [
+        254,
+        109,
+        36,
+        5,
+        85,
+        174,
+        122,
+        93
+      ],
+      "accounts": [
         {
-          name: 'payer';
-          writable: true;
-          signer: true;
+          "name": "round",
+          "writable": true
         },
         {
-          name: 'vaquinha';
-          writable: true;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: 'decrement';
-      discriminator: [106, 227, 168, 59, 248, 27, 150, 101];
-      accounts: [
-        {
-          name: 'vaquinha';
-          writable: true;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: 'increment';
-      discriminator: [11, 18, 104, 9, 104, 174, 59, 33];
-      accounts: [
-        {
-          name: 'vaquinha';
-          writable: true;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: 'initialize';
-      discriminator: [175, 175, 109, 31, 13, 152, 155, 237];
-      accounts: [
-        {
-          name: 'payer';
-          writable: true;
-          signer: true;
+          "name": "player",
+          "signer": true
         },
         {
-          name: 'vaquinha';
-          writable: true;
-          signer: true;
+          "name": "playerTokenAccount",
+          "writable": true
         },
         {
-          name: 'systemProgram';
-          address: '11111111111111111111111111111111';
+          "name": "roundTokenAccount",
+          "writable": true
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         }
-      ];
-      args: [];
+      ],
+      "args": []
     },
     {
-      name: 'set';
-      discriminator: [198, 51, 53, 241, 116, 29, 126, 194];
-      accounts: [
+      "name": "initializeRound",
+      "discriminator": [
+        43,
+        135,
+        19,
+        93,
+        14,
+        225,
+        131,
+        188
+      ],
+      "accounts": [
         {
-          name: 'vaquinha';
-          writable: true;
-        }
-      ];
-      args: [
+          "name": "round",
+          "writable": true,
+          "signer": true
+        },
         {
-          name: 'value';
-          type: 'u8';
+          "name": "initializer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tokenMint"
+        },
+        {
+          "name": "initializerTokenAccount",
+          "writable": true
+        },
+        {
+          "name": "roundTokenAccount",
+          "writable": true
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         }
-      ];
+      ],
+      "args": [
+        {
+          "name": "paymentAmount",
+          "type": "u64"
+        },
+        {
+          "name": "numberOfPlayers",
+          "type": "u8"
+        },
+        {
+          "name": "frequencyOfTurns",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "payTurn",
+      "discriminator": [
+        22,
+        144,
+        153,
+        31,
+        248,
+        112,
+        93,
+        14
+      ],
+      "accounts": [
+        {
+          "name": "round",
+          "writable": true
+        },
+        {
+          "name": "player",
+          "signer": true
+        },
+        {
+          "name": "roundTokenAccount",
+          "writable": true
+        },
+        {
+          "name": "recipientTokenAccount",
+          "writable": true
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
     }
-  ];
-  accounts: [
+  ],
+  "accounts": [
     {
-      name: 'vaquinha';
-      discriminator: [135, 64, 223, 168, 233, 143, 162, 215];
+      "name": "round",
+      "discriminator": [
+        87,
+        127,
+        165,
+        51,
+        73,
+        78,
+        116,
+        174
+      ]
     }
-  ];
-  types: [
+  ],
+  "errors": [
     {
-      name: 'vaquinha';
-      type: {
-        kind: 'struct';
-        fields: [
+      "code": 6000,
+      "name": "roundNotPending",
+      "msg": "The round is not in pending status"
+    },
+    {
+      "code": 6001,
+      "name": "roundFull",
+      "msg": "The round is full"
+    },
+    {
+      "code": 6002,
+      "name": "roundNotActive",
+      "msg": "The round is not active"
+    },
+    {
+      "code": 6003,
+      "name": "notPlayersTurn",
+      "msg": "It's not this player's turn to pay"
+    }
+  ],
+  "types": [
+    {
+      "name": "round",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            name: 'count';
-            type: 'u8';
+            "name": "paymentAmount",
+            "type": "u64"
+          },
+          {
+            "name": "tokenMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "numberOfPlayers",
+            "type": "u8"
+          },
+          {
+            "name": "players",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "currentIndexOfPlayer",
+            "type": "u8"
+          },
+          {
+            "name": "orderOfTurns",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "totalAmountLocked",
+            "type": "u64"
+          },
+          {
+            "name": "availableSlots",
+            "type": "u8"
+          },
+          {
+            "name": "frequencyOfTurns",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "roundStatus"
+              }
+            }
           }
-        ];
-      };
+        ]
+      }
+    },
+    {
+      "name": "roundStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "pending"
+          },
+          {
+            "name": "active"
+          },
+          {
+            "name": "completed"
+          }
+        ]
+      }
     }
-  ];
+  ]
 };
