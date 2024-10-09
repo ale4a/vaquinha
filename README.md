@@ -1,7 +1,12 @@
-# vaquinha
+# Protocol Vaquinha
 
 ![Texto alternativo](/vaquina.png)
-This project is generated with the [create-solana-dapp](https://github.com/solana-developers/create-solana-dapp) generator.
+
+Protocol Vaquinha is a community savings protocol inspired by the traditional Andean savings system known as Pasanaku. This protocol leverages blockchain technology to solve trust issues, allowing users to organize and participate in group savings systems with complete transparency and security. Vaquinha Protocol scales these traditional systems to the digital world, providing global access to communities that need reliable shared savings solutions.
+
+You can view the demo (under construction) [Vaquinha.com](https://www.google.com)
+
+This project is generated with the [create-solana-dapp](https://vaquinha-seven.vercel.app/) generator.
 
 ## Getting Started
 
@@ -95,3 +100,7 @@ Build the web app
 ```shell
 npm run build
 ```
+
+## Added Information:
+
+1. Description: Vaquita is a protocol for rotating savings based on informal and traditional savings systems used in various countries, including Bolivia (Pasanaku), Argentina (Vaquita), Peru (Junta), and others. [Pitch Deck](https://www.canva.com/design/DAGTBA2Xyd0/dPTy43Ze_Q4nlW3oXM7yjA/edit?utm_content=DAGTBA2Xyd0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
