@@ -3,11 +3,12 @@
 import Button from '@/components/global/ButtonComponent/ButtonComponent';
 import GroupCard from '@/components/global/GroupCard/GroupCard';
 import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
+import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import Tabs from '@/components/global/Tabs/TabsComponent';
 import { GroupState } from '@/store';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { FaPlus } from 'react-icons/fa6';
 
 enum MyGroupsTab {
@@ -49,6 +50,7 @@ const Page = () => {
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
   const [currentTab, setCurrentTab] = useState(tab || MyGroupsTab.ALL);
+
   const { isPending, isLoading, isFetching, data } = useQuery({
     queryKey: ['groups', currentTab],
     queryFn: () =>
@@ -132,4 +134,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+const PageWithSuspense = <T extends string = string>() => (
+  <Suspense fallback={<LoadingSpinner />}>
+    <Page />
+  </Suspense>
+);
+
+export default PageWithSuspense;
