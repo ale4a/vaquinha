@@ -1,138 +1,119 @@
 {
-  "address": "qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f",
-  "metadata": {
-    "name": "vaquinha",
-    "version": "0.1.0",
-    "spec": "0.1.0",
-    "description": "Created with Anchor"
-  },
+  "version": "0.1.0",
+  "name": "vaquinha",
   "instructions": [
     {
-      "name": "add_player",
-      "discriminator": [
-        254,
-        109,
-        36,
-        5,
-        85,
-        174,
-        122,
-        93
-      ],
+      "name": "initializeRound",
       "accounts": [
         {
           "name": "round",
-          "writable": true
-        },
-        {
-          "name": "player",
-          "signer": true
-        },
-        {
-          "name": "player_token_account",
-          "writable": true
-        },
-        {
-          "name": "round_token_account",
-          "writable": true
-        },
-        {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "initialize_round",
-      "discriminator": [
-        43,
-        135,
-        19,
-        93,
-        14,
-        225,
-        131,
-        188
-      ],
-      "accounts": [
-        {
-          "name": "round",
-          "writable": true,
-          "signer": true
+          "isMut": true,
+          "isSigner": true
         },
         {
           "name": "initializer",
-          "writable": true,
-          "signer": true
+          "isMut": true,
+          "isSigner": true
         },
         {
-          "name": "token_mint"
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
         },
         {
-          "name": "initializer_token_account",
-          "writable": true
+          "name": "initializerTokenAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          "name": "round_token_account",
-          "writable": true
+          "name": "roundTokenAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
         },
         {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
         {
-          "name": "payment_amount",
+          "name": "paymentAmount",
           "type": "u64"
         },
         {
-          "name": "number_of_players",
+          "name": "numberOfPlayers",
           "type": "u8"
         },
         {
-          "name": "frequency_of_turns",
+          "name": "frequencyOfTurns",
           "type": "i64"
         }
       ]
     },
     {
-      "name": "pay_turn",
-      "discriminator": [
-        22,
-        144,
-        153,
-        31,
-        248,
-        112,
-        93,
-        14
-      ],
+      "name": "addPlayer",
       "accounts": [
         {
           "name": "round",
-          "writable": true
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "player",
-          "signer": true
+          "isMut": false,
+          "isSigner": true
         },
         {
-          "name": "round_token_account",
-          "writable": true
+          "name": "playerTokenAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          "name": "recipient_token_account",
-          "writable": true
+          "name": "roundTokenAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "payTurn",
+      "accounts": [
+        {
+          "name": "round",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "roundTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "recipientTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": []
@@ -141,16 +122,76 @@
   "accounts": [
     {
       "name": "Round",
-      "discriminator": [
-        87,
-        127,
-        165,
-        51,
-        73,
-        78,
-        116,
-        174
-      ]
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "paymentAmount",
+            "type": "u64"
+          },
+          {
+            "name": "tokenMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "numberOfPlayers",
+            "type": "u8"
+          },
+          {
+            "name": "players",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "currentIndexOfPlayer",
+            "type": "u8"
+          },
+          {
+            "name": "orderOfTurns",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "totalAmountLocked",
+            "type": "u64"
+          },
+          {
+            "name": "availableSlots",
+            "type": "u8"
+          },
+          {
+            "name": "frequencyOfTurns",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": "RoundStatus"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "RoundStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Completed"
+          }
+        ]
+      }
     }
   ],
   "errors": [
@@ -175,79 +216,7 @@
       "msg": "It's not this player's turn to pay"
     }
   ],
-  "types": [
-    {
-      "name": "Round",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "payment_amount",
-            "type": "u64"
-          },
-          {
-            "name": "token_mint",
-            "type": "pubkey"
-          },
-          {
-            "name": "number_of_players",
-            "type": "u8"
-          },
-          {
-            "name": "players",
-            "type": {
-              "vec": "pubkey"
-            }
-          },
-          {
-            "name": "current_index_of_player",
-            "type": "u8"
-          },
-          {
-            "name": "order_of_turns",
-            "type": {
-              "vec": "pubkey"
-            }
-          },
-          {
-            "name": "total_amount_locked",
-            "type": "u64"
-          },
-          {
-            "name": "available_slots",
-            "type": "u8"
-          },
-          {
-            "name": "frequency_of_turns",
-            "type": "i64"
-          },
-          {
-            "name": "status",
-            "type": {
-              "defined": {
-                "name": "RoundStatus"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "RoundStatus",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "Pending"
-          },
-          {
-            "name": "Active"
-          },
-          {
-            "name": "Completed"
-          }
-        ]
-      }
-    }
-  ]
+  "metadata": {
+    "address": "qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f"
+  }
 }
