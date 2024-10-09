@@ -16,6 +16,13 @@ This project is generated with the [create-solana-dapp](https://vaquinha-seven.v
 
 3. Soon, we will share more detailed information about the functionality of our project here. In the meantime, you can follow us on Twitter to stay updated with the latest news. [@VaquitaProtocol](https://x.com/VaquitaProtocol)
 
+4. Devnet programId = qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f [Vaquinha Program](https://explorer.solana.com/address/qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f?cluster=devnet)
+
+   methods:
+   - initializeRound: creates a new Round and adds collateral
+   - addPlayer: adds a player to the round and its collateral
+   - payTurn: pays the current turn
+
 
 ## Getting Started
 

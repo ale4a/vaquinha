@@ -77,10 +77,10 @@ const initializeRound = async (
       })
       .preInstructions([createAtaIx])
       .signers([roundKeypair])
-      .simulate()
+      .rpc()
 
-    // console.log("Transaction signature:", tx);
-    // console.log("Round initialized:", roundKeypair.publicKey.toString());
+    console.log("Transaction signature:", tx);
+    console.log("Round initialized:", roundKeypair.publicKey.toString());
 
     // console.log("Simulation result:", tx);
     // console.log("Simulated round initialization for:", roundKeypair.publicKey.toString());

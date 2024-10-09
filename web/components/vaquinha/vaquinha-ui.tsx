@@ -86,7 +86,7 @@ function VaquinhaCard({ account }: { account: PublicKey }) {
             className="card-title justify-center text-3xl cursor-pointer"
             onClick={() => accountQuery.refetch()}
           >
-            {count}
+            {/* {account} */}
           </h2>
           <div className="card-actions justify-around">
             <button
