@@ -1,4 +1,4 @@
-import SavingCard from '@/components/global/SavingCard/SavingCard';
+'use client';
 import DetailsCard from '../../components/global/DetailsCard/DetailsCard';
 import Table from '@/components/global/Table/Table';
 import { item } from '@/components/global/Table/Table.types';
