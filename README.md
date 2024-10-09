@@ -4,7 +4,7 @@
 
 Protocol Vaquinha is a community savings protocol inspired by the traditional Andean savings system known as Pasanaku. This protocol leverages blockchain technology to solve trust issues, allowing users to organize and participate in group savings systems with complete transparency and security. Vaquinha Protocol scales these traditional systems to the digital world, providing global access to communities that need reliable shared savings solutions.
 
-You can view the demo (under construction) [Vaquinha.com](https://www.google.com)
+You can view the demo (under construction) [vaquinha-seven.vercel.app.com](https://vaquinha-seven.vercel.app/groups?tab=usdt)
 
 This project is generated with the [create-solana-dapp](https://vaquinha-seven.vercel.app/) generator.
 
