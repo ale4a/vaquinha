@@ -11,6 +11,11 @@ import { Group, GroupCrypto } from '@/store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { BN } from '@coral-xyz/anchor';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useInitializeRound } from "../../../components/vaquinha/vaquinha-data-access";
+
+const USDC_DECIMALS = 1000000;
 
 const optionsCrypto: Option<GroupCrypto>[] = [
   {
@@ -105,18 +110,42 @@ const Page = () => {
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const wallet = useWallet();
+  const { initializeRound } = useInitializeRound();
+
+  const convertFrequencyToTimestamp = (period: 'weekly' | 'monthly'): BN => {
+    const SECONDS_PER_DAY = 86400; // 24 hours * 60 minutes * 60 seconds
+    const frequencyInDays = period === 'weekly' ? 7 : 30;
+    const frequencyInSeconds = frequencyInDays * SECONDS_PER_DAY;
+    
+    // Return as BN (Big Number) which is commonly used for large integers in Solana
+    return new BN(frequencyInSeconds);
+  };
 
   const onSave = async () => {
+    const paymentAmount = newGroup.amount * USDC_DECIMALS;
+    console.log({paymentAmount});
+    const numberOfPlayers = newGroup.members;
+    const frequencyOfTurns = convertFrequencyToTimestamp(newGroup.period);
+    const tokenMintAddress = "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"; // Circle USDC
+
     setLoading(true);
-    try {
-      await fetch('/api/group/create', {
-        method: 'POST',
-        body: JSON.stringify(newGroup),
-      });
-      router.push('/my-groups?tab=pending');
-    } catch (error) {
-      console.error(error);
+    const { tx, error } = await initializeRound(paymentAmount, numberOfPlayers, frequencyOfTurns, tokenMintAddress);
+
+    if (tx) {
+      try {
+        await fetch('/api/group/create', {
+          method: 'POST',
+          body: JSON.stringify(newGroup),
+        });
+        router.push('/my-groups?tab=pending');
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.log(error);
     }
+
     setLoading(false);
   };
 
