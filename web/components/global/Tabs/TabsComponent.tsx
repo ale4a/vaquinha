@@ -1,34 +1,33 @@
 'use client';
 
-import { Suspense, useCallback } from 'react';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { Suspense, useCallback, useEffect } from 'react';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
-interface ITab {
+interface ITab<T> {
   label: string;
-  value: string;
+  value: T;
 }
 
-interface TabsComponentProps {
-  tabs: ITab[];
-  onTabClick: (tabValue: string) => void;
-  currentTab: string;
+interface TabsComponentProps<T> {
+  tabs: ITab<T>[];
+  onTabClick: (tabValue: T) => void;
+  currentTab: T;
 }
 
-const TabsComponent = ({
+const TabsComponent = <T extends string = string>({
   tabs,
   onTabClick,
   currentTab,
-}: TabsComponentProps) => {
+}: TabsComponentProps<T>) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const createQueryString = useCallback(
-    (name: string, value: string) => {
+    (name: string, value: T) => {
       const params = new URLSearchParams(searchParams);
-      params.set(name, value);
+      params.set(name, value as string);
       return params.toString();
     },
     [searchParams]
@@ -43,32 +42,36 @@ const TabsComponent = ({
     }
   }, [searchParams, pathname, router, tabs, createQueryString]);
 
-  const handleTabClick = (tabValue: string) => {
+  const handleTabClick = (tabValue: T) => {
     router.push(`${pathname}?${createQueryString('tab', tabValue)}`);
     onTabClick(tabValue);
   };
 
   return (
-    <div className="flex gap-8 px-2 overflow-auto">
+    <div className="flex px-2 overflow-auto">
       {tabs.map((tab) => (
         <button
           key={tab.value}
           onClick={() => handleTabClick(tab.value)}
-          className={`relative px-4 py-2 font-medium ${
+          className={`relative px-2 py-2 font-medium flex-1 ${
             currentTab === tab.value ? 'text-white' : 'text-accent-200'
           }`}
         >
           {tab.label}
-          {currentTab === tab.value && (
-            <span className="absolute bottom-2 left-0 w-full h-0.5 bg-primary-200"></span>
-          )}
+          <span
+            className={`absolute bottom-2 left-0 w-full h-0.5 ${
+              currentTab === tab.value ? 'bg-primary-200' : 'bg-accent-200'
+            }`}
+          ></span>
         </button>
       ))}
     </div>
   );
 };
 
-const TabsWithSuspense = (props: TabsComponentProps) => (
+const TabsWithSuspense = <T extends string = string>(
+  props: TabsComponentProps<T>
+) => (
   <Suspense fallback={<LoadingSpinner />}>
     <TabsComponent {...props} />
   </Suspense>

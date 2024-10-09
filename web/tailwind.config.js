@@ -18,6 +18,7 @@ module.exports = {
         'primary-300': '#FEF0C7',
         'accent-100': '#F5F5F5',
         'accent-200': '#929292',
+        'accent-300': '#667085',
         'text-100': '#F5F5F5',
         'text-200': '#E0E0E0',
         'bg-100': '#1D1F21',
@@ -25,15 +26,15 @@ module.exports = {
         'bg-300': '#444648',
         'success-green': '#01BC8D',
         'warning-yellow': '#FFD032',
-        'error-red': '#FF3B30'
-      }
+        'error-red': '#FF3B30',
+      },
     },
     fontFamily: {
       clash: ['ClashDisplay', 'sans-serif'],
       satoshi: ['Satoshi', 'sans-serif'],
     },
     boxShadow: {
-      'top-custom': '0 -4px 6px -2px rgba(245, 245, 245, 0.1)', 
+      'top-custom': '0 -4px 6px -2px rgba(245, 245, 245, 0.1)',
     },
   },
   plugins: [require('daisyui')],

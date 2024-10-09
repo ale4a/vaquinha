@@ -1,21 +1,8 @@
 'use client';
 
-import { WalletButton } from '../solana/solana-provider';
-import * as React from 'react';
-import { ReactNode, Suspense, useEffect, useRef } from 'react';
-
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
-import { AccountChecker } from '../account/account-ui';
-import {
-  ClusterChecker,
-  ClusterUiSelect,
-  ExplorerLink,
-} from '../cluster/cluster-ui';
-import toast, { Toaster } from 'react-hot-toast';
-import Navbar from '../global/Navbar/Navbar';
+import { ReactNode } from 'react';
 import Header from '../global/Header/Header';
+import Navbar from '../global/Navbar/Navbar';
 
 export function UiLayout({
   children,
@@ -36,9 +23,10 @@ export function UiLayout({
             <ClusterUiSelect />
           </div>
         </div> */}
-        <div className="flex-grow overflow-y-auto px-4">{children}</div>
-
-        <div className="h-20 bg-gray-900">
+        <div className="flex flex-col flex-grow overflow-y-auto px-4">
+          {children}
+        </div>
+        <div className="bg-gray-900">
           <Navbar links={links} />
         </div>
       </div>

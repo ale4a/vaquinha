@@ -16,6 +16,8 @@ const getButtonStyles = (type: string) => {
       return 'bg-bg-200 text-white hover:bg-bg-300';
     case 'outline':
       return 'border border-accent-200 text-accent-200 hover:bg-accent-100';
+    case 'outline-primary':
+      return 'border border-primary-200 text-accent-200 hover:bg-primary-100 hover:text-accent-100';
     case 'danger':
       return 'border border-error-red text-error-red hover:bg-error-red hover:text-white';
     case 'disabled':
@@ -53,7 +55,7 @@ const ButtonComponent = ({
   const sizeStyles = getSizeStyles(size);
   return (
     <button
-      className={`w-full h-10 rounded-lg ${buttonStyles} ${sizeStyles}`}
+      className={`h-10 rounded-lg ${buttonStyles} ${sizeStyles} flex items-center justify-center`}
       disabled={disabled}
       onClick={onClick}
     >

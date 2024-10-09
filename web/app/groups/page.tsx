@@ -2,7 +2,7 @@
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import SavingCard from '@/components/global/SavingCard/SavingCard';
 import { useSavingData } from '@/components/global/SavingCard/useSavingData';
-import TabsComponent from '@/components/global/TabsComponent/TabsComponent';
+import TabsComponent from '@/components/global/Tabs/TabsComponent';
 import React, { useState } from 'react';
 
 const tabs = [

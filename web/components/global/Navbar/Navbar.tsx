@@ -1,6 +1,6 @@
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 type LinkItem = {
   label: string;
@@ -87,7 +87,7 @@ const Navbar: React.FC<NavbarProps> = ({ links }) => {
 
   return (
     <nav className=" bottom-0 w-full bg-bg-100 text-white shadow-top-custom">
-      <ul className="flex justify-around items-center py-4">
+      <ul className="h-20 flex justify-around items-center py-4">
         {links.map(({ label, path }) => {
           const isActive = pathname === path;
 

@@ -1,8 +1,7 @@
 export interface ItemsSummary {
   title: string;
-  result: string;
+  result: string | number;
 }
-
 
 export const itemsSummary: ItemsSummary[] = [
   { title: 'Cryto', result: 'USDT' },
