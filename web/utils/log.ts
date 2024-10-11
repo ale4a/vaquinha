@@ -4,10 +4,10 @@ import { stringifyObject } from '@/utils/obj';
 export const printDate = () => {
   const now = new Date();
   return (
-    now.getDate().padStart(2, '0') +
+    now.getDate() +
     '/' +
-    (now.getMonth() + 1).padStart(2, '0') +
-    `/${now.getFullYear().padStart(4, '0')}::${now.toLocaleTimeString()}`
+    (now.getMonth() + 1) +
+    `/${now.getFullYear()}::${now.toLocaleTimeString()}`
   );
 };
 
