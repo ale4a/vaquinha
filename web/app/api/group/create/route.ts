@@ -1,14 +1,22 @@
-import { Group, GROUPS, GroupState } from '@/store';
-import { v4 } from 'uuid';
+import { createGroup } from '@/services';
+import { dbClient } from '@/services/database';
+import { GroupBaseDocument, GroupStatus } from '@/types';
 
 export async function POST(request: Request) {
-  const { crypto, name, amount, collateral, members, slots, period, startIn } =
-    await request.json();
+  await dbClient.connect();
 
-  const id = v4();
+  const {
+    crypto,
+    name,
+    amount,
+    collateral,
+    members,
+    slots,
+    period,
+    startsOnTimestamp,
+  } = await request.json();
 
-  const newGroup: Group = {
-    id,
+  const newGroup: GroupBaseDocument = {
     owner: 'test',
     crypto,
     name,
@@ -17,12 +25,11 @@ export async function POST(request: Request) {
     members,
     slots,
     period,
-    startIn,
-    state: GroupState.PENDING,
+    startsOnTimestamp,
+    status: GroupStatus.PENDING,
   };
 
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  GROUPS.push(newGroup);
+  const result = await createGroup(newGroup);
 
-  return Response.json({ id });
+  return Response.json({ id: result.insertedId });
 }

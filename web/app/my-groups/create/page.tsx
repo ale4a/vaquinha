@@ -7,13 +7,14 @@ import InputText from '@/components/global/form/InputText/InputText';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import Message from '@/components/message/Message';
 import Summary from '@/components/Summary/Summary';
-import { Group, GroupCrypto } from '@/store';
+import { GroupBaseDocument, GroupCrypto, LogLevel } from '@/types';
+import { logError } from '@/utils/log';
+import { BN } from '@coral-xyz/anchor';
+import { useWallet } from '@solana/wallet-adapter-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { BN } from '@coral-xyz/anchor';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { useInitializeRound } from "../../../components/vaquinha/vaquinha-data-access";
+import { useInitializeRound } from '../../../components/vaquinha/vaquinha-data-access';
 
 const USDC_DECIMALS = 1000000;
 
@@ -62,36 +63,6 @@ const optionsMembers: Option<number>[] = [
   },
 ];
 
-const itemsSummary = [
-  {
-    title: 'Crypto',
-    result: 'USDT',
-  },
-  {
-    title: 'Group name',
-    result: 'Pasanaku',
-  },
-  {
-    title: 'Amount',
-    result: '68 USDT',
-  },
-  {
-    title: 'Collateral',
-    result: '341 USDT',
-  },
-  {
-    title: 'Members',
-    result: '3/5',
-  },
-  {
-    title: 'Payment period',
-    result: 'Monthly',
-  },
-  {
-    title: 'Start In',
-    result: '10-10-2024 (3 days)',
-  },
-];
 const messageText =
   'It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately';
 
@@ -99,14 +70,17 @@ const ONE_DAY = 86400000;
 
 const Page = () => {
   const [newGroup, setNewGroup] = useState<
-    Pick<Group, 'name' | 'amount' | 'crypto' | 'members' | 'period' | 'startIn'>
+    Pick<
+      GroupBaseDocument,
+      'name' | 'amount' | 'crypto' | 'members' | 'period' | 'startsOnTimestamp'
+    >
   >({
     name: '',
     amount: 50,
     crypto: GroupCrypto.USDC,
     members: 2,
     period: 'weekly',
-    startIn: ONE_DAY,
+    startsOnTimestamp: ONE_DAY,
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -117,22 +91,27 @@ const Page = () => {
     const SECONDS_PER_DAY = 86400; // 24 hours * 60 minutes * 60 seconds
     const frequencyInDays = period === 'weekly' ? 7 : 30;
     const frequencyInSeconds = frequencyInDays * SECONDS_PER_DAY;
-    
+
     // Return as BN (Big Number) which is commonly used for large integers in Solana
     return new BN(frequencyInSeconds);
   };
 
   const onSave = async () => {
     const paymentAmount = newGroup.amount * USDC_DECIMALS;
-    console.log({paymentAmount});
+    console.log({ paymentAmount });
     const numberOfPlayers = newGroup.members;
     const frequencyOfTurns = convertFrequencyToTimestamp(newGroup.period);
-    const tokenMintAddress = "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"; // Circle USDC
+    const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'; // Circle USDC
 
     setLoading(true);
-    const { tx, error } = await initializeRound(paymentAmount, numberOfPlayers, frequencyOfTurns, tokenMintAddress);
+    const { tx, error } = await initializeRound(
+      paymentAmount,
+      numberOfPlayers,
+      frequencyOfTurns,
+      tokenMintAddress
+    );
 
-    if (tx) {
+    if (true) {
       try {
         await fetch('/api/group/create', {
           method: 'POST',
@@ -143,7 +122,7 @@ const Page = () => {
         console.error(error);
       }
     } else {
-      console.log(error);
+      logError(LogLevel.INFO)(error);
     }
 
     setLoading(false);
@@ -253,7 +232,7 @@ const Page = () => {
                   value: ONE_DAY * 5,
                 },
               ]}
-              value={newGroup.startIn}
+              value={newGroup.startsOnTimestamp}
               onChange={(startIn) =>
                 setNewGroup((prevState) => ({ ...prevState, startIn }))
               }
@@ -292,9 +271,9 @@ const Page = () => {
                 {
                   title: 'Start In',
                   result:
-                    newGroup.startIn === ONE_DAY
+                    newGroup.startsOnTimestamp === ONE_DAY
                       ? '1 day'
-                      : newGroup.startIn / ONE_DAY + ' days',
+                      : newGroup.startsOnTimestamp / ONE_DAY + ' days',
                 },
               ]}
             />

@@ -5,7 +5,7 @@ import GroupCard from '@/components/global/GroupCard/GroupCard';
 import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import Tabs from '@/components/global/Tabs/TabsComponent';
-import { GroupState } from '@/store';
+import { GroupResponse, GroupStatus } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { Suspense, useState } from 'react';
@@ -13,10 +13,10 @@ import { FaPlus } from 'react-icons/fa6';
 
 enum MyGroupsTab {
   ALL = 'all',
-  PENDING = GroupState.PENDING,
-  ACTIVE = GroupState.ACTIVE,
-  CONCLUDED = GroupState.CONCLUDED,
-  ELIMINATED = GroupState.ABANDONED,
+  PENDING = GroupStatus.PENDING,
+  ACTIVE = GroupStatus.ACTIVE,
+  CONCLUDED = GroupStatus.CONCLUDED,
+  ELIMINATED = GroupStatus.ABANDONED,
 }
 
 const tabs = [
@@ -50,12 +50,14 @@ const Page = () => {
   const tab = searchParams.get('tab');
   const [currentTab, setCurrentTab] = useState(tab || MyGroupsTab.ALL);
 
-  const { isPending, isLoading, isFetching, data } = useQuery({
+  const { isPending, isLoading, isFetching, data } = useQuery<{
+    contents: GroupResponse[];
+  }>({
     queryKey: ['groups', currentTab],
     queryFn: () =>
       fetch(
         `/api/group${
-          currentTab !== MyGroupsTab.ALL ? `?state=${currentTab}` : ''
+          currentTab !== MyGroupsTab.ALL ? `?status=${currentTab}` : ''
         }`
       ).then((res) => res.json()),
   });
@@ -68,7 +70,7 @@ const Page = () => {
         <MainTabsHeader />
       </div>
       <Tabs tabs={tabs} onTabClick={setCurrentTab} currentTab={currentTab} />
-      {!loading && data?.contents?.length > 0 && (
+      {!loading && (data?.contents?.length || 0) > 0 && (
         <div
           className="rounded-full border-primary-200 border-2 absolute bottom-24 right-4"
           style={{ width: 80, height: 80 }}
@@ -113,7 +115,7 @@ const Page = () => {
             crypto,
             name,
             period,
-            state,
+            status,
           }: any) => (
             <div key={id}>
               <GroupCard
@@ -124,7 +126,7 @@ const Page = () => {
                 crypto={crypto}
                 name={name}
                 period={period}
-                state={state}
+                status={status}
               />
             </div>
           )

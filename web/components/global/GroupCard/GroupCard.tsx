@@ -1,5 +1,6 @@
 'use client';
-import { GroupCrypto, GroupState } from '@/store';
+
+import { GroupCrypto, GroupStatus } from '@/types';
 import Link from 'next/link';
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
 
@@ -11,7 +12,7 @@ interface Props {
   members: number;
   period: 'monthly' | 'weekly';
   startIn: number;
-  state: GroupState;
+  status: GroupStatus;
 }
 
 export default function GroupCard({
