@@ -13,6 +13,7 @@ import React, { Suspense, useState } from 'react';
 import { FaPlus } from 'react-icons/fa6';
 
 enum MyGroupsTab {
+  ALL_FAKE = 'all-fake',
   ALL = 'all',
   PENDING = GroupStatus.PENDING,
   ACTIVE = GroupStatus.ACTIVE,
@@ -21,6 +22,7 @@ enum MyGroupsTab {
 }
 
 const tabs = [
+  { label: 'All FAKE', value: MyGroupsTab.ALL_FAKE },
   { label: 'All', value: MyGroupsTab.ALL },
   { label: 'Pending', value: MyGroupsTab.PENDING },
   { label: 'Active', value: MyGroupsTab.ACTIVE },
@@ -41,9 +43,11 @@ const Page = () => {
     queryKey: ['groups', currentTab, publicKey, publicKey],
     queryFn: () =>
       fetch(
-        `/api/group?customerPublicKey=${publicKey}${
-          currentTab !== MyGroupsTab.ALL ? `&status=${currentTab}` : ''
-        }`
+        currentTab === MyGroupsTab.ALL_FAKE
+          ? '/api/group'
+          : `/api/group?customerPublicKey=${publicKey}${
+              currentTab !== MyGroupsTab.ALL ? `&status=${currentTab}` : ''
+            }`
       ).then((res) => res.json()),
   });
 
