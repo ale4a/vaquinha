@@ -11,14 +11,14 @@ interface Props {
   amount: number;
   members: number;
   period: 'monthly' | 'weekly';
-  startIn: number;
+  startsOnTimestamp: number;
   status: GroupStatus;
 }
 
 export default function GroupCard({
   name,
   amount,
-  startIn,
+  startsOnTimestamp,
   period,
   members,
   groupId,
@@ -50,7 +50,8 @@ export default function GroupCard({
         <p className="text-sm font-satoshi">
           <span className="text-accent-300">Start in</span>&nbsp;
           <span className="text-accent-200">
-            {startIn / 86400000} {startIn / 86400000 === 1 ? 'day' : 'days'}
+            {startsOnTimestamp / 86400000}{' '}
+            {startsOnTimestamp / 86400000 === 1 ? 'day' : 'days'}
           </span>
         </p>
         <p className="text-sm font-satoshi">

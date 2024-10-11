@@ -1,7 +1,6 @@
 'use client';
 
 import { ReactNode } from 'react';
-import MainTabsHeader from '../global/Header/MainTabsHeader';
 import Navbar from '../global/Navbar/Navbar';
 
 export function UiLayout({

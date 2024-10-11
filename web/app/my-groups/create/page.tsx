@@ -7,13 +7,13 @@ import InputText from '@/components/global/form/InputText/InputText';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import Message from '@/components/message/Message';
 import Summary from '@/components/Summary/Summary';
-import { GroupBaseDocument, GroupCrypto, LogLevel } from '@/types';
+import { GroupCreateDTO, GroupCrypto, LogLevel } from '@/types';
 import { logError } from '@/utils/log';
 import { BN } from '@coral-xyz/anchor';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInitializeRound } from '../../../components/vaquinha/vaquinha-data-access';
 
 const USDC_DECIMALS = 1000000;
@@ -69,29 +69,29 @@ const messageText =
 const ONE_DAY = 86400000;
 
 const Page = () => {
-  const [newGroup, setNewGroup] = useState<
-    Pick<
-      GroupBaseDocument,
-      'name' | 'amount' | 'crypto' | 'members' | 'period' | 'startsOnTimestamp'
-    >
-  >({
+  const [newGroup, setNewGroup] = useState<GroupCreateDTO>({
     name: '',
     amount: 50,
     crypto: GroupCrypto.USDC,
-    members: 2,
+    totalMembers: 2,
     period: 'weekly',
     startsOnTimestamp: ONE_DAY,
+    customerPublicKey: '',
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const wallet = useWallet();
+  const { publicKey } = useWallet();
   const { initializeRound } = useInitializeRound();
+  useEffect(() => {
+    if (!publicKey) {
+      router.push('/groups');
+    }
+  }, [router, publicKey]);
 
   const convertFrequencyToTimestamp = (period: 'weekly' | 'monthly'): BN => {
     const SECONDS_PER_DAY = 86400; // 24 hours * 60 minutes * 60 seconds
     const frequencyInDays = period === 'weekly' ? 7 : 30;
     const frequencyInSeconds = frequencyInDays * SECONDS_PER_DAY;
-
     // Return as BN (Big Number) which is commonly used for large integers in Solana
     return new BN(frequencyInSeconds);
   };
@@ -99,7 +99,7 @@ const Page = () => {
   const onSave = async () => {
     const paymentAmount = newGroup.amount * USDC_DECIMALS;
     console.log({ paymentAmount });
-    const numberOfPlayers = newGroup.members;
+    const numberOfPlayers = newGroup.totalMembers;
     const frequencyOfTurns = convertFrequencyToTimestamp(newGroup.period);
     const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'; // Circle USDC
 
@@ -111,11 +111,14 @@ const Page = () => {
       tokenMintAddress
     );
 
-    if (true) {
+    if (!tx) {
       try {
         await fetch('/api/group/create', {
           method: 'POST',
-          body: JSON.stringify(newGroup),
+          body: JSON.stringify({
+            ...newGroup,
+            customerPublicKey: publicKey,
+          }),
         });
         router.push('/my-groups?tab=pending');
       } catch (error) {
@@ -156,6 +159,10 @@ const Page = () => {
     );
   }
 
+  const startsIn = Math.ceil(
+    (newGroup.startsOnTimestamp - Date.now()) / ONE_DAY
+  );
+
   return (
     <div>
       <TabTitleHeader text="Group Information" />
@@ -194,9 +201,9 @@ const Page = () => {
             <InputSelect<number>
               label="Members"
               options={optionsMembers}
-              value={newGroup.members}
-              onChange={(members) =>
-                setNewGroup((prevState) => ({ ...prevState, members }))
+              value={newGroup.totalMembers}
+              onChange={(totalMembers) =>
+                setNewGroup((prevState) => ({ ...prevState, totalMembers }))
               }
             />
             <InputSelect
@@ -233,8 +240,11 @@ const Page = () => {
                 },
               ]}
               value={newGroup.startsOnTimestamp}
-              onChange={(startIn) =>
-                setNewGroup((prevState) => ({ ...prevState, startIn }))
+              onChange={(gap) =>
+                setNewGroup((prevState) => ({
+                  ...prevState,
+                  startsOnTimestamp: Date.now() + gap,
+                }))
               }
             />
           </div>
@@ -258,22 +268,19 @@ const Page = () => {
                 },
                 {
                   title: 'Collateral',
-                  result: newGroup.amount * newGroup.members,
+                  result: newGroup.amount * newGroup.totalMembers,
                 },
                 {
                   title: 'Members',
-                  result: newGroup.members,
+                  result: newGroup.totalMembers,
                 },
                 {
                   title: 'Payment period',
                   result: newGroup.period,
                 },
                 {
-                  title: 'Start In',
-                  result:
-                    newGroup.startsOnTimestamp === ONE_DAY
-                      ? '1 day'
-                      : newGroup.startsOnTimestamp / ONE_DAY + ' days',
+                  title: 'Starts In',
+                  result: startsIn ? '1 day' : startsIn + ' days',
                 },
               ]}
             />

@@ -12,31 +12,48 @@ export enum GroupCrypto {
   SOL = 'SOL',
 }
 
+export interface GroupMember {
+  publicKey: string;
+  isOwner: boolean;
+}
+
 export interface GroupBaseDocument {
-  owner: string;
   crypto: GroupCrypto;
   name: string;
   amount: number;
   collateral: number;
-  members: number;
-  slots: number;
+  totalMembers: number;
+  members: { [key: string]: GroupMember };
   period: 'monthly' | 'weekly';
   startsOnTimestamp: number;
   status: GroupStatus;
 }
 
-export interface GroupResponse {
+export interface GroupCreateDTO
+  extends Pick<
+    GroupBaseDocument,
+    | 'name'
+    | 'amount'
+    | 'crypto'
+    | 'totalMembers'
+    | 'period'
+    | 'startsOnTimestamp'
+  > {
+  customerPublicKey: string;
+}
+
+export interface GroupResponseDTO {
   id: string;
-  owner: string;
   crypto: GroupCrypto;
   name: string;
   amount: number;
   collateral: number;
-  members: number;
+  members: { [key: string]: GroupMember };
   slots: number;
   period: 'monthly' | 'weekly';
   startsOnTimestamp: number;
   status: GroupStatus;
+  isOwner: boolean;
 }
 
 export type GroupDocument = EntityDocument<GroupBaseDocument>;

@@ -1,6 +1,5 @@
-// src/components/LoadingSpinner.tsx
-import { FaSpinner } from 'react-icons/fa';
 import React from 'react';
+import { FaSpinner } from 'react-icons/fa';
 
 interface LoadingSpinnerProps {
   size?: number;
@@ -12,7 +11,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   title = '',
 }) => {
   return (
-    <div className="flex flex-col gap-4 justify-center items-center  h-full">
+    <div className="flex flex-col gap-4 justify-center items-center flex-1">
       <FaSpinner className="animate-spin text-primary-200" size={size} />
       <p className="text-xl">{title}</p>
     </div>

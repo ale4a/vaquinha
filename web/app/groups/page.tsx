@@ -36,7 +36,6 @@ const page = () => {
             currentTab={currentTab}
           />
         </div>
-
         <div className="flex flex-col gap-4">
           {savingData?.map((saving) => (
             <SavingCard key={saving.groupId} {...saving} />

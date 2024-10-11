@@ -1,32 +1,32 @@
 import { createGroup } from '@/services';
 import { dbClient } from '@/services/database';
-import { GroupBaseDocument, GroupStatus } from '@/types';
+import { GroupBaseDocument, GroupCreateDTO, GroupStatus } from '@/types';
 
 export async function POST(request: Request) {
   await dbClient.connect();
 
   const {
-    crypto,
     name,
     amount,
-    collateral,
-    members,
-    slots,
+    crypto,
+    totalMembers,
     period,
     startsOnTimestamp,
-  } = await request.json();
+    customerPublicKey,
+  } = (await request.json()) as GroupCreateDTO;
 
   const newGroup: GroupBaseDocument = {
-    owner: 'test',
     crypto,
     name,
     amount,
-    collateral,
-    members,
-    slots,
+    collateral: amount * totalMembers,
+    totalMembers,
     period,
     startsOnTimestamp,
     status: GroupStatus.PENDING,
+    members: {
+      [customerPublicKey]: { publicKey: customerPublicKey, isOwner: true },
+    },
   };
 
   const result = await createGroup(newGroup);

@@ -5,7 +5,8 @@ import GroupCard from '@/components/global/GroupCard/GroupCard';
 import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import Tabs from '@/components/global/Tabs/TabsComponent';
-import { GroupResponse, GroupStatus } from '@/types';
+import { GroupResponseDTO, GroupStatus } from '@/types';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { Suspense, useState } from 'react';
@@ -27,40 +28,37 @@ const tabs = [
   { label: 'Eliminated', value: MyGroupsTab.ELIMINATED },
 ];
 
-const LoadingCard = () => (
-  <div className="border border-accent-100 shadow rounded-md p-4 w-full mx-auto my-4">
-    <div className="animate-pulse flex space-x-4">
-      <div className="flex-1 space-y-6 py-1">
-        <div className="h-2 bg-slate-200 rounded"></div>
-        <div className="space-y-3">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
-            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
-          </div>
-          <div className="h-2 bg-slate-200 rounded"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
   const [currentTab, setCurrentTab] = useState(tab || MyGroupsTab.ALL);
-
+  const { publicKey } = useWallet();
   const { isPending, isLoading, isFetching, data } = useQuery<{
-    contents: GroupResponse[];
+    contents: GroupResponseDTO[];
   }>({
-    queryKey: ['groups', currentTab],
+    enabled: !!publicKey,
+    queryKey: ['groups', currentTab, publicKey, publicKey],
     queryFn: () =>
       fetch(
-        `/api/group${
-          currentTab !== MyGroupsTab.ALL ? `?status=${currentTab}` : ''
+        `/api/group?customerPublicKey=${publicKey}${
+          currentTab !== MyGroupsTab.ALL ? `&status=${currentTab}` : ''
         }`
       ).then((res) => res.json()),
   });
+
+  if (!publicKey) {
+    return (
+      <>
+        <div className="h-20 ">
+          <MainTabsHeader />
+        </div>
+        <div className="flex-1 flex flex-col gap-4 justify-center items-center">
+          <p className="text-accent-100">Please select a valid wallet</p>
+        </div>
+      </>
+    );
+  }
 
   const loading = isPending || isLoading || isFetching;
 
@@ -82,14 +80,7 @@ const Page = () => {
           />
         </div>
       )}
-      {loading && (
-        <>
-          <LoadingCard />
-          <LoadingCard />
-          <LoadingCard />
-          <LoadingCard />
-        </>
-      )}
+      {loading && <LoadingSpinner />}
       {!loading && data?.contents?.length === 0 && (
         <div className="flex flex-1 justify-center items-center flex-col">
           <div className="text-accent-100">There are no groups available.</div>
@@ -109,19 +100,19 @@ const Page = () => {
         data?.contents?.map(
           ({
             id,
-            startIn,
+            startsOnTimestamp,
             members,
             amount,
             crypto,
             name,
             period,
             status,
-          }: any) => (
+          }) => (
             <div key={id}>
               <GroupCard
                 groupId={id}
-                startIn={startIn}
-                members={members}
+                startsOnTimestamp={startsOnTimestamp}
+                members={Object.keys(members).length}
                 amount={amount}
                 crypto={crypto}
                 name={name}
