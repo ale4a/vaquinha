@@ -7,12 +7,12 @@ import TabsComponent from '@/components/global/Tabs/TabsComponent';
 import React, { useState } from 'react';
 
 const tabs = [
-  { label: 'USDT', value: 'usdt' },
+  { label: 'USDC', value: 'usdc' },
   { label: 'SOL', value: 'sol' },
 ];
 
-const page = () => {
-  const [currentTab, setCurrentTab] = useState('usdt');
+const GroupPage = () => {
+  const [currentTab, setCurrentTab] = useState('usdc');
 
   const { data: savingData, isLoading } = useSavingData(currentTab);
 
@@ -46,4 +46,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default GroupPage;

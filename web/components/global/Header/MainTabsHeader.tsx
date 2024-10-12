@@ -13,7 +13,7 @@ const MainTabsHeader = () => {
   };
 
   return (
-    <div className="text-primary-200  text-3xl text-center flex justify-around items-center h-full  gap-2">
+    <div className="text-primary-200 text-3xl text-center flex justify-around items-center h-full gap-2 py-4">
       {pathname.split('/').length > 2 && (
         <button onClick={handleBack}>
           <Image
