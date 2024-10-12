@@ -112,7 +112,7 @@ const Page = () => {
       tokenMintAddress
     );
 
-    if (!tx) {
+    if (tx) {
       try {
         await fetch('/api/group/create', {
           method: 'POST',

@@ -32,13 +32,13 @@ export default function GroupCard({
   return (
     <div className="flex justify-between bg-bg-100 py-4 px-2 border-b-2 border-white/25">
       <div className="w-2/3">
-        <p>
+        {/* <p>
           <span className="text-accent-300">Group id</span>&nbsp;
           <span className="text-accent-200">{`${groupId.slice(
             0,
             6
           )}...${groupId.slice(-4)}`}</span>
-        </p>
+        </p> */}
         <p>
           <span className="text-accent-300">Collateral</span>&nbsp;
           <span className="text-accent-200">

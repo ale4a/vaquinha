@@ -11,11 +11,18 @@ export const getRelativeTime = (relativeTime: number) => {
     ((relativeTime % ONE_DAY) % ONE_HOUR) / ONE_MINUTE
   );
 
+  const seconds = Math.floor(
+    (((relativeTime % ONE_DAY) % ONE_HOUR) % ONE_MINUTE) / 1000
+  );
+
   if (days) {
     return rtf1.format(days, 'day');
   }
   if (hours) {
     return rtf1.format(hours, 'hour');
   }
-  return rtf1.format(minutes, 'minute');
+  if (minutes) {
+    return rtf1.format(minutes, 'minute');
+  }
+  return rtf1.format(seconds, 'second');
 };
