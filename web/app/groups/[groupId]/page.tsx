@@ -2,6 +2,7 @@
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
+import SummaryAction from '@/components/global/SummaryAction/SummaryAction';
 import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
 import BuildingStatus from '@/components/status/BuildingStatus';
@@ -11,6 +12,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
 
 const GroupDetailPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -67,19 +69,35 @@ const GroupDetailPage = () => {
 
   return (
     <>
-      <div className="h-20 ">
+      <div className="h-20">
         <TabTitleHeader text="Group Information" />
       </div>
       {loading && <LoadingSpinner />}
       {!loading && data && (
-        <div>
+        <div className="flex flex-col gap-2">
           {data && <GroupSummary {...data?.content} />}
-          <Message
+          <SummaryAction
+            title="Payments"
+            content={<p>Payment Deadline: 14-10-2024</p>}
+            actionLabel="Withdraw"
+            onAction={() => {
+              Swal.fire({
+                title: 'Success!',
+                backdrop: 'rgba(0, 0, 0, 0.6)',
+                background: '#1D1F21',
+                text: 'Do you want to continue',
+                icon: 'success',
+                confirmButtonText: 'Cool',
+              });
+            }}
+          />
+
+          {/* <Message
             messageText={
               'It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately'
             }
-          />
-          <div className="flex gap-5 my-5 justify-between">
+          /> */}
+          <div className="flex gap-5 justify-between">
             <ButtonComponent
               label="Back"
               type="secondary"
@@ -89,15 +107,6 @@ const GroupDetailPage = () => {
               }}
               className="flex-1"
             />
-            {!data.content.collateralDeposited && (
-              <ButtonComponent
-                label="Deposit Collateral"
-                type="primary"
-                size="large"
-                onClick={depositCollateral}
-                className="flex-1"
-              />
-            )}
           </div>
         </div>
       )}
