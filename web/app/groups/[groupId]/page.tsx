@@ -74,19 +74,6 @@ const GroupDetailPage = () => {
       {!loading && data && (
         <div>
           {data && <GroupSummary {...data?.content} />}
-          <BuildingStatus
-            value1={step01}
-            value2={step02}
-            label2={
-              data.content.slots === 0
-                ? `Completed members ${data.content.totalMembers} / ${data.content.totalMembers}`
-                : `Awaiting Members ${
-                    data.content.totalMembers - data.content.slots
-                  }/${data.content.totalMembers}`
-            }
-            value3={step03}
-            label3={step03 ? 'Active Group' : 'Awaiting start date'}
-          />
           <Message
             messageText={
               'It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately'

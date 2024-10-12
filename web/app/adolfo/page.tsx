@@ -1,9 +1,12 @@
+'use client';
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
+import ExpandableCard from '@/components/global/ExpandableCard/ExpandableCard';
 import Message from '@/components/message/Message';
 import BuildingStatus from '@/components/status/BuildingStatus';
 import StatusStarted from '@/components/status/started/StatusStarted';
 import Summary from '@/components/Summary/Summary';
-import SummaryFooter from '@/components/SummaryFooter/SummaryFooter';
+import SummaryWithAction from '@/components/SummaryWithAction/SummaryWithAction';
+import SummaryFooter from '@/components/SummaryWithAction/SummaryWithAction';
 import React from 'react';
 
 const page = () => {
@@ -59,9 +62,25 @@ const page = () => {
   const showSecond = false;
   const showThird = false;
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       <Summary itemsSummary={itemsSummary} />
-      <SummaryFooter itemsSummary={itemsSummaryFooter} />
+
+      <ExpandableCard
+        title="Payments"
+        content={<p>Payment Deadline: 14-10-2024</p>}
+        actionLabel="Withdraw"
+        onAction={() => {
+          console.log();
+        }}
+      />
+      <SummaryWithAction
+        title="Payments"
+        content={<p>Payment Deadline: 14-10-2024</p>}
+        actionLabel="Withdraw"
+        onAction={() => {
+          console.log();
+        }}
+      />
       <Message messageText={messageText} />
       <BuildingStatus
         value1={showFirst}
