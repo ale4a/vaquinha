@@ -13,17 +13,17 @@ export async function POST(
   const group = await getGroup(groupId);
   const collateral = group.amount * group.totalMembers;
 
-  const newMembers: GroupBaseDocument['members'] = {
-    ...group.members,
-    [customerPublicKey]: {
-      publicKey: customerPublicKey,
-      isOwner: false,
-      collateralDeposit: { timestamp: Date.now(), amount: collateral },
-    },
-  };
-  const result = await updateGroup(groupId, {
-    members: newMembers,
-  });
+  // const newMembers: GroupBaseDocument['members'] = {
+  //   ...group.members,
+  //   [customerPublicKey]: {
+  //     publicKey: customerPublicKey,
+  //     isOwner: false,
+  //     collateralDeposit: { timestamp: Date.now(), amount: collateral },
+  //   },
+  // };
+  // const result = await updateGroup(groupId, {
+  //   members: newMembers,
+  // });
 
   return Response.json({ message: 'updated' });
 }

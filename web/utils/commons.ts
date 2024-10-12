@@ -40,7 +40,7 @@ export const showAlertWithConfirmation = (
         background: '#1D1F21',
         backdrop: 'rgba(0, 0, 0, 0.6)',
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1300,
       });
     } else {
       Swal.fire('Changes are not saved', '', 'info');
