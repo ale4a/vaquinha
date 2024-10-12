@@ -24,6 +24,13 @@ export interface GroupMember {
     timestamp: number;
     amount: number;
   };
+  deposits: [
+    {
+      amount: number;
+      deadlineTimestamp: number;
+      isPay: boolean;
+    }
+  ];
 }
 
 export interface GroupBaseDocument {
