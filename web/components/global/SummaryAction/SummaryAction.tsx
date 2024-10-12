@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
-type ExpandableCardProps = {
+type ISummaryAction = {
   title: string;
   content: string | JSX.Element;
   actionLabel: string;
   onAction: () => void;
 };
 
-const SummaryWithAction: React.FC<ExpandableCardProps> = ({
+const SummaryAction: React.FC<ISummaryAction> = ({
   title,
   content,
   actionLabel,
@@ -38,4 +38,4 @@ const SummaryWithAction: React.FC<ExpandableCardProps> = ({
   );
 };
 
-export default SummaryWithAction;
+export default SummaryAction;

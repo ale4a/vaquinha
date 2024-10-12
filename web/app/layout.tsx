@@ -4,6 +4,7 @@ import { UiLayout } from '@/components/layout/ui-layout';
 import { SolanaProvider } from '@/components/solana/solana-provider';
 import { ReactQueryProvider } from './react-query-provider';
 import 'react-datepicker/dist/react-datepicker.css';
+import 'sweetalert2/src/sweetalert2.scss';
 
 export const metadata = {
   title: 'vaquinha',

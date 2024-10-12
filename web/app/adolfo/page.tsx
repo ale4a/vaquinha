@@ -1,13 +1,13 @@
 'use client';
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
 import ExpandableCard from '@/components/global/ExpandableCard/ExpandableCard';
+import SummaryAction from '@/components/global/SummaryAction/SummaryAction';
 import Message from '@/components/message/Message';
 import BuildingStatus from '@/components/status/BuildingStatus';
 import StatusStarted from '@/components/status/started/StatusStarted';
 import Summary from '@/components/Summary/Summary';
-import SummaryWithAction from '@/components/SummaryWithAction/SummaryWithAction';
-import SummaryFooter from '@/components/SummaryWithAction/SummaryWithAction';
 import React from 'react';
+import Swal from 'sweetalert2';
 
 const page = () => {
   const itemsSummary = [
@@ -73,14 +73,23 @@ const page = () => {
           console.log();
         }}
       />
-      <SummaryWithAction
+
+      <SummaryAction
         title="Payments"
         content={<p>Payment Deadline: 14-10-2024</p>}
         actionLabel="Withdraw"
         onAction={() => {
-          console.log();
+          Swal.fire({
+            title: 'Success!',
+            backdrop: 'rgba(0, 0, 0, 0.6)',
+            background: '#1D1F21',
+            text: 'Do you want to continue',
+            icon: 'success',
+            confirmButtonText: 'Cool',
+          });
         }}
       />
+
       <Message messageText={messageText} />
       <BuildingStatus
         value1={showFirst}
