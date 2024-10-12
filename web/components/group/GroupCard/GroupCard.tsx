@@ -31,7 +31,14 @@ export default function GroupCard({
 
   return (
     <div className="flex justify-between bg-bg-100 py-4 px-2 border-b-2 border-white/25">
-      <div>
+      <div className="w-2/3">
+        <p>
+          <span className="text-accent-300">Group id</span>&nbsp;
+          <span className="text-accent-200">{`${groupId.slice(
+            0,
+            6
+          )}...${groupId.slice(-4)}`}</span>
+        </p>
         <p>
           <span className="text-accent-300">Collateral</span>&nbsp;
           <span className="text-accent-200">
@@ -54,12 +61,9 @@ export default function GroupCard({
             {getRelativeTime(startsOnTimestamp - Date.now())}
           </span>
         </p>
-        <p>
-          <span className="text-accent-300">Group id</span>&nbsp;
-          <span className="text-accent-200">{groupId}</span>
-        </p>
       </div>
-      <div className="flex flex-col justify-evenly items-end">
+
+      <div className="flex flex-col justify-evenly items-end w-1/3">
         <div className="flex flex-col items-end">
           <div className="flex items-center gap-1">
             <p className="text-accent-100">{name}</p>
