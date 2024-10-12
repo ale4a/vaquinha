@@ -22,6 +22,5 @@ export const logError =
     // if (shouldDisplayLog(logLevel)) {
     console.log(`[ERROR] ${printDate()}` + (title ? `, ${title}:` : ':'));
     console.log(stringifyObject(content, 5));
-    console.log(`_______`);
     // }
   };

@@ -85,7 +85,6 @@ export function useTransferSol({ address }: { address: PublicKey }) {
           'confirmed'
         );
 
-        console.log(signature);
         return signature;
       } catch (error: unknown) {
         console.log('error', `Transaction failed! ${error}`, signature);
