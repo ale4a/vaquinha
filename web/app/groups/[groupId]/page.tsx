@@ -6,7 +6,6 @@ import Message from '@/components/message/Message';
 import BuildingStatus from '@/components/status/BuildingStatus';
 import Summary from '@/components/Summary/Summary';
 import { itemsSummary } from '@/components/Summary/Summary.types';
-// src/pages/groups/[idGroup].tsx
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 import { FaSpinner } from 'react-icons/fa';

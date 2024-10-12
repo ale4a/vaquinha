@@ -98,7 +98,6 @@ const Page = () => {
 
   const onSave = async () => {
     const paymentAmount = newGroup.amount * USDC_DECIMALS;
-    console.log({ paymentAmount });
     const numberOfPlayers = newGroup.totalMembers;
     const frequencyOfTurns = convertFrequencyToTimestamp(newGroup.period);
     const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'; // Circle USDC
