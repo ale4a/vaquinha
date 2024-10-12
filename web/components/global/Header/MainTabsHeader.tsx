@@ -13,7 +13,7 @@ const MainTabsHeader = () => {
   };
 
   return (
-    <div className="text-primary-200 text-3xl text-center flex justify-around items-center h-full gap-2 py-4">
+    <div className="text-primary-200 text-3xl text-center flex justify-around items-center gap-2 pt-4 pb-2 h-14">
       {pathname.split('/').length > 2 && (
         <button onClick={handleBack}>
           <Image
@@ -24,9 +24,9 @@ const MainTabsHeader = () => {
           />
         </button>
       )}
-      <div className="flex flex-1 justify-between">
+      <div className="flex flex-1 justify-between items-center">
         <p className="font-medium text-3xl">Vaquinha</p>
-        <div className="flex-none space-x-1 flex">
+        <div className="flex-none space-x-1 flex wallets-buttons">
           <WalletButton />
           <ClusterUiSelect />
         </div>

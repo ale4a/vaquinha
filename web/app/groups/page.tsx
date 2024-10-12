@@ -1,47 +1,24 @@
 'use client';
 import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
-import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
-import SavingCard from '@/components/global/SavingCard/SavingCard';
-import { useSavingData } from '@/components/global/SavingCard/useSavingData';
-import TabsComponent from '@/components/global/Tabs/TabsComponent';
-import React, { useState } from 'react';
-
-const tabs = [
-  { label: 'USDC', value: 'usdc' },
-  { label: 'SOL', value: 'sol' },
-];
+import { ListGroups } from '@/components/group/ListGroups/ListGroups';
+import { GroupResponseDTO } from '@/types';
+import { useQuery } from '@tanstack/react-query';
+import React from 'react';
 
 const GroupPage = () => {
-  const [currentTab, setCurrentTab] = useState('usdc');
+  const { isPending, isLoading, isFetching, data } = useQuery<{
+    contents: GroupResponseDTO[];
+  }>({
+    queryKey: ['groups'],
+    queryFn: () => fetch(`/api/group?filters=134`).then((res) => res.json()),
+  });
 
-  const { data: savingData, isLoading } = useSavingData(currentTab);
-
-  const handleTabClick = (tabValue: string) => {
-    setCurrentTab(tabValue);
-  };
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  const loading = isPending || isLoading || isFetching;
 
   return (
     <>
-      <div className="h-20 ">
-        <MainTabsHeader />
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex  justify-center w-full">
-          <TabsComponent
-            tabs={tabs}
-            onTabClick={handleTabClick}
-            currentTab={currentTab}
-          />
-        </div>
-        <div className="flex flex-col gap-4">
-          {savingData?.map((saving) => (
-            <SavingCard key={saving.groupId} {...saving} />
-          ))}
-        </div>
-      </div>
+      <MainTabsHeader />
+      <ListGroups groups={data?.contents || []} loading={loading} />
     </>
   );
 };

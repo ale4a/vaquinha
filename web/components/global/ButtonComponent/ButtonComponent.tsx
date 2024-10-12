@@ -18,7 +18,7 @@ const getButtonStyles = (type: string) => {
     case 'outline':
       return 'border border-accent-200 text-accent-200 hover:bg-accent-100';
     case 'outline-primary':
-      return 'border border-primary-200 text-accent-200 hover:bg-primary-100 hover:text-accent-100';
+      return 'border border-primary-100 text-primary-200 hover:bg-primary-100 hover:text-accent-100';
     case 'danger':
       return 'border border-error-red text-error-red hover:bg-error-red hover:text-white';
     case 'disabled':
@@ -65,7 +65,7 @@ const ButtonComponent = ({
       disabled={disabled}
       onClick={onClick}
     >
-      <span className="font-medium text-base px-3">{label}</span>
+      <span className="text-base px-3">{label}</span>
     </button>
   );
 };

@@ -18,15 +18,15 @@ const getIcon = (label: string, isActive: boolean) => {
         <Image
           src="/icons/groups-active.svg"
           alt="Groups Active"
-          width={28}
-          height={28}
+          width={24}
+          height={24}
         />
       ) : (
         <Image
           src="/icons/groups-disabled.svg"
           alt="Groups Disabled"
-          width={28}
-          height={28}
+          width={24}
+          height={24}
         />
       );
     case 'My Groups':
@@ -34,15 +34,15 @@ const getIcon = (label: string, isActive: boolean) => {
         <Image
           src="/icons/my-groups-active.svg"
           alt="My Groups Active"
-          width={37}
-          height={37}
+          width={30}
+          height={24}
         />
       ) : (
         <Image
           src="/icons/my-groups-disabled.svg"
           alt="My Groups Disabled"
-          width={37}
-          height={37}
+          width={30}
+          height={24}
         />
       );
     case 'On-ramp':
@@ -66,15 +66,15 @@ const getIcon = (label: string, isActive: boolean) => {
         <Image
           src="/icons/profile-active.svg"
           alt="Profile Active"
-          width={32}
-          height={32}
+          width={24}
+          height={24}
         />
       ) : (
         <Image
           src="/icons/profile-disabled.svg"
           alt="Profile Disabled"
-          width={32}
-          height={32}
+          width={24}
+          height={24}
         />
       );
     default:
@@ -87,12 +87,11 @@ const Navbar: React.FC<NavbarProps> = ({ links }) => {
 
   return (
     <nav className=" bottom-0 w-full bg-bg-100 text-white shadow-top-custom">
-      <ul className="h-20 flex justify-around items-center py-4">
+      <ul className="h-20 flex justify-around items-center pt-5 pb-3">
         {links.map(({ label, path }) => {
           const isActive = pathname === path;
-
           return (
-            <li key={label} className="text-center">
+            <li key={label} className="text-center flex-1">
               <Link
                 href={path}
                 className={`flex flex-col items-center ${
