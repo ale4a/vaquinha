@@ -111,7 +111,7 @@ const Page = () => {
       tokenMintAddress
     );
 
-    if (!tx) {
+    if (tx) {
       try {
         await fetch('/api/group/create', {
           method: 'POST',
@@ -125,6 +125,7 @@ const Page = () => {
         console.error(error);
       }
     } else {
+      console.log('---------------------------------');
       logError(LogLevel.INFO)(error);
     }
 

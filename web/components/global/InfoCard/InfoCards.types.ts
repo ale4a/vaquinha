@@ -1,5 +1,5 @@
 export interface Props {
-    address: string
-    savedAmount: number
-    growth: string
+  address: string | null;
+  savedAmount: number;
+  growth: string;
 }
