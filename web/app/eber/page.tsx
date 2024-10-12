@@ -29,7 +29,7 @@ const items: item[] = [
     id: '3',
     amount: 69,
     paymentDeadline: '14-11-2024',
-    status: 'Play Now',
+    status: 'Pay',
   },
   {
     id: '4',

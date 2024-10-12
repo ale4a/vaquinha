@@ -11,10 +11,12 @@ import { showAlert } from '@/utils/commons';
 import { logError } from '@/utils/log';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import React, { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 
 const GroupDetailPage = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { groupId } = useParams();
   const { publicKey } = useWallet();
@@ -67,6 +69,10 @@ const GroupDetailPage = () => {
     setIsLoading(false);
   };
 
+  const handleNavigateToPayments = () => {
+    router.push(`/groups/${groupId}/payments`);
+  };
+
   return (
     <>
       <div className="h-20">
@@ -87,14 +93,7 @@ const GroupDetailPage = () => {
             }
             actionLabel="Paid"
             type="primary"
-            onAction={() => {
-              showAlert(
-                'Success!',
-                'Do you want to continue?',
-                'success',
-                'Cool'
-              );
-            }}
+            onAction={handleNavigateToPayments}
           />
 
           <SummaryAction
