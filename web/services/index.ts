@@ -1,3 +1,3 @@
 import '@/prototypes';
 
-export { createGroup, getGroupsByState, getGroups } from './app/group/services';
+export { createGroup, getGroups } from './app/group/services';
