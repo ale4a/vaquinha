@@ -78,6 +78,7 @@ const page = () => {
         title="Payments"
         content={<p>Payment Deadline: 14-10-2024</p>}
         actionLabel="Withdraw"
+        type="primary"
         onAction={() => {
           Swal.fire({
             title: 'Success!',

@@ -58,7 +58,7 @@ const ButtonComponent = ({
   return (
     <button
       className={
-        `h-10 rounded-lg ${buttonStyles} ${sizeStyles} flex items-center justify-center ${
+        `w-full h-10 rounded-lg ${buttonStyles} ${sizeStyles} flex items-center justify-center ${
           disabled ? 'opacity-50' : ''
         } ` + className
       }

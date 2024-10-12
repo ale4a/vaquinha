@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import React from 'react';
+import ButtonComponent from '../ButtonComponent/ButtonComponent';
 
 type ISummaryAction = {
   title: string;
   content: string | JSX.Element;
   actionLabel: string;
   onAction: () => void;
+  type: string;
 };
 
 const SummaryAction: React.FC<ISummaryAction> = ({
@@ -13,26 +14,21 @@ const SummaryAction: React.FC<ISummaryAction> = ({
   content,
   actionLabel,
   onAction,
+  type,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleToggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
-
   return (
-    <div className="p-4 rounded-lg shadow-lg border-dashed border-2 border-bg-300">
-      <span className="text-white text-xl font-semibold flex justify-between items-center">
-        {title}
-      </span>
-      <div className="mt-4 text-white flex justify-between items-center">
-        <div>{content}</div>
-        <button
-          className="bg-primary-200 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition"
-          onClick={onAction}
-        >
-          {actionLabel}
-        </button>
+    <div className="flex justify-between items-center p-4 rounded-lg shadow-lg border-dashed border-2 border-bg-300">
+      <div className="w-2/3">
+        <span className="text-white text-xl font-semibold flex justify-between items-center">
+          {title}
+        </span>
+        <div className="mt-1 text-white flex justify-between items-center">
+          <div>{content}</div>
+        </div>
+      </div>
+
+      <div className="w-1/3 flex items-end  h-full">
+        <ButtonComponent label={actionLabel} type={type} onClick={onAction} />
       </div>
     </div>
   );
