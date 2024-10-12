@@ -125,7 +125,6 @@ const Page = () => {
         console.error(error);
       }
     } else {
-      console.log('---------------------------------');
       logError(LogLevel.INFO)(error);
     }
 
