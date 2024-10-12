@@ -15,6 +15,10 @@ export enum GroupCrypto {
 export interface GroupMember {
   publicKey: string;
   isOwner: boolean;
+  collateralDeposit: {
+    timestamp: number;
+    amount: number;
+  };
 }
 
 export interface GroupBaseDocument {
@@ -49,11 +53,15 @@ export interface GroupResponseDTO {
   amount: number;
   collateral: number;
   members: { [key: string]: GroupMember };
+  totalMembers: number;
   slots: number;
   period: 'monthly' | 'weekly';
   startsOnTimestamp: number;
   status: GroupStatus;
+
   isOwner: boolean;
+  collateralDeposited: boolean;
+  isActive: boolean;
 }
 
 export type GroupDocument = EntityDocument<GroupBaseDocument>;

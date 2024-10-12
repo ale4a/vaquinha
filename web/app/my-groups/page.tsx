@@ -1,10 +1,10 @@
 'use client';
 
 import Button from '@/components/global/ButtonComponent/ButtonComponent';
-import GroupCard from '@/components/global/GroupCard/GroupCard';
 import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import Tabs from '@/components/global/Tabs/TabsComponent';
+import GroupCard from '@/components/group/GroupCard/GroupCard';
 import { GroupResponseDTO, GroupStatus } from '@/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
@@ -40,7 +40,7 @@ const Page = () => {
     contents: GroupResponseDTO[];
   }>({
     enabled: !!publicKey,
-    queryKey: ['groups', currentTab, publicKey, publicKey],
+    queryKey: ['groups', currentTab, publicKey],
     queryFn: () =>
       fetch(
         currentTab === MyGroupsTab.ALL_FAKE
@@ -100,32 +100,34 @@ const Page = () => {
           )}
         </div>
       )}
-      {!loading &&
-        data?.contents?.map(
-          ({
-            id,
-            startsOnTimestamp,
-            members,
-            amount,
-            crypto,
-            name,
-            period,
-            status,
-          }) => (
-            <div key={id}>
-              <GroupCard
-                groupId={id}
-                startsOnTimestamp={startsOnTimestamp}
-                members={Object.keys(members).length}
-                amount={amount}
-                crypto={crypto}
-                name={name}
-                period={period}
-                status={status}
-              />
-            </div>
-          )
-        )}
+      <div className="flex flex-1 flex-col overflow-x-auto">
+        {!loading &&
+          data?.contents?.map(
+            ({
+              id,
+              startsOnTimestamp,
+              members,
+              amount,
+              crypto,
+              name,
+              period,
+              status,
+            }) => (
+              <div key={id}>
+                <GroupCard
+                  groupId={id}
+                  startsOnTimestamp={startsOnTimestamp}
+                  members={Object.keys(members).length}
+                  amount={amount}
+                  crypto={crypto}
+                  name={name}
+                  period={period}
+                  status={status}
+                />
+              </div>
+            )
+          )}
+      </div>
     </>
   );
 };

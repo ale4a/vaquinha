@@ -14,7 +14,7 @@ export default function InputText<T extends string | number = string>({
         {label}
       </label>
       <input
-        className="px-3 py-1.5 border border-white/40 rounded-lg text-lg bg-bg-200 outline-0 focus:bg-bg-300 text-accent-100"
+        className="px-3 py-1.5 border border-white/40 rounded-lg bg-bg-200 outline-0 focus:bg-bg-300 text-accent-100 h-12"
         id={id}
         type={type}
         value={value}

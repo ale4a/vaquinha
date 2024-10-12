@@ -15,17 +15,23 @@ export async function POST(request: Request) {
     customerPublicKey,
   } = (await request.json()) as GroupCreateDTO;
 
+  const collateral = amount * totalMembers;
+
   const newGroup: GroupBaseDocument = {
     crypto,
     name,
     amount,
-    collateral: amount * totalMembers,
+    collateral,
     totalMembers,
     period,
     startsOnTimestamp,
     status: GroupStatus.PENDING,
     members: {
-      [customerPublicKey]: { publicKey: customerPublicKey, isOwner: true },
+      [customerPublicKey]: {
+        publicKey: customerPublicKey,
+        isOwner: true,
+        collateralDeposit: { timestamp: Date.now(), amount: collateral },
+      },
     },
   };
 

@@ -1,8 +1,9 @@
 'use client';
 
+import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
 import { GroupCrypto, GroupStatus } from '@/types';
+import { getRelativeTime } from '@/utils/time';
 import Link from 'next/link';
-import ButtonComponent from '../ButtonComponent/ButtonComponent';
 
 interface Props {
   groupId: string;
@@ -29,37 +30,36 @@ export default function GroupCard({
   };
 
   return (
-    <div className="flex justify-between bg-bg-100 p-1 pb-4 border-b-2 border-white/25">
+    <div className="flex justify-between bg-bg-100 py-4 px-2 border-b-2 border-white/25">
       <div>
-        <p className="text-sm font-satoshi">
+        <p>
           <span className="text-accent-300">Collateral</span>&nbsp;
           <span className="text-accent-200">
             {amount * members} {crypto}
           </span>
         </p>
-        <p className="text-sm font-satoshi">
+        <p>
           <span className="text-accent-300">Member</span>&nbsp;
           <span className="text-accent-200">
             {members} {members === 1 ? 'member' : 'members'}
           </span>
         </p>
-        <p className="text-sm font-satoshi">
+        <p>
           <span className="text-accent-300">Period</span>&nbsp;
           <span className="text-accent-200">{period}</span>
         </p>
-        <p className="text-sm font-satoshi">
-          <span className="text-accent-300">Start in</span>&nbsp;
+        <p>
+          <span className="text-accent-300">Starts</span>&nbsp;
           <span className="text-accent-200">
-            {startsOnTimestamp / 86400000}{' '}
-            {startsOnTimestamp / 86400000 === 1 ? 'day' : 'days'}
+            {getRelativeTime(startsOnTimestamp - Date.now())}
           </span>
         </p>
-        <p className="text-sm font-satoshi">
+        <p>
           <span className="text-accent-300">Group id</span>&nbsp;
           <span className="text-accent-200">{groupId}</span>
         </p>
       </div>
-      <div className="flex flex-col justify-between">
+      <div className="flex flex-col justify-evenly items-end">
         <div className="flex flex-col items-end">
           <div className="flex items-center gap-1">
             <p className="text-accent-100">{name}</p>
