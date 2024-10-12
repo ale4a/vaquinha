@@ -271,4 +271,110 @@ describe('vaquinha', () => {
     console.log("Payment amount:", round.paymentAmount.toString());
     console.log("Balance increase:", (balanceAfter as number) - (balanceBefore as number));
   }, 30000);
+
+  it('Player 1 pays the second round', async () => {
+    console.log("Starting 'Player 1 pays the second round' test");
+
+    // Fetch the current state of the round
+    let round = await program.account.round.fetch(roundKeypair.publicKey);
+    console.log("Initial round state:", JSON.stringify(round, null, 2));
+    
+    // Get the public key of the second player (added in the previous test)
+    const player1PublicKey = new PublicKey(round.players[0]);
+    console.log("Player 1 Public Key:", player1PublicKey.toString());
+    console.log("payer Public Key:", payer.publicKey.toString());
+    
+    // Get the token account for the recipient (first player/initializer)
+    const recipientTokenAccount = await getAssociatedTokenAddress(
+      tokenMint,
+      new PublicKey(round.players[1])
+    );
+    console.log("Recipient Token Account:", recipientTokenAccount.toString());
+    
+    // Get the token account for player 2
+    // const player2TokenAccount = playerTokenAccount;
+    const player1TokenAccount = await getAssociatedTokenAddress(
+      tokenMint,
+      new PublicKey(round.players[0])
+    );
+    console.log("Player 1 Token Account:", player1TokenAccount.toString());
+
+    // Check recipient's token balance before the payment
+    const recipientAccountBefore = await provider.connection.getTokenAccountBalance(recipientTokenAccount);
+    const balanceBefore = recipientAccountBefore.value.uiAmount;
+    console.log("Recipient balance before payment:", balanceBefore);
+
+    // Check player 2's token balance before the payment
+    const player1AccountBefore = await provider.connection.getTokenAccountBalance(player1TokenAccount);
+    console.log("Player 2 balance before payment:", player1AccountBefore.value.uiAmount);
+    
+    // Execute the pay_turn instruction
+    try {
+      const tx = await program.methods
+        .payTurn()
+        .accounts({
+          round: roundKeypair.publicKey,
+          // player: newPlayer.publicKey,//player2PublicKey,
+          player: player1PublicKey,
+          // playerTokenAccount: playerTokenAccount,//player2TokenAccount,
+          playerTokenAccount: player1TokenAccount,
+          recipientTokenAccount: recipientTokenAccount,
+          tokenProgram: TOKEN_PROGRAM_ID
+        })
+        .signers([payer.payer])
+        .rpc();
+        // .transaction();
+
+      // console.log("Transaction created, sending...");
+      // const txId = await provider.sendAndConfirm(tx, [newPlayer]);
+      // console.log("Transaction sent. ID:", txId);
+
+      // // Fetch and log transaction details
+      // const txInfo = await provider.connection.getTransaction(txId, { commitment: 'confirmed' });
+      // console.log("Transaction logs:", txInfo?.meta?.logMessages);
+      
+      // console.log("Player 2 successfully paid the first round");
+    } catch (error) {
+      console.error("Error during pay_turn:");
+      if (error instanceof anchor.AnchorError) {
+        console.error("Error code:", error.error.errorCode.number);
+        console.error("Error name:", error.error.errorCode.code);
+        console.error("Error message:", error.error.errorMessage);
+        console.error("Program logs:", error.logs);
+      } else if (error instanceof Error) {
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+      } else {
+        console.error("Unknown error:", error);
+      }
+      throw error;
+    }
+    
+    // Fetch the updated round data
+    const updatedRound = await program.account.round.fetch(roundKeypair.publicKey);
+    console.log("Updated round state:", JSON.stringify(updatedRound, null, 2));
+
+    // Check recipient's token balance after the payment
+    const recipientAccountAfter = await provider.connection.getTokenAccountBalance(recipientTokenAccount);
+    const balanceAfter = recipientAccountAfter.value.uiAmount;
+    console.log("Recipient balance after payment:", balanceAfter);
+
+    // Check player 2's token balance after the payment
+    const player1AccountAfter = await provider.connection.getTokenAccountBalance(player1TokenAccount);
+    console.log("Player 1 balance after payment:", player1AccountAfter.value.uiAmount);
+    
+    // Assert that the turn has been paid and the state has been updated correctly
+    expect(updatedRound.currentIndexOfPlayer).toEqual(2);
+    expect(updatedRound.status).toEqual({ completed: {} });
+    
+    // Assert that the recipient's balance has increased by the payment amount
+    const expectedIncrease = Number(round.paymentAmount) / (10 ** recipientAccountAfter.value.decimals);
+    expect(balanceAfter).toBeCloseTo(balanceBefore as number + expectedIncrease, 5);
+
+    console.log("Current turn paid amount:", updatedRound.currentTurnPaidAmount.toString());
+    console.log("Current index of player:", updatedRound.currentIndexOfPlayer.toString());
+    console.log("Number of players:", round.players.length);
+    console.log("Payment amount:", round.paymentAmount.toString());
+    console.log("Balance increase:", (balanceAfter as number) - (balanceBefore as number));
+  }, 30000);
 });
