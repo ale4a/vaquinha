@@ -13,7 +13,7 @@ export const ListGroups = ({
   return (
     <>
       {loading && <LoadingSpinner />}
-      <div className="flex flex-1 flex-col overflow-x-auto">
+      <div className="flex flex-1 flex-col overflow-x-auto gap-4 py-4">
         {!loading &&
           groups.map(
             ({

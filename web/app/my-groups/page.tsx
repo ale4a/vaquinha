@@ -4,8 +4,14 @@ import Button from '@/components/global/ButtonComponent/ButtonComponent';
 import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import Tabs from '@/components/global/Tabs/TabsComponent';
+import { GroupFiltersHead } from '@/components/group/GroupFiltersHead/GroupFiltersHead';
 import { ListGroups } from '@/components/group/ListGroups/ListGroups';
-import { GroupResponseDTO, GroupStatus } from '@/types';
+import {
+  GroupCrypto,
+  GroupFilters,
+  GroupResponseDTO,
+  GroupStatus,
+} from '@/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
@@ -29,15 +35,25 @@ const Page = () => {
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
   const [currentTab, setCurrentTab] = useState(tab || MyGroupsTab.ACTIVE);
+  const [filters, setFilters] = useState<GroupFilters>({
+    period: '',
+    orderBy: '+amount',
+    crypto: GroupCrypto.USDC,
+    amount: 0,
+  });
   const { publicKey } = useWallet();
   const { isPending, isLoading, isFetching, data } = useQuery<{
     contents: GroupResponseDTO[];
   }>({
     enabled: !!publicKey,
-    queryKey: ['groups', currentTab, publicKey],
+    queryKey: ['groups', currentTab, publicKey, filters],
     queryFn: () =>
       fetch(
-        `/api/group?customerPublicKey=${publicKey}&status=${currentTab}`
+        `/api/group?customerPublicKey=${publicKey}&status=${currentTab}&orderBy=${encodeURIComponent(
+          filters.orderBy
+        )}${filters.period ? `&period=${filters.period}` : ''}&crypto=${
+          filters.crypto
+        }${filters.amount ? `&amount=${filters.amount}` : ''}`
       ).then((res) => res.json()),
   });
 
@@ -58,6 +74,7 @@ const Page = () => {
     <>
       <MainTabsHeader />
       <Tabs tabs={tabs} onTabClick={setCurrentTab} currentTab={currentTab} />
+      <GroupFiltersHead filters={filters} setFilters={setFilters} />
       {!loading && (
         <div className="absolute w-full flex justify-center bottom-16 left-0">
           <div onClick={() => router.push('/my-groups/create')}>

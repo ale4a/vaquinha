@@ -1,16 +1,30 @@
 'use client';
 import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
+import { GroupFiltersHead } from '@/components/group/GroupFiltersHead/GroupFiltersHead';
 import { ListGroups } from '@/components/group/ListGroups/ListGroups';
-import { GroupResponseDTO } from '@/types';
+import { GroupCrypto, GroupFilters, GroupResponseDTO } from '@/types';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useState } from 'react';
 
 const GroupPage = () => {
+  const [filters, setFilters] = useState<GroupFilters>({
+    period: '',
+    orderBy: '+amount',
+    crypto: GroupCrypto.USDC,
+    amount: 0,
+  });
   const { isPending, isLoading, isFetching, data } = useQuery<{
     contents: GroupResponseDTO[];
   }>({
-    queryKey: ['groups'],
-    queryFn: () => fetch(`/api/group?filters=134`).then((res) => res.json()),
+    queryKey: ['groups', filters],
+    queryFn: () =>
+      fetch(
+        `/api/group?orderBy=${encodeURIComponent(filters.orderBy)}${
+          filters.period ? `&period=${filters.period}` : ''
+        }&crypto=${filters.crypto}${
+          filters.amount ? `&amount=${filters.amount}` : ''
+        }`
+      ).then((res) => res.json()),
   });
 
   const loading = isPending || isLoading || isFetching;
@@ -18,6 +32,7 @@ const GroupPage = () => {
   return (
     <>
       <MainTabsHeader />
+      <GroupFiltersHead filters={filters} setFilters={setFilters} />
       <ListGroups groups={data?.contents || []} loading={loading} />
     </>
   );

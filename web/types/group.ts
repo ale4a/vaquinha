@@ -12,6 +12,11 @@ export enum GroupCrypto {
   SOL = 'SOL',
 }
 
+export enum GroupPeriod {
+  MONTHLY = 'monthly',
+  WEEKLY = 'weekly',
+}
+
 export interface GroupMember {
   publicKey: string;
   isOwner: boolean;
@@ -28,7 +33,7 @@ export interface GroupBaseDocument {
   collateral: number;
   totalMembers: number;
   members: { [key: string]: GroupMember };
-  period: 'monthly' | 'weekly';
+  period: GroupPeriod;
   startsOnTimestamp: number;
   status: GroupStatus;
 }
@@ -65,3 +70,10 @@ export interface GroupResponseDTO {
 }
 
 export type GroupDocument = EntityDocument<GroupBaseDocument>;
+
+export interface GroupFilters {
+  period: '' | GroupPeriod;
+  orderBy: string;
+  crypto: GroupCrypto;
+  amount: number;
+}

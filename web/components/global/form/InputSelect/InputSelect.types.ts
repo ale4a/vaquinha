@@ -9,4 +9,6 @@ export interface Props<T extends string | number> {
   defaultValue?: T;
   value?: T;
   onChange?: (value: T) => void;
+  size?: 'small' | 'medium' | 'large';
+  className?: string;
 }

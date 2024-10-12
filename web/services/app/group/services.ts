@@ -5,14 +5,15 @@ import {
   UpdateEntityDocument,
 } from '@/types';
 import { CreateEntityDocument } from '@/types/commons';
-import { Filter } from 'mongodb';
+import { Filter, Sort } from 'mongodb';
 
 const { findByFilter, insertOne, findOne, updateOne } =
   dbClient.crud<GroupBaseDocument>('group');
 
 export const getGroups = async (
-  filter: Filter<GroupDocument>
-): Promise<GroupDocument[]> => findByFilter(filter);
+  filter: Filter<GroupDocument>,
+  sort?: Sort
+): Promise<GroupDocument[]> => findByFilter(filter, { sort });
 
 export const createGroup = async (
   contest: CreateEntityDocument<GroupBaseDocument>

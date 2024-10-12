@@ -3,4 +3,6 @@ export interface Props<T extends string | number = string> {
   type?: 'text' | 'number';
   value?: T;
   onChange?: (value: T) => void;
+  className?: string;
+  size?: 'small' | 'medium' | 'large';
 }

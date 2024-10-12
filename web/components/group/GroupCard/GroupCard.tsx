@@ -33,7 +33,7 @@ export default function GroupCard({
   };
 
   return (
-    <div className="flex justify-between bg-bg-200 py-4 px-2 rounded-lg my-2 mx-4">
+    <div className="flex justify-between bg-bg-200 py-4 px-4 rounded-lg">
       <div className="w-2/3">
         <p className="text-primary-200 text-2xl">{name}</p>
         <p className="text-accent-100 text-xl">

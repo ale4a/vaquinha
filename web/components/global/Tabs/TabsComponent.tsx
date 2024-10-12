@@ -48,22 +48,24 @@ const TabsComponent = <T extends string = string>({
   };
 
   return (
-    <div className="flex px-2 overflow-auto justify-center border-b-2 border-solid border-accent-300">
+    <div
+      className="flex px-2 overflow-auto justify-center border-b-2 border-solid border-accent-300"
+      style={{ borderBottomWidth: 1 }}
+    >
       {tabs.map((tab) => (
         <button
           key={tab.value}
           onClick={() => handleTabClick(tab.value)}
-          className={`relative px-4 py-3 ${
-            currentTab === tab.value
-              ? 'text-white font-medium'
-              : 'text-accent-200'
+          className={`relative px-4 py-2 ${
+            currentTab === tab.value ? 'text-accent-100' : 'text-accent-200'
           }`}
         >
           {tab.label}
           <span
-            className={`absolute bottom-2 left-0 w-full h-0.5 ${
-              currentTab === tab.value ? 'bg-primary-200' : 'bg-accent-200'
+            className={`absolute bottom-0 left-0 w-full h-0.5 ${
+              currentTab === tab.value ? 'bg-primary-200' : ''
             }`}
+            style={{ bottom: '0.05rem' }}
           ></span>
         </button>
       ))}
