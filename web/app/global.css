@@ -16,10 +16,28 @@ body {
   padding-right: 8px !important;
 }
 
+.wallet-adapter-dropdown {
+  align-items: center !important;
+  display: flex !important;
+}
+
 .wallet-adapter-dropdown-list,
 .wallet-adapter-button {
   font-family: inherit !important;
   font-size: small !important;
+  height: 2rem !important;
+  min-height: 2rem !important;
+}
+
+.wallets-buttons > .dropdown.dropdown-end {
+  height: 2rem;
+  min-height: 2rem;
+  display: flex;
+
+  > label {
+    height: 2rem;
+    min-height: 2rem;
+  }
 }
 
 @font-face {

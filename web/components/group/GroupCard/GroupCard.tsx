@@ -3,6 +3,7 @@
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
 import { GroupCrypto, GroupStatus } from '@/types';
 import { getRelativeTime } from '@/utils/time';
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface Props {
@@ -10,7 +11,8 @@ interface Props {
   crypto: GroupCrypto;
   name: string;
   amount: number;
-  members: number;
+  totalMembers: number;
+  slots: number;
   period: 'monthly' | 'weekly';
   startsOnTimestamp: number;
   status: GroupStatus;
@@ -21,7 +23,8 @@ export default function GroupCard({
   amount,
   startsOnTimestamp,
   period,
-  members,
+  totalMembers,
+  slots,
   groupId,
   crypto,
 }: Props) {
@@ -30,55 +33,47 @@ export default function GroupCard({
   };
 
   return (
-    <div className="flex justify-between bg-bg-100 py-4 px-2 border-b-2 border-white/25">
+    <div className="flex justify-between bg-bg-200 py-4 px-2 rounded-lg my-2 mx-4">
       <div className="w-2/3">
-        {/* <p>
-          <span className="text-accent-300">Group id</span>&nbsp;
-          <span className="text-accent-200">{`${groupId.slice(
-            0,
-            6
-          )}...${groupId.slice(-4)}`}</span>
-        </p> */}
-        <p>
-          <span className="text-accent-300">Collateral</span>&nbsp;
-          <span className="text-accent-200">
-            {amount * members} {crypto}
-          </span>
+        <p className="text-primary-200 text-2xl">{name}</p>
+        <p className="text-accent-100 text-xl">
+          {amount} {crypto}
         </p>
-        <p>
-          <span className="text-accent-300">Member</span>&nbsp;
-          <span className="text-accent-200">
-            {members} {members === 1 ? 'member' : 'members'}
-          </span>
-        </p>
-        <p>
-          <span className="text-accent-300">Period</span>&nbsp;
-          <span className="text-accent-200">{period}</span>
-        </p>
-        <p>
-          <span className="text-accent-300">Starts</span>&nbsp;
-          <span className="text-accent-200">
-            {getRelativeTime(startsOnTimestamp - Date.now())}
-          </span>
-        </p>
+        <p className="text-accent-200">{period}</p>
       </div>
-
       <div className="flex flex-col justify-evenly items-end w-1/3">
-        <div className="flex flex-col items-end">
-          <div className="flex items-center gap-1">
-            <p className="text-accent-100">{name}</p>
-          </div>
-          <div className="flex items-center gap-1">
-            <p className="text-accent-100">
-              {amount} {crypto}
-            </p>
-          </div>
+        <div className="flex items-center gap-1">
+          <p className="text-accent-100">
+            {totalMembers - slots} / {totalMembers}
+          </p>
+          <Image
+            src="/icons/person-active.svg"
+            alt="members"
+            width={14}
+            height={14}
+          />
         </div>
-        <Link href={`/groups/${groupId}`} passHref>
+        <div className="flex items-center gap-1 text-sm">
+          <p className="text-accent-100">
+            {getRelativeTime(startsOnTimestamp - Date.now())}
+          </p>
+          <Image
+            src="/icons/date-active.svg"
+            alt="members"
+            width={14}
+            height={14}
+          />
+        </div>
+        <Link
+          href={`/groups/${groupId}`}
+          passHref
+          style={{ display: 'contents' }}
+        >
           <ButtonComponent
-            label="View Group"
+            label="View"
             type="outline-primary"
             onClick={() => handleViewDetails(groupId)}
+            className="w-full"
           />
         </Link>
       </div>
