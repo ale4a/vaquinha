@@ -101,7 +101,7 @@ export type Vaquinha = {
           "isSigner": true
         },
         {
-          "name": "roundTokenAccount",
+          "name": "playerTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -148,10 +148,8 @@ export type Vaquinha = {
             "type": "u8"
           },
           {
-            "name": "orderOfTurns",
-            "type": {
-              "vec": "publicKey"
-            }
+            "name": "currentTurnPaidAmount",
+            "type": "u64"
           },
           {
             "name": "totalAmountLocked",
@@ -321,7 +319,7 @@ export const IDL: Vaquinha = {
           "isSigner": true
         },
         {
-          "name": "roundTokenAccount",
+          "name": "playerTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -368,10 +366,8 @@ export const IDL: Vaquinha = {
             "type": "u8"
           },
           {
-            "name": "orderOfTurns",
-            "type": {
-              "vec": "publicKey"
-            }
+            "name": "currentTurnPaidAmount",
+            "type": "u64"
           },
           {
             "name": "totalAmountLocked",

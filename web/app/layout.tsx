@@ -1,8 +1,9 @@
 import './global.css';
 import { ClusterProvider } from '@/components/cluster/cluster-data-access';
+import { UiLayout } from '@/components/layout/ui-layout';
 import { SolanaProvider } from '@/components/solana/solana-provider';
 import { ReactQueryProvider } from './react-query-provider';
-import { UiLayout } from '@/components/layout/ui-layout';
+import 'react-datepicker/dist/react-datepicker.css';
 
 export const metadata = {
   title: 'vaquinha',

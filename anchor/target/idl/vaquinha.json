@@ -101,7 +101,7 @@
           "isSigner": true
         },
         {
-          "name": "roundTokenAccount",
+          "name": "playerTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -148,10 +148,8 @@
             "type": "u8"
           },
           {
-            "name": "orderOfTurns",
-            "type": {
-              "vec": "publicKey"
-            }
+            "name": "currentTurnPaidAmount",
+            "type": "u64"
           },
           {
             "name": "totalAmountLocked",

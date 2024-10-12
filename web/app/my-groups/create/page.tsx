@@ -1,13 +1,15 @@
 'use client';
 
 import Button from '@/components/global/ButtonComponent/ButtonComponent';
+import { InputDate } from '@/components/global/form';
 import InputSelect from '@/components/global/form/InputSelect/InputSelect';
 import { Option } from '@/components/global/form/InputSelect/InputSelect.types';
 import InputText from '@/components/global/form/InputText/InputText';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
+import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
-import Summary from '@/components/Summary/Summary';
+import { ONE_DAY } from '@/config/constants';
 import { GroupCreateDTO, GroupCrypto, LogLevel } from '@/types';
 import { logError } from '@/utils/log';
 import { BN } from '@coral-xyz/anchor';
@@ -67,16 +69,15 @@ const optionsMembers: Option<number>[] = [
 const messageText =
   'It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately';
 
-const ONE_DAY = 86400000;
-
 const Page = () => {
+  const now = new Date();
   const [newGroup, setNewGroup] = useState<GroupCreateDTO>({
     name: '',
     amount: 50,
     crypto: GroupCrypto.USDC,
     totalMembers: 2,
     period: 'weekly',
-    startsOnTimestamp: ONE_DAY,
+    startsOnTimestamp: now.getTime() + ONE_DAY,
     customerPublicKey: '',
   });
   const [loading, setLoading] = useState(false);
@@ -111,7 +112,7 @@ const Page = () => {
       tokenMintAddress
     );
 
-    if (tx) {
+    if (!tx) {
       try {
         await fetch('/api/group/create', {
           method: 'POST',
@@ -122,7 +123,7 @@ const Page = () => {
         });
         router.push('/my-groups?tab=pending');
       } catch (error) {
-        console.error(error);
+        logError(LogLevel.INFO)(error);
       }
     } else {
       logError(LogLevel.INFO)(error);
@@ -135,13 +136,17 @@ const Page = () => {
     return <LoadingSpinner />;
   }
 
-  const startsIn = Math.ceil(
-    (newGroup.startsOnTimestamp - Date.now()) / ONE_DAY
-  );
+  const filterDateTime = (time: Date) => {
+    const selectedDate = new Date(time);
+    return (
+      selectedDate.getTime() >= now.getTime() &&
+      selectedDate.getTime() - ONE_DAY * 7 <= now.getTime()
+    );
+  };
 
   return (
     <div>
-      <TabTitleHeader text="Group Information" />
+      <TabTitleHeader text="Create new group" />
       <div className="flex flex-col justify-center">
         <div>
           <div className="mb-3">
@@ -150,9 +155,13 @@ const Page = () => {
               type="text"
               value={newGroup.name}
               onChange={(name) =>
-                setNewGroup((prevState) => ({ ...prevState, name }))
+                setNewGroup((prevState) => ({
+                  ...prevState,
+                  name: name,
+                }))
               }
             />
+            {!newGroup.name && <p className="text-accent-100">Required</p>}
           </div>
           <div className="grid grid-cols-2 gap-2 mb-3">
             <InputText<number>
@@ -199,80 +208,42 @@ const Page = () => {
                 setNewGroup((prevState) => ({ ...prevState, period }))
               }
             />
-            <InputSelect
-              label="Start in"
-              options={[
-                {
-                  text: '1 day',
-                  value: ONE_DAY,
-                },
-                {
-                  text: '2 days',
-                  value: ONE_DAY * 2,
-                },
-                {
-                  text: '5 days',
-                  value: ONE_DAY * 5,
-                },
-              ]}
-              value={newGroup.startsOnTimestamp}
-              onChange={(gap) =>
+            <InputDate
+              label="Starts in"
+              value={new Date(newGroup.startsOnTimestamp)}
+              onChange={(date) =>
                 setNewGroup((prevState) => ({
                   ...prevState,
-                  startsOnTimestamp: Date.now() + gap,
+                  startsOnTimestamp: date.getTime(),
                 }))
               }
+              filterTime={filterDateTime}
+              filterDate={filterDateTime}
             />
           </div>
           <div className="flex justify-center text-2xl text-accent-100">
             Group Information
           </div>
-          <div className="mb-5 text-accent-100">
-            <Summary
-              itemsSummary={[
-                {
-                  title: 'Crypto',
-                  result: newGroup.crypto,
-                },
-                {
-                  title: 'Group name',
-                  result: newGroup.name,
-                },
-                {
-                  title: 'Amount',
-                  result: newGroup.amount,
-                },
-                {
-                  title: 'Collateral',
-                  result: newGroup.amount * newGroup.totalMembers,
-                },
-                {
-                  title: 'Members',
-                  result: newGroup.totalMembers,
-                },
-                {
-                  title: 'Payment period',
-                  result: newGroup.period,
-                },
-                {
-                  title: 'Starts In',
-                  result: startsIn ? '1 day' : startsIn + ' days',
-                },
-              ]}
-            />
+          <div className="mb-5">
+            <GroupSummary {...newGroup} />
           </div>
           <Message messageText={messageText} />
-          <div className="flex gap-5 my-5">
-            <div className="w-9/12">
-              <Link href="/my-groups">
-                <Button label="Cancel" type="secondary" size="large" />
-              </Link>
-            </div>
+          <div className="flex gap-5 my-5 justify-between">
+            <Link href="/my-groups" className="contents">
+              <Button
+                label="Cancel"
+                type="secondary"
+                size="large"
+                className="flex-1"
+              />
+            </Link>
             <Button
               label="Deposit Collateral"
               type="primary"
               size="large"
               onClick={onSave}
+              disabled={!newGroup.name.length}
+              className="flex-1"
             />
           </div>
         </div>

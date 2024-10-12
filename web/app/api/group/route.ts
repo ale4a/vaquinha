@@ -1,4 +1,5 @@
 import { getGroups } from '@/services';
+import { toGroupResponseDTO } from '@/services/app/group/helpers';
 import { dbClient } from '@/services/database';
 import { GroupDocument, GroupResponseDTO, GroupStatus } from '@/types';
 import { Filter } from 'mongodb';
@@ -24,19 +25,9 @@ export async function GET(request: NextRequest) {
   }
 
   const groups = await getGroups(filter);
-  const contents: GroupResponseDTO[] = groups.map((group) => ({
-    id: group._id.toString(),
-    isOwner: !!group.members?.[customerPublicKey]?.isOwner,
-    crypto: group.crypto,
-    name: group.name,
-    amount: group.amount,
-    collateral: group.collateral,
-    members: group.members,
-    slots: group.totalMembers - Object.keys(group.members).length,
-    period: group.period,
-    startsOnTimestamp: group.startsOnTimestamp,
-    status: group.status,
-  }));
+  const contents: GroupResponseDTO[] = groups.map((group) =>
+    toGroupResponseDTO(group, customerPublicKey)
+  );
 
   return Response.json({ contents });
 }

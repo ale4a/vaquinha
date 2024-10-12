@@ -17,7 +17,7 @@ export default function InputSelect<T extends string | number = string>({
       </label>
       <select
         id={id}
-        className="text-sm rounded-lg block w-full p-3 bg-bg-200 border border-white/40 outline-0 focus:ring-bg-200 focus:bg-bg-300 text-accent-100"
+        className="p-3 border border-white/40 rounded-lg bg-bg-200 outline-0 focus:bg-bg-300 text-accent-100 focus:ring-bg-200 h-12"
         defaultValue={defaultValue} // Usa defaultValue aquí
         value={value}
         onChange={({ target }) => onChange?.(target.value as T)}

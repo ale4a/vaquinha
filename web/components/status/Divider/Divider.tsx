@@ -1,16 +1,9 @@
 import React from 'react';
-import Image from 'next/image';
 
-const Divider = () => {
+const Divider = ({ className = '' }: { className?: string }) => {
   return (
-    <div className='mb-5 flex justify-center flex-col'>
-      <Image 
-        src="/icons/Divider.svg"
-        alt='Divider'
-        width={40}
-        height={80}
-        className='pb-2'
-      />
+    <div className="flex justify-center flex-col flex-1 px-4">
+      <div className={'border-b-2 min-w-2 ' + className} />
     </div>
   );
 };

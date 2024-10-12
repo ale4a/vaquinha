@@ -6,6 +6,7 @@ interface IButtonComponent {
   disabled?: boolean;
   onClick?: () => void;
   size?: 'small' | 'medium' | 'large';
+  className?: string;
 }
 
 const getButtonStyles = (type: string) => {
@@ -50,12 +51,17 @@ const ButtonComponent = ({
   disabled = false,
   size = 'medium',
   onClick,
+  className,
 }: IButtonComponent) => {
   const buttonStyles = getButtonStyles(type);
   const sizeStyles = getSizeStyles(size);
   return (
     <button
-      className={`h-10 rounded-lg ${buttonStyles} ${sizeStyles} flex items-center justify-center`}
+      className={
+        `h-10 rounded-lg ${buttonStyles} ${sizeStyles} flex items-center justify-center ${
+          disabled ? 'opacity-50' : ''
+        } ` + className
+      }
       disabled={disabled}
       onClick={onClick}
     >

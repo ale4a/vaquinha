@@ -18,6 +18,7 @@ pub mod vaquinha {
         round.payment_amount = payment_amount;
         round.number_of_players = number_of_players;
         round.current_index_of_player = 0;
+        round.current_turn_paid_amount = 0;
         round.total_amount_locked = 0;
         round.available_slots = number_of_players;
         round.frequency_of_turns = frequency_of_turns;
@@ -43,7 +44,6 @@ pub mod vaquinha {
 
         // Update round state
         round.players.push(ctx.accounts.initializer.key());
-        round.order_of_turns.push(ctx.accounts.initializer.key());
         round.total_amount_locked += amount_to_lock;
         round.available_slots -= 1;
 
@@ -72,7 +72,6 @@ pub mod vaquinha {
 
         // Update round state
         round.players.push(ctx.accounts.player.key());
-        round.order_of_turns.push(ctx.accounts.player.key());
         round.total_amount_locked += amount_to_lock;
         round.available_slots -= 1;
 
@@ -88,31 +87,29 @@ pub mod vaquinha {
         let round = &mut ctx.accounts.round;
         require!(round.status == RoundStatus::Active, ErrorCode::RoundNotActive);
 
-        // Ensure the current player is paying
-        require!(
-            ctx.accounts.player.key() == round.players[round.current_index_of_player as usize],
-            ErrorCode::NotPlayersTurn
-        );
-
         // Transfer payment to the current turn's player
-        let current_turn_player = round.order_of_turns[round.current_index_of_player as usize];
+        // let current_turn_player = round.players[round.current_index_of_player as usize];
         token::transfer(
             CpiContext::new(
                 ctx.accounts.token_program.to_account_info(),
                 Transfer {
-                    from: ctx.accounts.round_token_account.to_account_info(),
+                    from: ctx.accounts.player_token_account.to_account_info(),
                     to: ctx.accounts.recipient_token_account.to_account_info(),
-                    authority: round.to_account_info(),
+                    authority: ctx.accounts.player.to_account_info(),
                 },
             ),
             round.payment_amount,
         )?;
 
         // Update round state
-        round.current_index_of_player += 1;
+        // round.current_index_of_player += 1;
+        round.current_turn_paid_amount += round.payment_amount;
+        if round.current_turn_paid_amount == round.payment_amount * (round.players.len() as u64 - 1) {
+            round.current_index_of_player += 1;
+            round.current_turn_paid_amount = 0;
+        }
         if round.current_index_of_player as usize == round.players.len() {
             round.status = RoundStatus::Completed;
-            // Here you'd implement logic to release remaining funds to players
         }
 
         Ok(())
@@ -135,7 +132,7 @@ pub struct Round {
     pub number_of_players: u8,
     pub players: Vec<Pubkey>,
     pub current_index_of_player: u8,
-    pub order_of_turns: Vec<Pubkey>,
+    pub current_turn_paid_amount: u64,
     pub total_amount_locked: u64,
     pub available_slots: u8,
     pub frequency_of_turns: i64,
@@ -144,7 +141,7 @@ pub struct Round {
 
 #[derive(Accounts)]
 pub struct InitializeRound<'info> {
-    #[account(init, payer = initializer, space = 8 + 32 + 32 + 1 + 32 * 50 + 1 + 32 * 50 + 8 + 1 + 8 + 1)]
+    #[account(init, payer = initializer, space = 8 + 32 + 32 + 1 + 32 * 50 + 1 + 8 + 8 + 1 + 8 + 1)]
     pub round: Account<'info, Round>,
     #[account(mut)]
     pub initializer: Signer<'info>,
@@ -175,7 +172,7 @@ pub struct PayTurn<'info> {
     pub round: Account<'info, Round>,
     pub player: Signer<'info>,
     #[account(mut)]
-    pub round_token_account: Account<'info, TokenAccount>,
+    pub player_token_account: Account<'info, TokenAccount>,
     #[account(mut)]
     pub recipient_token_account: Account<'info, TokenAccount>,
     pub token_program: Program<'info, Token>,

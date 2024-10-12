@@ -5,9 +5,9 @@ import { MessageText } from './Message.types';
 
 const Message = ({ messageText }: MessageText) => {
   return (
-    <div className="bg-bg-200">
-      <div className="py-2 px-3 border-dashed border-2 border-primary-300">
-        <div className="flex justify-between py-2 flex-col">
+    <div className="bg-bg-200 text-accent-100">
+      <div className="p-4 border-dashed border-2 border-primary-300">
+        <div className="flex justify-between flex-col">
           <div className="mb-2 flex items-center">
             <Image
               src="/icons/danger.svg"
@@ -15,9 +15,9 @@ const Message = ({ messageText }: MessageText) => {
               width={28}
               height={28}
             />
-            <p className="ml-3">Attention</p>
+            <p className="ml-3 font-semibold">Attention</p>
           </div>
-          <span className="text-sm text-accent-100">{messageText}</span>
+          <span className="text-sm">{messageText}</span>
         </div>
       </div>
     </div>
