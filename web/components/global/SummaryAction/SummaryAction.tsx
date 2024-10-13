@@ -17,7 +17,7 @@ const SummaryAction: React.FC<ISummaryAction> = ({
   type,
 }) => {
   return (
-    <div className="flex justify-between items-center p-4 rounded-lg shadow-lg border-dashed border-2 border-bg-300">
+    <div className="flex justify-between items-center p-4 rounded-lg shadow-lg border-dashed border border-bg-300">
       <div className="w-2/3">
         <span className="text-white text-xl font-semibold flex justify-between items-center">
           {title}
@@ -26,7 +26,6 @@ const SummaryAction: React.FC<ISummaryAction> = ({
           <div>{content}</div>
         </div>
       </div>
-
       <div className="w-1/3 flex items-end  h-full">
         <ButtonComponent label={actionLabel} type={type} onClick={onAction} />
       </div>

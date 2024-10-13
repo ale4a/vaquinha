@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/components/global/ButtonComponent/ButtonComponent';
+import ErrorView from '@/components/global/Error/ErrorView';
 import { InputDate } from '@/components/global/form';
 import InputSelect from '@/components/global/form/InputSelect/InputSelect';
 import { Option } from '@/components/global/form/InputSelect/InputSelect.types';
@@ -10,22 +11,13 @@ import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
 import { ONE_DAY } from '@/config/constants';
-import {
-  GroupCreateDTO,
-  GroupCrypto,
-  GroupDepositDTO,
-  GroupPeriod,
-  LogLevel,
-} from '@/types';
+import { useGroup, useVaquinhaDeposit } from '@/hooks';
+import { GroupCreateDTO, GroupCrypto, GroupPeriod, LogLevel } from '@/types';
 import { logError } from '@/utils/log';
-import { BN } from '@coral-xyz/anchor';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useInitializeRound } from '../../../components/vaquinha/vaquinha-data-access';
-
-const USDC_DECIMALS = 1000000;
 
 const optionsCrypto: Option<GroupCrypto>[] = [
   {
@@ -90,85 +82,56 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { publicKey } = useWallet();
-  const { initializeRound } = useInitializeRound();
+  const { depositCollateral } = useVaquinhaDeposit();
+  const { createGroup, depositGroupCollateral, deleteGroup } = useGroup();
   useEffect(() => {
     if (!publicKey) {
       router.push('/groups');
     }
   }, [router, publicKey]);
 
-  const convertFrequencyToTimestamp = (period: 'weekly' | 'monthly'): BN => {
-    const SECONDS_PER_DAY = 86400; // 24 hours * 60 minutes * 60 seconds
-    const frequencyInDays = period === 'weekly' ? 7 : 30;
-    const frequencyInSeconds = frequencyInDays * SECONDS_PER_DAY;
-    // Return as BN (Big Number) which is commonly used for large integers in Solana
-    return new BN(frequencyInSeconds);
-  };
-
-  const onSave = async () => {
-    setLoading(true);
-    if (publicKey) {
-      try {
-        const newGroupPayload: GroupCreateDTO = {
-          name: newGroup.name,
-          amount: newGroup.amount,
-          crypto: newGroup.crypto,
-          totalMembers: newGroup.totalMembers,
-          period: newGroup.period,
-          startsOnTimestamp: newGroup.startsOnTimestamp,
-          customerPublicKey: publicKey?.toBase58(),
-        };
-        const result = await fetch('/api/group/create', {
-          method: 'POST',
-          body: JSON.stringify(newGroupPayload),
-        });
-        const body = await result.json();
-        const groupId = body?.content?.id;
-        if (typeof groupId !== 'string') {
-          throw new Error('group not created');
-        }
-        // START: WALLET
-        const paymentAmount = newGroup.amount * USDC_DECIMALS;
-        const numberOfPlayers = newGroup.totalMembers;
-        const frequencyOfTurns = convertFrequencyToTimestamp(newGroup.period);
-        const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'; // Circle USDC
-        const { tx, error } = await initializeRound(
-          paymentAmount,
-          numberOfPlayers,
-          frequencyOfTurns,
-          tokenMintAddress
-        );
-
-        if (!tx) {
-          await fetch(`/api/group/${groupId}`, {
-            method: 'DELETE',
-          });
-          throw error;
-        }
-        // END: WALLET
-        const collateralAmount = newGroup.amount * newGroup.totalMembers;
-        const depositPayload: GroupDepositDTO = {
-          customerPublicKey: publicKey.toBase58(),
-          transactionSignature: tx,
-          round: 0,
-          amount: collateralAmount,
-        };
-        await fetch(`/api/group/${groupId}/deposit`, {
-          method: 'POST',
-          body: JSON.stringify(depositPayload),
-        });
-
-        router.push('/my-groups?tab=pending');
-      } catch (error) {
-        logError(LogLevel.INFO)(error);
-      }
-    }
-    setLoading(false);
-  };
-
   if (loading) {
     return <LoadingSpinner />;
   }
+
+  if (!publicKey) {
+    return <ErrorView />;
+  }
+
+  const onSave = async () => {
+    setLoading(true);
+    try {
+      const groupId = await createGroup(
+        newGroup.name,
+        newGroup.amount,
+        newGroup.crypto,
+        newGroup.totalMembers,
+        newGroup.period,
+        newGroup.startsOnTimestamp,
+        publicKey
+      );
+      if (typeof groupId !== 'string') {
+        throw new Error('group not created');
+      }
+      const { tx, error, success } = await depositCollateral(
+        groupId,
+        newGroup.amount,
+        newGroup.totalMembers,
+        newGroup.period
+      );
+      if (!success) {
+        await deleteGroup(groupId);
+        logError(LogLevel.INFO)(error);
+        throw new Error('transaction error');
+      }
+      const collateralAmount = newGroup.amount * newGroup.totalMembers;
+      await depositGroupCollateral(groupId, publicKey, tx, collateralAmount);
+      router.push('/my-groups?tab=pending');
+    } catch (error) {
+      logError(LogLevel.INFO)(error);
+    }
+    setLoading(false);
+  };
 
   const filterDateTime = (time: Date) => {
     const selectedDate = new Date(time);
@@ -262,23 +225,17 @@ const Page = () => {
             <GroupSummary {...newGroup} />
           </div>
           <Message messageText={messageText} />
-          <div className="flex gap-5 my-5 justify-between">
-            <Link href="/my-groups" className="contents">
-              <Button
-                label="Cancel"
-                type="secondary"
-                size="large"
-                className="flex-1"
-              />
-            </Link>
+          <div className="flex flex-col gap-5 my-5 justify-between">
             <Button
-              label="Deposit Collateral"
+              label="Create And Deposit Collateral"
               type="primary"
               size="large"
               onClick={onSave}
               disabled={!newGroup.name.length}
-              className="flex-1"
             />
+            <Link href="/my-groups" className="contents">
+              <Button label="Cancel" type="secondary" size="large" />
+            </Link>
           </div>
         </div>
       </div>

@@ -11,7 +11,7 @@ const TabTitleHeader = ({ text }: { text: string }) => {
   };
 
   return (
-    <div className="text-primary-200 text-4xl text-center flex justify-between items-center h-20">
+    <div className="text-primary-200 text-4xl text-center flex justify-between items-center h-20 min-h-20">
       {pathname.split('/').length > 2 && (
         <button onClick={handleBack}>
           <Image

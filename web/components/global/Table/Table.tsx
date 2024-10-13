@@ -1,7 +1,7 @@
-import { showAlert, showAlertWithConfirmation } from '@/utils/commons';
+import { showAlertWithConfirmation } from '@/utils/commons';
+import { useRouter } from 'next/navigation';
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import { Props } from './Table.types';
-import { useRouter } from 'next/navigation';
 
 export default function Table({ items }: Props) {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function Table({ items }: Props) {
   };
   return (
     <>
-      <div className="grid grid-cols-[1fr_2fr_2fr_2fr] py-4 px-1 text-sm font-semibold gap-2">
+      <div className="grid grid-cols-[1fr_2fr_2fr_2fr] py-4 px-1 text-sm font-semibold gap-2 text-accent-100">
         <span className="pl-1">Nro</span>
         <span>Amount</span>
         <span>Payment Deadline</span>
@@ -36,7 +36,7 @@ export default function Table({ items }: Props) {
       {items.map((item, i) => {
         return (
           <div
-            className="grid grid-cols-[1fr_2fr_2fr_2fr] py-4 px-1 text-sm font-semibold gap-2 bg-bg-200 hover:bg-bg-300 transition-colors duration-300"
+            className="grid grid-cols-[1fr_2fr_2fr_2fr] py-4 px-1 text-sm gap-2 bg-bg-200 hover:bg-bg-300 transition-colors duration-300 text-accent-100"
             key={item.id}
           >
             <span className="pl-3">{i + 1}</span>

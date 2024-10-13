@@ -17,9 +17,9 @@ export async function POST(request: Request) {
     customerPublicKey,
   } = (await request.json()) as GroupCreateDTO;
 
-  const collateral = amount * totalMembers;
+  const collateralAmount = amount * totalMembers;
   const memberPositions = [];
-  for (let i = 0; i < totalMembers; i++) {
+  for (let i = 1; i <= totalMembers; i++) {
     memberPositions.push(i);
   }
   shuffle(memberPositions);
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     crypto,
     name,
     amount,
-    collateral,
+    collateralAmount,
     totalMembers,
     period,
     startsOnTimestamp,
