@@ -33,15 +33,15 @@ export default function GroupCard({
   };
 
   return (
-    <div className="flex justify-between bg-bg-200 py-4 px-4 rounded-lg">
+    <div className="flex justify-between bg-bg-200 px-5 py-6 rounded-lg">
       <div className="w-2/3">
-        <p className="text-primary-200 text-2xl">{name}</p>
-        <p className="text-accent-100 text-xl">
-          {amount} {crypto}
+        <p className="text-primary-200 text-xl">{name}</p>
+        <p className="text-accent-100 text-2xl">
+          {amount} <span className="text-lg">{crypto}</span>
         </p>
         <p className="text-accent-200">{period}</p>
       </div>
-      <div className="flex flex-col justify-evenly items-end w-1/3">
+      <div className="flex flex-col justify-evenly items-end w-1/3 gap-1">
         <div className="flex items-center gap-1">
           <p className="text-accent-100">
             {totalMembers - slots} / {totalMembers}

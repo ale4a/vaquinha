@@ -11,6 +11,7 @@ import {
   GroupFilters,
   GroupResponseDTO,
   GroupStatus,
+  GroupPeriod,
 } from '@/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
@@ -36,7 +37,7 @@ const Page = () => {
   const tab = searchParams.get('tab');
   const [currentTab, setCurrentTab] = useState(tab || MyGroupsTab.ACTIVE);
   const [filters, setFilters] = useState<GroupFilters>({
-    period: '',
+    period: GroupPeriod.ALL,
     orderBy: '+amount',
     crypto: GroupCrypto.USDC,
     amount: 0,
@@ -62,7 +63,7 @@ const Page = () => {
       <>
         <MainTabsHeader />
         <div className="flex-1 flex flex-col gap-4 justify-center items-center">
-          <p className="text-accent-100">Please select a valid wallet</p>
+          <p className="text-accent-100">Please select a wallet</p>
         </div>
       </>
     );

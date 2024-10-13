@@ -5,10 +5,11 @@ import { ListGroups } from '@/components/group/ListGroups/ListGroups';
 import { GroupCrypto, GroupFilters, GroupResponseDTO } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
+import { GroupPeriod } from '@/types';
 
 const GroupPage = () => {
   const [filters, setFilters] = useState<GroupFilters>({
-    period: '',
+    period: GroupPeriod.ALL,
     orderBy: '+amount',
     crypto: GroupCrypto.USDC,
     amount: 0,
@@ -20,7 +21,11 @@ const GroupPage = () => {
     queryFn: () =>
       fetch(
         `/api/group?orderBy=${encodeURIComponent(filters.orderBy)}${
-          filters.period ? `&period=${filters.period}` : ''
+          filters.period
+            ? `&period=${
+                filters.period !== GroupPeriod.ALL ? filters.period : ''
+              }`
+            : ''
         }&crypto=${filters.crypto}${
           filters.amount ? `&amount=${filters.amount}` : ''
         }`

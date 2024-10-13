@@ -15,6 +15,7 @@ export enum GroupCrypto {
 export enum GroupPeriod {
   MONTHLY = 'monthly',
   WEEKLY = 'weekly',
+  ALL = 'all',
 }
 
 export interface GroupMember {
@@ -96,7 +97,7 @@ export interface GroupResponseDTO {
 export type GroupDocument = EntityDocument<GroupBaseDocument>;
 
 export interface GroupFilters {
-  period: '' | GroupPeriod;
+  period: GroupPeriod;
   orderBy: string;
   crypto: GroupCrypto;
   amount: number;

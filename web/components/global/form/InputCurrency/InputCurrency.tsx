@@ -1,3 +1,4 @@
+import { TiArrowSortedDown } from 'react-icons/ti';
 import { Option } from '@/components/global/form/InputSelect/InputSelect.types';
 import React, { useId } from 'react';
 
@@ -42,17 +43,17 @@ export function CurrencyInputText<T extends string | number = string>({
 }: CurrencyInputTextProps<T>) {
   const id = useId();
   return (
-    <div className={'flex flex-col ' + className}>
+    <div className={'flex flex-col gap-1 ' + className}>
       <label
         className={'text-sm text-accent-100 ' + SIZE_LABEL[size]}
         htmlFor={id}
       >
         {label}
       </label>
-      <div className="bg-bg-200 flex flex-row border border-white/40 rounded-lg">
+      <div className="bg-bg-200 flex flex-row border border-white/40 rounded-lg px-2">
         <input
           className={
-            'flex-1 bg-transparent outline-0 text-accent-100 text-xs ' +
+            'flex-1 bg-transparent outline-0 text-accent-100 text-xs' +
             SIZE[size]
           }
           id={id}
@@ -61,24 +62,29 @@ export function CurrencyInputText<T extends string | number = string>({
           type="number"
           style={{ width: 24 }}
         />
-        <select
-          id={id}
-          className={
-            'w-14 bg-transparent outline-0 text-accent-100 focus:ring-bg-200 text-xs ' +
-            SIZE_SELECT[size]
-          }
-          value={optionValue}
-          onChange={({ target }) => onChangeOption?.(target.value as T)}
-        >
-          <option value="" disabled>
-            Choose an option
-          </option>
-          {options.map((option) => (
-            <option value={option.value} key={option.value}>
-              {option.text}
+        <div className="relative">
+          <select
+            id={id}
+            className={
+              'appearance-none w-14 bg-transparent outline-0 text-accent-100 focus:ring-bg-200 text-xs ' +
+              SIZE_SELECT[size]
+            }
+            value={optionValue}
+            onChange={({ target }) => onChangeOption?.(target.value as T)}
+          >
+            <option value="" disabled>
+              Choose an option
             </option>
-          ))}
-        </select>
+            {options.map((option) => (
+              <option value={option.value} key={option.value}>
+                {option.text}
+              </option>
+            ))}
+          </select>
+          <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none">
+            <TiArrowSortedDown />
+          </div>
+        </div>
       </div>
     </div>
   );

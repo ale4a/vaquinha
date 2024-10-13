@@ -32,12 +32,8 @@ export default function SavingCard({
         <div>
           <h2 className="text-base font-medium">{name}</h2>
           <h3 className="text-2xl font-medium">{amount} USDC</h3>
-          <p className="text-sm font-satoshi opacity-85">
-            Collateral: {collateral} USDT
-          </p>
-          <p className="text-sm font-satoshi opacity-85">
-            Start In: {startIn} (3 days)
-          </p>
+          <p className="text-sm opacity-85">Collateral: {collateral} USDT</p>
+          <p className="text-sm opacity-85">Start In: {startIn} (3 days)</p>
         </div>
       </div>
       <div className=" w-1/3 flex flex-col justify-between items-end">

@@ -11,8 +11,8 @@ export function UiLayout({
   links: { label: string; path: string }[];
 }) {
   return (
-    <div className="h-full flex justify-center bg-black">
-      <div className="w-full h-full bg-bg-100 flex flex-col">
+    <div className="h-full flex justify-center bg-bg-200">
+      <div className="w-full sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl h-full bg-bg-100 flex flex-col">
         {/* <div className="h-20 ">
           <MainTabsHeader />
         </div> */}

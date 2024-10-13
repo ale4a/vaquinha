@@ -11,7 +11,7 @@ export const GroupFiltersHead = ({
   setFilters: Dispatch<SetStateAction<GroupFilters>>;
 }) => {
   return (
-    <div className="flex gap-2 justify-center items-center mt-2">
+    <div className="flex gap-2 justify-center items-center py-2">
       <CurrencyInputText
         label="Filter by amount"
         className="flex-1 w-1/3"
@@ -35,12 +35,12 @@ export const GroupFiltersHead = ({
           setFilters((prevState) => ({ ...prevState, crypto }))
         }
       />
-      <InputSelect<GroupPeriod | ''>
+      <InputSelect<GroupPeriod>
         label="Filter by period"
         options={[
           {
             text: 'All',
-            value: '',
+            value: GroupPeriod.ALL,
           },
           {
             text: 'Monthly',
