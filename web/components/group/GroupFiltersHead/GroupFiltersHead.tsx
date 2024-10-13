@@ -1,7 +1,7 @@
 import { InputSelect } from '@/components/global/form';
 import { CurrencyInputText } from '@/components/global/form/InputCurrency/InputCurrency';
 import { GroupCrypto, GroupFilters, GroupPeriod } from '@/types';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import {
   Modal,
   ModalContent,
@@ -9,7 +9,6 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-  Button,
 } from '@nextui-org/react';
 
 import { FiFilter } from 'react-icons/fi';
