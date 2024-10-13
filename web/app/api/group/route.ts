@@ -5,6 +5,7 @@ import {
 } from '@/services/app/group/helpers';
 import { dbClient } from '@/services/database';
 import {
+  EntityState,
   GroupCrypto,
   GroupDocument,
   GroupPeriod,
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest) {
   ) as string | '';
   const orderBy = request.nextUrl.searchParams.get('orderBy');
 
-  const filter: Filter<GroupDocument> = {};
+  const filter: Filter<GroupDocument> = { state: EntityState.RELEASED };
   // if (status) {
   //   filter.status = status;
   // }

@@ -140,8 +140,10 @@ const Page = () => {
         );
         const txt = tx + 'test'; // TODO: only for development process
 
-        if (!txt) {
-          // TODO: Delete group
+        if (!tx) {
+          await fetch(`/api/group/${groupId}`, {
+            method: 'DELETE',
+          });
           throw error;
         }
         // END: WALLET
