@@ -28,6 +28,7 @@
     "bs58": "5.0.0",
     "buffer": "6.0.3",
     "daisyui": "4.11.1",
+    "date-fns": "^4.1.0",
     "encoding": "0.1.13",
     "jotai": "2.8.3",
     "json-diff-ts": "^4.1.0",

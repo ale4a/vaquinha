@@ -80,7 +80,6 @@ export async function GET(request: NextRequest) {
       break;
     default:
   }
-
   const groups = await getGroups(filter, sort);
   const contents: GroupResponseDTO[] = groups
     .filter((group) => (status ? status === getGroupStatus(group) : true))

@@ -44,7 +44,7 @@ export interface GroupBaseDocument {
   crypto: GroupCrypto;
   name: string;
   amount: number;
-  collateral: number;
+  collateralAmount: number;
   totalMembers: number;
   members: { [key: string]: GroupMember };
   period: GroupPeriod;
@@ -77,7 +77,7 @@ export interface GroupResponseDTO {
   crypto: GroupCrypto;
   name: string;
   amount: number;
-  collateral: number;
+  collateralAmount: number;
   myDeposits: {
     [key: number]: {
       amount: number;
@@ -88,7 +88,8 @@ export interface GroupResponseDTO {
   };
   totalMembers: number;
   slots: number;
-  period: 'monthly' | 'weekly';
+  period: GroupPeriod;
+  myPosition: number;
   startsOnTimestamp: number;
   status: GroupStatus;
   isOwner: boolean;

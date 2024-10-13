@@ -1,17 +1,17 @@
-import { ONE_DAY } from '@/config/constants';
 import {
   GroupDocument,
   GroupPeriod,
   GroupResponseDTO,
   GroupStatus,
 } from '@/types';
+import { addMonths, addWeeks } from 'date-fns';
 
 export const getGroupStatus = (group: GroupDocument) => {
   let depositedCollaterals = 0;
   for (const member of Object.values(group.members || {})) {
     if (
       member.deposits?.[0]?.round === 0 &&
-      member.deposits?.[0]?.amount === group.collateral
+      member.deposits?.[0]?.amount === group.collateralAmount
     ) {
       depositedCollaterals++;
     }
@@ -25,14 +25,11 @@ export const getGroupStatus = (group: GroupDocument) => {
     return GroupStatus.ABANDONED;
   } else if (depositedCollaterals === group.totalMembers) {
     // active, concluded
-    let endDate =
+    const endDate =
       group.period === GroupPeriod.MONTHLY
-        ? new Date(group.startsOnTimestamp)
-        : new Date(group.startsOnTimestamp + 7 * ONE_DAY * group.totalMembers);
-    for (let i = 0; i < group.totalMembers; i++) {
-      endDate = endDate.increaseMonth();
-    }
-    if (endDate.getTime() > Date.now()) {
+        ? addMonths(new Date(group.startsOnTimestamp), group.totalMembers)
+        : addWeeks(new Date(group.startsOnTimestamp), group.totalMembers);
+    if (endDate.getTime() < Date.now()) {
       return GroupStatus.CONCLUDED;
     }
     return GroupStatus.ACTIVE;
@@ -46,7 +43,7 @@ export const getGroupSlots = (group: GroupDocument) => {
   for (const member of Object.values(group.members || {})) {
     if (
       member.deposits?.[0]?.round === 0 &&
-      member.deposits?.[0]?.amount === group.collateral
+      member.deposits?.[0]?.amount === group.collateralAmount
     ) {
       depositedCollaterals++;
     }
@@ -60,15 +57,13 @@ export const toGroupResponseDTO = (
   customerPublicKey: string
 ): GroupResponseDTO => {
   const myDeposits: GroupResponseDTO['myDeposits'] = {};
-
-  for (const deposit of Object.values(
-    group.members?.[customerPublicKey]?.deposits || {}
-  )) {
+  const me = group.members?.[customerPublicKey];
+  for (const deposit of Object.values(me?.deposits || {})) {
     myDeposits[deposit.round] = {
       round: deposit.round,
       paid:
         deposit.round === 0
-          ? deposit.amount === group.collateral
+          ? deposit.amount === group.collateralAmount
           : deposit.amount === group.amount,
       amount: deposit.amount,
       timestamp: deposit.timestamp,
@@ -80,7 +75,7 @@ export const toGroupResponseDTO = (
     crypto: group.crypto,
     name: group.name,
     amount: group.amount,
-    collateral: group.collateral,
+    collateralAmount: group.collateralAmount,
     myDeposits,
     totalMembers: group.totalMembers,
     slots: getGroupSlots(group),
@@ -88,5 +83,6 @@ export const toGroupResponseDTO = (
     startsOnTimestamp: group.startsOnTimestamp,
     status: getGroupStatus(group),
     isOwner: !!group.members?.[customerPublicKey]?.isOwner,
+    myPosition: me?.position || 0,
   };
 };

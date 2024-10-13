@@ -9,9 +9,9 @@ import { ListGroups } from '@/components/group/ListGroups/ListGroups';
 import {
   GroupCrypto,
   GroupFilters,
+  GroupPeriod,
   GroupResponseDTO,
   GroupStatus,
-  GroupPeriod,
 } from '@/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
@@ -52,9 +52,11 @@ const Page = () => {
       fetch(
         `/api/group?customerPublicKey=${publicKey}&status=${currentTab}&orderBy=${encodeURIComponent(
           filters.orderBy
-        )}${filters.period ? `&period=${filters.period}` : ''}&crypto=${
-          filters.crypto
-        }${filters.amount ? `&amount=${filters.amount}` : ''}`
+        )}${
+          filters.period !== GroupPeriod.ALL ? `&period=${filters.period}` : ''
+        }&crypto=${filters.crypto}${
+          filters.amount ? `&amount=${filters.amount}` : ''
+        }`
       ).then((res) => res.json()),
   });
 

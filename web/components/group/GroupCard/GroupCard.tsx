@@ -27,6 +27,7 @@ export default function GroupCard({
   slots,
   groupId,
   crypto,
+  status,
 }: Props) {
   const handleViewDetails = (groupId: string) => {
     console.log(groupId);
@@ -53,17 +54,19 @@ export default function GroupCard({
             height={14}
           />
         </div>
-        <div className="flex items-center gap-1 text-sm">
-          <p className="text-accent-100">
-            {getRelativeTime(startsOnTimestamp - Date.now())}
-          </p>
-          <Image
-            src="/icons/date-active.svg"
-            alt="members"
-            width={14}
-            height={14}
-          />
-        </div>
+        {status !== GroupStatus.ACTIVE && (
+          <div className="flex items-center gap-1 text-sm">
+            <p className="text-accent-100">
+              {getRelativeTime(startsOnTimestamp - Date.now())}
+            </p>
+            <Image
+              src="/icons/date-active.svg"
+              alt="members"
+              width={14}
+              height={14}
+            />
+          </div>
+        )}
         <Link
           href={`/groups/${groupId}`}
           passHref

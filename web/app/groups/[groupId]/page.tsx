@@ -1,17 +1,14 @@
 'use client';
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
+import ErrorView from '@/components/global/Error/ErrorView';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import SummaryAction from '@/components/global/SummaryAction/SummaryAction';
 import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
 import BuildingStatus from '@/components/status/BuildingStatus';
-import {
-  GroupDepositDTO,
-  GroupResponseDTO,
-  GroupStatus,
-  LogLevel,
-} from '@/types';
+import { useGroup, useVaquinhaDeposit } from '@/hooks';
+import { GroupResponseDTO, GroupStatus, LogLevel } from '@/types';
 import { showAlert } from '@/utils/commons';
 import { logError } from '@/utils/log';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -24,6 +21,8 @@ const GroupDetailPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { groupId } = useParams();
   const { publicKey } = useWallet();
+  const { depositCollateral } = useVaquinhaDeposit();
+  const { depositGroupCollateral } = useGroup();
   const {
     isPending: isPendingData,
     isLoading: isLoadingData,
@@ -43,37 +42,43 @@ const GroupDetailPage = () => {
 
   const loading = isPendingData || isLoadingData || isFetchingData;
 
-  const isActive = data?.content?.status === GroupStatus.ACTIVE;
-  const step1 = !!data?.content?.myDeposits[0]?.paid;
-  const step2 = step1 && data.content.slots === 0;
-  const step3 = step1 && step2 && isActive;
-
   if (isLoading) {
     return <LoadingSpinner />;
   }
+  if (!data) {
+    return <LoadingSpinner />;
+  }
+  if (!publicKey) {
+    return <ErrorView />;
+  }
 
-  const depositCollateral = async () => {
+  const group = data.content;
+  const isActive = group.status === GroupStatus.ACTIVE;
+  const step1 = !!group.myDeposits[0]?.paid;
+  const step2 = step1 && group.slots === 0;
+  const step3 = step1 && step2 && isActive;
+
+  const handleDepositCollateral = async () => {
     setIsLoading(true);
-    // TODO: INTEGRATE WEB3
-    const tx = 'test';
-    const error = '';
-    if (tx && publicKey) {
-      try {
-        const payload: GroupDepositDTO = {
-          customerPublicKey: publicKey.toBase58(),
-          transactionSignature: tx,
-          round: 0,
-          amount: data?.content.collateral || 0,
-        };
-        await fetch(`/api/group/${groupId}/deposit`, {
-          method: 'POST',
-          body: JSON.stringify(payload),
-        });
-        await refetch();
-      } catch (error) {
+    try {
+      const { tx, error, success } = await depositCollateral(
+        group.id,
+        group.amount,
+        group.totalMembers,
+        group.period
+      );
+      if (!success) {
         logError(LogLevel.INFO)(error);
+        throw new Error('transaction error');
       }
-    } else {
+      await depositGroupCollateral(
+        group.id,
+        publicKey,
+        tx,
+        group.collateralAmount
+      );
+      await refetch();
+    } catch (error) {
       logError(LogLevel.INFO)(error);
     }
     setIsLoading(false);
@@ -85,9 +90,7 @@ const GroupDetailPage = () => {
 
   return (
     <>
-      <div className="h-20">
-        <TabTitleHeader text="Group Information" />
-      </div>
+      <TabTitleHeader text="Group Information" />
       {loading && <LoadingSpinner />}
       {!loading && data && (
         <div className="flex flex-col gap-2">
@@ -99,7 +102,7 @@ const GroupDetailPage = () => {
               value2={step2}
               label2={`Pending members ${
                 data.content.totalMembers - data.content.slots
-              } / ${data.content.totalMembers}`}
+              } of ${data.content.totalMembers}`}
               value3={step3}
               label3="Active Group"
             />
@@ -187,7 +190,7 @@ const GroupDetailPage = () => {
                 label="Deposit Collateral"
                 type="primary"
                 size="large"
-                onClick={depositCollateral}
+                onClick={handleDepositCollateral}
                 className="flex-1"
               />
             )}

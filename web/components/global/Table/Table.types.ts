@@ -1,7 +1,7 @@
 export interface item {
   id: string;
   amount: number;
-  paymentDeadline: string;
+  paymentDeadlineTimestamp: number;
   status: 'Paid' | 'Pay' | 'Pending';
 }
 
