@@ -25,6 +25,9 @@ body {
 .wallet-adapter-button {
   font-family: inherit !important;
   font-size: small !important;
+}
+
+.wallet-adapter-button {
   height: 2rem !important;
   min-height: 2rem !important;
 }

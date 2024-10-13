@@ -10,7 +10,13 @@ import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
 import { ONE_DAY } from '@/config/constants';
-import { GroupCreateDTO, GroupCrypto, GroupPeriod, LogLevel } from '@/types';
+import {
+  GroupCreateDTO,
+  GroupCrypto,
+  GroupDepositDTO,
+  GroupPeriod,
+  LogLevel,
+} from '@/types';
 import { logError } from '@/utils/log';
 import { BN } from '@coral-xyz/anchor';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -61,8 +67,8 @@ const optionsMembers: Option<number>[] = [
     value: 10,
   },
   {
-    text: '15',
-    value: 15,
+    text: '12',
+    value: 12,
   },
 ];
 
@@ -71,14 +77,15 @@ const messageText =
 
 const Page = () => {
   const now = new Date();
-  const [newGroup, setNewGroup] = useState<GroupCreateDTO>({
+  const [newGroup, setNewGroup] = useState<
+    Omit<GroupCreateDTO, 'customerPublicKey' | 'transactionSignature'>
+  >({
     name: '',
     amount: 50,
     crypto: GroupCrypto.USDC,
     totalMembers: 2,
     period: GroupPeriod.MONTHLY,
     startsOnTimestamp: now.getTime() + ONE_DAY,
-    customerPublicKey: '',
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -99,36 +106,62 @@ const Page = () => {
   };
 
   const onSave = async () => {
-    const paymentAmount = newGroup.amount * USDC_DECIMALS;
-    const numberOfPlayers = newGroup.totalMembers;
-    const frequencyOfTurns = convertFrequencyToTimestamp(newGroup.period);
-    const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'; // Circle USDC
-
     setLoading(true);
-    const { tx, error } = await initializeRound(
-      paymentAmount,
-      numberOfPlayers,
-      frequencyOfTurns,
-      tokenMintAddress
-    );
-
-    if (tx || 2 * 2 === 4) {
+    if (publicKey) {
       try {
-        await fetch('/api/group/create', {
+        const newGroupPayload: GroupCreateDTO = {
+          name: newGroup.name,
+          amount: newGroup.amount,
+          crypto: newGroup.crypto,
+          totalMembers: newGroup.totalMembers,
+          period: newGroup.period,
+          startsOnTimestamp: newGroup.startsOnTimestamp,
+          customerPublicKey: publicKey?.toBase58(),
+        };
+        const result = await fetch('/api/group/create', {
           method: 'POST',
-          body: JSON.stringify({
-            ...newGroup,
-            customerPublicKey: publicKey,
-          }),
+          body: JSON.stringify(newGroupPayload),
         });
+        const body = await result.json();
+        const groupId = body?.content?.id;
+        if (typeof groupId !== 'string') {
+          throw new Error('group not created');
+        }
+        // START: WALLET
+        const paymentAmount = newGroup.amount * USDC_DECIMALS;
+        const numberOfPlayers = newGroup.totalMembers;
+        const frequencyOfTurns = convertFrequencyToTimestamp(newGroup.period);
+        const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'; // Circle USDC
+        const { tx, error } = await initializeRound(
+          paymentAmount,
+          numberOfPlayers,
+          frequencyOfTurns,
+          tokenMintAddress
+        );
+        const txt = tx + 'test'; // TODO: only for development process
+
+        if (!txt) {
+          // TODO: Delete group
+          throw error;
+        }
+        // END: WALLET
+        const collateralAmount = newGroup.amount * newGroup.totalMembers;
+        const depositPayload: GroupDepositDTO = {
+          customerPublicKey: publicKey.toBase58(),
+          transactionSignature: txt,
+          round: 0,
+          amount: collateralAmount,
+        };
+        await fetch(`/api/group/${groupId}/deposit`, {
+          method: 'POST',
+          body: JSON.stringify(depositPayload),
+        });
+
         router.push('/my-groups?tab=pending');
       } catch (error) {
         logError(LogLevel.INFO)(error);
       }
-    } else {
-      logError(LogLevel.INFO)(error);
     }
-
     setLoading(false);
   };
 

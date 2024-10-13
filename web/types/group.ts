@@ -20,17 +20,23 @@ export enum GroupPeriod {
 export interface GroupMember {
   publicKey: string;
   isOwner: boolean;
-  collateralDeposit: {
-    timestamp: number;
-    amount: number;
-  };
-  deposits: [
-    {
+  position: number;
+  deposits: {
+    [key: number]: {
       amount: number;
-      deadlineTimestamp: number;
-      isPay: boolean;
-    }
-  ];
+      round: number; // 0: collateral, [1, N] rounds
+      timestamp: number;
+      transactionSignature: string;
+    };
+  };
+  withdrawals: {
+    [key: number]: {
+      amount: number;
+      round: number; // 0: collateral,
+      timestamp: number;
+      transactionSignature: string;
+    };
+  };
 }
 
 export interface GroupBaseDocument {
@@ -42,7 +48,7 @@ export interface GroupBaseDocument {
   members: { [key: string]: GroupMember };
   period: GroupPeriod;
   startsOnTimestamp: number;
-  status: GroupStatus;
+  memberPositions: number[];
 }
 
 export interface GroupCreateDTO
@@ -58,22 +64,33 @@ export interface GroupCreateDTO
   customerPublicKey: string;
 }
 
+export interface GroupDepositDTO {
+  customerPublicKey: string;
+  transactionSignature: string;
+  round: number;
+  amount: number;
+}
+
 export interface GroupResponseDTO {
   id: string;
   crypto: GroupCrypto;
   name: string;
   amount: number;
   collateral: number;
-  members: { [key: string]: GroupMember };
+  myDeposits: {
+    [key: number]: {
+      amount: number;
+      round: number; // 0: collateral, [1, N] rounds
+      timestamp: number;
+      paid: boolean;
+    };
+  };
   totalMembers: number;
   slots: number;
   period: 'monthly' | 'weekly';
   startsOnTimestamp: number;
   status: GroupStatus;
-
   isOwner: boolean;
-  collateralDeposited: boolean;
-  isActive: boolean;
 }
 
 export type GroupDocument = EntityDocument<GroupBaseDocument>;

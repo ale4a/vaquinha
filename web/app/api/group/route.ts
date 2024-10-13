@@ -1,5 +1,8 @@
 import { getGroups } from '@/services';
-import { toGroupResponseDTO } from '@/services/app/group/helpers';
+import {
+  getGroupStatus,
+  toGroupResponseDTO,
+} from '@/services/app/group/helpers';
 import { dbClient } from '@/services/database';
 import {
   GroupCrypto,
@@ -32,9 +35,9 @@ export async function GET(request: NextRequest) {
   const orderBy = request.nextUrl.searchParams.get('orderBy');
 
   const filter: Filter<GroupDocument> = {};
-  if (status) {
-    filter.status = status;
-  }
+  // if (status) {
+  //   filter.status = status;
+  // }
   if (period) {
     filter.period = period;
   }
@@ -76,11 +79,11 @@ export async function GET(request: NextRequest) {
       break;
     default:
   }
-  console.log({ filter, sort, orderBy });
+
   const groups = await getGroups(filter, sort);
-  const contents: GroupResponseDTO[] = groups.map((group) =>
-    toGroupResponseDTO(group, customerPublicKey)
-  );
+  const contents: GroupResponseDTO[] = groups
+    .filter((group) => (status ? status === getGroupStatus(group) : true))
+    .map((group) => toGroupResponseDTO(group, customerPublicKey));
 
   return Response.json({ contents });
 }
