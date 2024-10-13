@@ -149,7 +149,7 @@ const Page = () => {
         const collateralAmount = newGroup.amount * newGroup.totalMembers;
         const depositPayload: GroupDepositDTO = {
           customerPublicKey: publicKey.toBase58(),
-          transactionSignature: txt,
+          transactionSignature: tx,
           round: 0,
           amount: collateralAmount,
         };
