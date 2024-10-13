@@ -1,3 +1,4 @@
+const { nextui } = require('@nextui-org/theme');
 const { createGlobPatternsForDependencies } = require('@nx/react/tailwind');
 const { join } = require('path');
 
@@ -9,6 +10,7 @@ module.exports = {
       '{src,pages,components,app}/**/*!(*.stories|*.spec).{ts,tsx,html}'
     ),
     ...createGlobPatternsForDependencies(__dirname),
+    "../node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
     extend: {
@@ -37,5 +39,6 @@ module.exports = {
       'top-custom': '0 -4px 6px -2px rgba(245, 245, 245, 0.1)',
     },
   },
-  plugins: [require('daisyui')],
+  darkMode: 'class',
+  plugins: [require('daisyui'), nextui()],
 };

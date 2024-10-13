@@ -7,6 +7,7 @@ body {
   height: 100%;
   font-family: 'ClashDisplay', sans-serif;
   background-color: #2C2E30 !important;
+  color: #F5F5F5;
 }
 
 .wallet-adapter-button-trigger {

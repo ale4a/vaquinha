@@ -5,6 +5,7 @@ import { SolanaProvider } from '@/components/solana/solana-provider';
 import { ReactQueryProvider } from './react-query-provider';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'sweetalert2/src/sweetalert2.scss';
+import { NextUIProvider } from '@nextui-org/react';
 
 export const metadata = {
   title: 'vaquinha',
@@ -28,7 +29,9 @@ export default function RootLayout({
         <ReactQueryProvider>
           <ClusterProvider>
             <SolanaProvider>
-              <UiLayout links={links}>{children}</UiLayout>
+              <UiLayout links={links}>
+                <NextUIProvider>{children}</NextUIProvider>
+              </UiLayout>
             </SolanaProvider>
           </ClusterProvider>
         </ReactQueryProvider>
