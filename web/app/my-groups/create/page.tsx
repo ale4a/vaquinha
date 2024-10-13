@@ -138,7 +138,6 @@ const Page = () => {
           frequencyOfTurns,
           tokenMintAddress
         );
-        const txt = tx + 'test'; // TODO: only for development process
 
         if (!tx) {
           await fetch(`/api/group/${groupId}`, {
