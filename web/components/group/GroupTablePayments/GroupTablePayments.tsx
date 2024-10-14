@@ -38,11 +38,11 @@ export default function GroupTablePayments({
     }
   };
 
-  const handleClick = async (round: number) => {
+  const handleClick = async (round: number, turn: number) => {
     setIsLoading(true);
     try {
       const amount = group.amount;
-      const { tx, error, success } = await depositRoundPayment(group);
+      const { tx, error, success } = await depositRoundPayment(group, turn);
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
@@ -87,7 +87,7 @@ export default function GroupTablePayments({
                 <ButtonComponent
                   label={status}
                   type={getStatusType(status)}
-                  onClick={() => handleClick(round)}
+                  onClick={() => handleClick(round, i)}
                   disabled={status !== 'Pay'}
                 />
               )}

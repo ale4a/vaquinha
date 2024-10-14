@@ -3,19 +3,21 @@ import { useCallback } from 'react';
 import { useProgramMethods } from '@/components/vaquinha/vaquinha-data-access';
 
 export const useVaquinhaWithdrawal = () => {
-  const { withdrawTurn } = useProgramMethods();
+  const { withdrawTurn, withdrawCollateral } = useProgramMethods();
 
   const withdrawalCollateral = useCallback(
     async (
-      group: GroupResponseDTO,
-      amount: number
+      group: GroupResponseDTO
     ): Promise<{ tx: string; error: any; success: boolean }> => {
-      const tx = 'testing';
-      const error = '';
+      const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
+      const { tx, error } = await withdrawCollateral(
+        group.id,
+        tokenMintAddress
+      );
       const success = true;
-      return { tx, error, success };
+      return { tx: tx || 'testing', error, success };
     },
-    []
+    [withdrawCollateral]
   );
 
   const withdrawalEarnedRound = useCallback(
@@ -30,7 +32,7 @@ export const useVaquinhaWithdrawal = () => {
       const success = true;
       return { tx: tx || 'testing', error, success };
     },
-    []
+    [withdrawTurn]
   );
 
   const withdrawalEarnedInterest = useCallback(

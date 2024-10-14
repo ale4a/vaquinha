@@ -54,12 +54,14 @@ export const useVaquinhaDeposit = () => {
 
   const depositRoundPayment = useCallback(
     async (
-      group: GroupResponseDTO
+      group: GroupResponseDTO,
+      turn: number
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
       const { tx, error } = await payTurn(
         group.id,
-        tokenMintAddress
+        tokenMintAddress,
+        turn
       );
       const success = true;
       return { tx: tx || 'testing', error, success };

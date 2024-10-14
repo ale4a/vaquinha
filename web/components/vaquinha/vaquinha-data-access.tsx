@@ -55,8 +55,6 @@ export const useProgramMethods = () => {
         wallet.publicKey as PublicKey
       );
 
-      // console.log('[', roundKeypair.publicKey, wallet.publicKey, tokenMint, initializerTokenAccount, roundTokenAccount, TOKEN_PROGRAM_ID, SystemProgram.programId, ']');
-
       try {
         const tx = await program.methods
           .initializeRound(roundId, paymentAmountBN, numberOfPlayers, frequencyOfTurnsBN)
@@ -77,16 +75,6 @@ export const useProgramMethods = () => {
         transactionToast(tx);
         return { tx };
 
-        // console.log("Simulation result:", tx);
-        // console.log("Simulated round initialization for:", roundKeypair.publicKey.toString());
-
-        // // Log more detailed information from the simulation
-        // console.log("Logs:", tx.logs);
-        // console.log("Accounts:", tx.accounts);
-        // console.log("Unitsconsumed:", tx.unitsConsumed);
-        // if (tx.returnData) {
-        //   console.log("ReturnData:", tx.returnData.toString());
-        // }
       } catch (error) {
         console.error("Error initializing round:", error);
         return { error }
@@ -113,7 +101,7 @@ export const useProgramMethods = () => {
         const tx = await program.methods
           .addPlayer()
           .accounts({
-            round: roundPDA,//roundKeypair.publicKey,
+            round: roundPDA,
             player: wallet.publicKey as PublicKey,
             playerTokenAccount: playerTokenAccount,
             roundTokenAccount: roundTokenAccount,
@@ -131,7 +119,7 @@ export const useProgramMethods = () => {
       }
     },
 
-    payTurn: async function (roundId: string, tokenMintAddress: string) {
+    payTurn: async function (roundId: string, tokenMintAddress: string, turn: number) {
       const tokenMint = new PublicKey(tokenMintAddress);
        const playerTokenAccount = await getAssociatedTokenAddress(
          tokenMint,
@@ -149,9 +137,9 @@ export const useProgramMethods = () => {
 
        try {
         const tx = await program.methods
-          .payTurn()
+          .payTurn(turn)
           .accounts({
-            round: roundPDA,//roundKeypair.publicKey,
+            round: roundPDA,
             player: wallet.publicKey as PublicKey,
             playerTokenAccount: playerTokenAccount,
             roundTokenAccount: roundTokenAccount,
@@ -188,7 +176,7 @@ export const useProgramMethods = () => {
         const tx = await program.methods
          .withdrawTurn()
          .accounts({
-           round: roundPDA,//roundKeypair.publicKey,
+           round: roundPDA,
            player: wallet.publicKey as PublicKey,
            playerTokenAccount: playerTokenAccount,
            roundTokenAccount: roundTokenAccount,
@@ -202,6 +190,42 @@ export const useProgramMethods = () => {
           return { tx };
       } catch (error) {
         console.error("Error withdrawing turn:", error);
+        return { error }
+      }
+    },
+    withdrawCollateral: async function (roundId: string, tokenMintAddress: string) {
+      const tokenMint = new PublicKey(tokenMintAddress);
+       const playerTokenAccount = await getAssociatedTokenAddress(
+         tokenMint,
+         wallet.publicKey as PublicKey
+       );
+       const [roundPDA, _bump] = await PublicKey.findProgramAddress(
+         [Buffer.from("round"), Buffer.from(roundId)],
+         program.programId
+       );
+       const roundTokenAccount = await getAssociatedTokenAddress(
+         tokenMint,
+         roundPDA,
+         true
+       );
+       try {
+        const tx = await program.methods
+         .withdrawCollateral()
+         .accounts({
+           round: roundPDA,
+           player: wallet.publicKey as PublicKey,
+           playerTokenAccount: playerTokenAccount,
+           roundTokenAccount: roundTokenAccount,
+           tokenProgram: TOKEN_PROGRAM_ID
+         })
+         .rpc();
+
+          console.log("Transaction signature:", tx);
+          console.log("Collateral Withdrawal successful:", roundPDA.toString());
+          transactionToast(tx);
+          return { tx };
+      } catch (error) {
+        console.error("Error withdrawing collateral:", error);
         return { error }
       }
     }
