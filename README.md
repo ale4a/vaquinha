@@ -4,25 +4,19 @@
 
 Protocol Vaquinha is a community savings protocol inspired by the traditional Andean savings system known as Pasanaku. This protocol leverages blockchain technology to solve trust issues, allowing users to organize and participate in group savings systems with complete transparency and security. Vaquinha Protocol scales these traditional systems to the digital world, providing global access to communities that need reliable shared savings solutions.
 
-You can view the demo (under construction) [vaquinha-seven.vercel.app.com](https://vaquinha-seven.vercel.app/groups?tab=usdt)
+## 🌐 Resources
 
-This project is generated with the [create-solana-dapp](https://vaquinha-seven.vercel.app/) generator.
+- 🚀 **Demo:** Check out the live demo of the project [here](https://vaquinha-seven.vercel.app/groups)
+- 🎥 **Pitch Deck:** This is the pitch deck for the project, providing a concise overview of its key elements. It helps to understand the problem, solution, business model, and overall impact more clearly. [Watch the Pitch Deck](https://www.loom.com/share/7a54b3ddaea740f597c0d814a34cd45a?sid=ace57d15-6671-4d06-9139-15d29a708d1b)
+- 💻 **Devnet Program ID:** `qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f` — View the [Vaquinha Program](https://explorer.solana.com/address/qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f?cluster=devnet) on Solana Explorer.
 
-## Useful links:
+  **Methods:**
 
-1. Description: Vaquita is a protocol for rotating savings based on informal and traditional savings systems used in various countries, including Bolivia (Pasanaku), Argentina (Vaquita), Peru (Junta), and others. [Pitch Deck](https://www.canva.com/design/DAGTBA2Xyd0/dPTy43Ze_Q4nlW3oXM7yjA/edit?utm_content=DAGTBA2Xyd0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+  - 🏁 `initializeRound`: Creates a new Round and adds collateral.
+  - 🙋‍♂️ `addPlayer`: Adds a player to the round and their collateral.
+  - 💰 `payTurn`: Pays the current turn in the round.
 
-2. In this folder, you will find videos showcasing the functionality of our project. These videos provide an overview of key features and demonstrate how the project operates in practice. [Drive](https://drive.google.com/drive/folders/1LzhAUhjTEN72tB0uCMhH9dTVydrg0A7C)
-
-3. Soon, we will share more detailed information about the functionality of our project here. In the meantime, you can follow us on Twitter to stay updated with the latest news. [@VaquitaProtocol](https://x.com/VaquitaProtocol)
-
-4. Devnet programId = qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f [Vaquinha Program](https://explorer.solana.com/address/qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f?cluster=devnet)
-
-   methods:
-   - initializeRound: creates a new Round and adds collateral
-   - addPlayer: adds a player to the round and its collateral
-   - payTurn: pays the current turn
-
+- 📁 **Additional Resources:** Access more resources in the [Google Drive folder](https://drive.google.com/drive/folders/1LzhAUhjTEN72tB0uCMhH9dTVydrg0A7C)
 
 ## Getting Started
 
