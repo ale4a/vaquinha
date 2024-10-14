@@ -26,15 +26,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ReactQueryProvider>
-          <ClusterProvider>
-            <SolanaProvider>
-              <UiLayout links={links}>
-                <NextUIProvider>{children}</NextUIProvider>
-              </UiLayout>
-            </SolanaProvider>
-          </ClusterProvider>
-        </ReactQueryProvider>
+        <NextUIProvider className="h-full">
+          <ReactQueryProvider>
+            <ClusterProvider>
+              <SolanaProvider>
+                <UiLayout links={links}>{children}</UiLayout>
+              </SolanaProvider>
+            </ClusterProvider>
+          </ReactQueryProvider>
+        </NextUIProvider>
       </body>
     </html>
   );

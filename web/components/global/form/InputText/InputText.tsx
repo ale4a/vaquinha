@@ -13,20 +13,23 @@ export default function InputText<T extends string | number = string>({
   value,
   onChange,
   className,
+  placeHolder,
   size = 'medium',
 }: Props<T>) {
   const id = useId();
   return (
-    <div className={'flex flex-col ' + className}>
-      <label className="text-sm mb-2 text-accent-100" htmlFor={id}>
+    <div className={'flex flex-col w-full ' + className}>
+      {/* <label className="text-sm mb-2 text-accent-100" htmlFor={id}>
         {label}
-      </label>
+      </label> */}
       <input
         className={
           'border border-white/40 rounded-lg bg-bg-200 outline-0 focus:bg-bg-300 text-accent-100 ' +
           SIZE[size]
         }
         id={id}
+        min={0}
+        placeholder={placeHolder}
         type={type}
         value={value}
         onChange={({ target }) => onChange?.(target.value as T)}

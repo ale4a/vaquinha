@@ -13,7 +13,7 @@ interface Props {
   amount: number;
   totalMembers: number;
   slots: number;
-  period: 'monthly' | 'weekly';
+  period: 'monthly' | 'weekly' | 'all';
   startsOnTimestamp: number;
   status: GroupStatus;
 }

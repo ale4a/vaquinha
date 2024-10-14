@@ -73,9 +73,9 @@ const Page = () => {
     Omit<GroupCreateDTO, 'customerPublicKey' | 'transactionSignature'>
   >({
     name: '',
-    amount: 50,
+    amount: 0,
     crypto: GroupCrypto.USDC,
-    totalMembers: 2,
+    totalMembers: 0,
     period: GroupPeriod.MONTHLY,
     startsOnTimestamp: now.getTime() + ONE_DAY,
   });
@@ -90,6 +90,7 @@ const Page = () => {
     }
   }, [router, publicKey]);
 
+  console.log({ newGroup });
   if (loading) {
     return <LoadingSpinner />;
   }
@@ -144,12 +145,16 @@ const Page = () => {
   return (
     <div>
       <TabTitleHeader text="Create new group" />
-      <div className="flex flex-col justify-center">
-        <div>
-          <div className="mb-3">
+      <div className="flex flex-col justify-center gap-2">
+        <div className="flex gap-2 w-full ">
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">
+              Name of the Group *
+            </label>
             <InputText
-              label="Group Name"
+              label="Group Name *"
               type="text"
+              placeHolder="Group Name *"
               value={newGroup.name}
               onChange={(name) =>
                 setNewGroup((prevState) => ({
@@ -158,17 +163,39 @@ const Page = () => {
                 }))
               }
             />
-            {!newGroup.name && <p className="text-accent-100">Required</p>}
           </div>
-          <div className="grid grid-cols-2 gap-2 mb-3">
+          {/* {!newGroup.name && <p className="text-accent-100">Required</p>} */}
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">
+              Number of the members
+            </label>
+            <InputSelect<number>
+              label="Members"
+              options={optionsMembers}
+              value={newGroup.totalMembers}
+              onChange={(totalMembers) =>
+                setNewGroup((prevState) => ({ ...prevState, totalMembers }))
+              }
+            />
+          </div>
+        </div>
+        <div className="flex gap-2 w-full">
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">
+              Amount of the Group
+            </label>
             <InputText<number>
               label="Amount"
               type="number"
-              value={newGroup.amount}
+              placeHolder="Amount of the group *"
+              value={newGroup.amount ? newGroup.amount : undefined}
               onChange={(amount) =>
                 setNewGroup((prevState) => ({ ...prevState, amount }))
               }
             />
+          </div>
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">Crypto</label>
             <InputSelect
               label="Crypto"
               options={optionsCrypto}
@@ -179,15 +206,12 @@ const Page = () => {
               }
             />
           </div>
-          <div className="grid grid-cols-3 gap-5 mb-4">
-            <InputSelect<number>
-              label="Members"
-              options={optionsMembers}
-              value={newGroup.totalMembers}
-              onChange={(totalMembers) =>
-                setNewGroup((prevState) => ({ ...prevState, totalMembers }))
-              }
-            />
+        </div>
+        <div className="flex gap-2 mb-4">
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">
+              Payment period
+            </label>
             <InputSelect
               label="Payment period"
               options={[
@@ -205,6 +229,9 @@ const Page = () => {
                 setNewGroup((prevState) => ({ ...prevState, period }))
               }
             />
+          </div>
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">Starts in</label>
             <InputDate
               label="Starts in"
               value={new Date(newGroup.startsOnTimestamp)}
@@ -218,25 +245,25 @@ const Page = () => {
               filterDate={filterDateTime}
             />
           </div>
-          <div className="flex justify-center text-2xl text-accent-100">
-            Group Information
-          </div>
-          <div className="mb-5">
-            <GroupSummary {...newGroup} />
-          </div>
-          <Message messageText={messageText} />
-          <div className="flex flex-col gap-5 my-5 justify-between">
-            <Button
-              label="Create And Deposit Collateral"
-              type="primary"
-              size="large"
-              onClick={onSave}
-              disabled={!newGroup.name.length}
-            />
-            <Link href="/my-groups" className="contents">
-              <Button label="Cancel" type="secondary" size="large" />
-            </Link>
-          </div>
+        </div>
+        <div className="flex justify-center text-2xl text-accent-100">
+          Group Information
+        </div>
+        <div className="mb-5">
+          <GroupSummary {...newGroup} />
+        </div>
+        <Message messageText={messageText} />
+        <div className="flex flex-col gap-5 my-5 justify-between">
+          <Button
+            label="Create And Deposit Collateral"
+            type="primary"
+            size="large"
+            onClick={onSave}
+            disabled={!newGroup.name.length}
+          />
+          <Link href="/my-groups" className="contents">
+            <Button label="Cancel" type="secondary" size="large" />
+          </Link>
         </div>
       </div>
     </div>
