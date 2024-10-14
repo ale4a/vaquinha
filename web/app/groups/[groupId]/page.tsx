@@ -24,7 +24,7 @@ const GroupDetailPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { groupId } = useParams();
   const { publicKey } = useWallet();
-  const { depositCollateral } = useVaquinhaDeposit();
+  const { depositCollateralAndJoin } = useVaquinhaDeposit();
   const {
     withdrawalEarnedRound,
     withdrawalEarnedInterest,
@@ -75,7 +75,10 @@ const GroupDetailPage = () => {
     setIsLoading(true);
     try {
       const amount = group.collateralAmount;
-      const { tx, error, success } = await depositCollateral(group, amount);
+      const { tx, error, success } = await depositCollateralAndJoin(
+        group,
+        amount
+      );
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');

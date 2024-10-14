@@ -82,7 +82,7 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { publicKey } = useWallet();
-  const { depositCollateral } = useVaquinhaDeposit();
+  const { depositCollateralAndCreate } = useVaquinhaDeposit();
   const { createGroup, depositGroupCollateral, deleteGroup } = useGroup();
   useEffect(() => {
     if (!publicKey) {
@@ -115,7 +115,10 @@ const Page = () => {
         throw new Error('group not created');
       }
       const amount = group.collateralAmount;
-      const { tx, error, success } = await depositCollateral(group, amount);
+      const { tx, error, success } = await depositCollateralAndCreate(
+        group,
+        amount
+      );
       if (!success) {
         await deleteGroup(group.id);
         logError(LogLevel.INFO)(error);

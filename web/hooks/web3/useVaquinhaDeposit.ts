@@ -16,7 +16,7 @@ const convertFrequencyToTimestamp = (period: GroupPeriod): BN => {
 export const useVaquinhaDeposit = () => {
   const { initializeRound } = useInitializeRound();
 
-  const depositCollateral = useCallback(
+  const depositCollateralAndCreate = useCallback(
     async (
       group: GroupResponseDTO,
       amount: number
@@ -37,6 +37,19 @@ export const useVaquinhaDeposit = () => {
     [initializeRound]
   );
 
+  const depositCollateralAndJoin = useCallback(
+    async (
+      group: GroupResponseDTO,
+      amount: number
+    ): Promise<{ tx: string; error: any; success: boolean }> => {
+      const tx = 'testing';
+      const error = '';
+      const success = true;
+      return { tx, error, success };
+    },
+    [initializeRound]
+  );
+
   const depositRoundPayment = useCallback(
     async (
       group: GroupResponseDTO,
@@ -50,5 +63,9 @@ export const useVaquinhaDeposit = () => {
     []
   );
 
-  return { depositCollateral, depositRoundPayment };
+  return {
+    depositCollateralAndCreate,
+    depositCollateralAndJoin,
+    depositRoundPayment,
+  };
 };
