@@ -1,4 +1,4 @@
-import { getGroupStatus, toGroupResponseDTO } from '@/helpers';
+import { toGroupResponseDTO } from '@/helpers';
 import { getGroups } from '@/services';
 import { dbClient } from '@/services/database';
 import {
@@ -17,6 +17,9 @@ export async function GET(request: NextRequest) {
 
   const status = request.nextUrl.searchParams.get(
     'status'
+  ) as GroupStatus | null;
+  const myGroups = request.nextUrl.searchParams.get(
+    'myGroups'
   ) as GroupStatus | null;
   const period = request.nextUrl.searchParams.get(
     'period'
@@ -46,7 +49,11 @@ export async function GET(request: NextRequest) {
     filter.amount = amount;
   }
   if (customerPublicKey) {
-    filter[`members.${customerPublicKey}`] = { $exists: true };
+    if (myGroups) {
+      filter[`members.${customerPublicKey}`] = { $exists: true };
+    } else {
+      filter[`members.${customerPublicKey}`] = { $exists: false };
+    }
   }
 
   const sort: Sort = {};
@@ -79,8 +86,13 @@ export async function GET(request: NextRequest) {
   }
   const groups = await getGroups(filter, sort);
   const contents: GroupResponseDTO[] = groups
-    .filter((group) => (status ? status === getGroupStatus(group) : true))
-    .map((group) => toGroupResponseDTO(group, customerPublicKey));
+    .map((group) => toGroupResponseDTO(group, customerPublicKey))
+    .filter(
+      (group) =>
+        (status ? status === group.status : true) &&
+        // (customerPublicKey ? true : group.slots > 0) &&
+        true
+    );
 
   return Response.json({ contents });
 }

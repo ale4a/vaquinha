@@ -9,6 +9,7 @@ import {
   GroupPeriod,
   GroupResponseDTO,
 } from '@/types';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 
@@ -19,27 +20,29 @@ const GroupPage = () => {
     crypto: GroupCrypto.USDC,
     amount: 0,
   });
+  const { publicKey } = useWallet();
   const { isPending, isLoading, isFetching, data } = useQuery<{
     contents: GroupResponseDTO[];
   }>({
-    queryKey: ['groups', filters],
+    queryKey: ['groups', filters, publicKey],
     queryFn: () =>
       fetch(
         `/api/group?orderBy=${encodeURIComponent(filters.orderBy)}${
           filters.period !== GroupPeriod.ALL ? `&period=${filters.period}` : ''
         }&crypto=${filters.crypto}${
           filters.amount ? `&amount=${filters.amount}` : ''
-        }`
+        }${publicKey ? `&customerPublicKey=${publicKey.toBase58()}` : ''}`
       ).then((res) => res.json()),
   });
 
   const loading = isPending || isLoading || isFetching;
+  const groups = data?.contents || [];
 
   return (
     <>
       <MainTabsHeader />
       <GroupFiltersHead filters={filters} setFilters={setFilters} />
-      <ListGroups groups={data?.contents || []} loading={loading} />
+      <ListGroups groups={groups} loading={loading} />
     </>
   );
 };

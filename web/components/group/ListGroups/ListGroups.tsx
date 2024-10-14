@@ -13,36 +13,38 @@ export const ListGroups = ({
   return (
     <>
       {loading && <LoadingSpinner />}
-      <div className="flex flex-1 flex-col overflow-x-auto gap-4 pt-1 pb-4">
-        {!loading &&
-          groups.map(
-            ({
-              id,
-              startsOnTimestamp,
-              totalMembers,
-              amount,
-              crypto,
-              name,
-              period,
-              status,
-              slots,
-            }) => (
-              <div key={id}>
-                <GroupCard
-                  groupId={id}
-                  startsOnTimestamp={startsOnTimestamp}
-                  totalMembers={totalMembers}
-                  slots={slots}
-                  amount={amount}
-                  crypto={crypto}
-                  name={name}
-                  period={period}
-                  status={status}
-                />
-              </div>
-            )
-          )}
-      </div>
+      {!!groups.length && (
+        <div className="flex flex-1 flex-col overflow-x-auto gap-4 pt-1 pb-4">
+          {!loading &&
+            groups.map(
+              ({
+                id,
+                startsOnTimestamp,
+                totalMembers,
+                amount,
+                crypto,
+                name,
+                period,
+                status,
+                slots,
+              }) => (
+                <div key={id}>
+                  <GroupCard
+                    groupId={id}
+                    startsOnTimestamp={startsOnTimestamp}
+                    totalMembers={totalMembers}
+                    slots={slots}
+                    amount={amount}
+                    crypto={crypto}
+                    name={name}
+                    period={period}
+                    status={status}
+                  />
+                </div>
+              )
+            )}
+        </div>
+      )}
     </>
   );
 };

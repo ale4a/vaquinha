@@ -50,7 +50,7 @@ const Page = () => {
     queryKey: ['groups', currentTab, publicKey, filters],
     queryFn: () =>
       fetch(
-        `/api/group?customerPublicKey=${publicKey}&status=${currentTab}&orderBy=${encodeURIComponent(
+        `/api/group?myGroups=true&customerPublicKey=${publicKey}&status=${currentTab}&orderBy=${encodeURIComponent(
           filters.orderBy
         )}${
           filters.period !== GroupPeriod.ALL ? `&period=${filters.period}` : ''

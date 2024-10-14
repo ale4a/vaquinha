@@ -1,5 +1,6 @@
 'use client';
 
+import Button from '@/components/global/ButtonComponent/ButtonComponent';
 import ErrorView from '@/components/global/Error/ErrorView';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
@@ -7,10 +8,11 @@ import GroupTablePayments from '@/components/group/GroupTablePayments/GroupTable
 import { GroupResponseDTO } from '@/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
 
 const PaymentsPage = () => {
+  const router = useRouter();
   const { groupId } = useParams();
   const { publicKey } = useWallet();
   const {
@@ -51,6 +53,14 @@ const PaymentsPage = () => {
       {!loading && data && (
         <GroupTablePayments group={data?.content} refetch={refetch} />
       )}
+      <div className="flex flex-col gap-5 my-5 justify-between">
+        <Button
+          label="Back"
+          type="secondary"
+          size="large"
+          onClick={() => router.back()}
+        />
+      </div>
     </>
   );
 };

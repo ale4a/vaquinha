@@ -22,7 +22,9 @@ export function UiLayout({
             <ClusterUiSelect />
           </div>
         </div> */}
-        <div className="flex flex-col h-full mx-2">{children}</div>
+        <div className="flex flex-col flex-1 mx-2 overflow-y-auto">
+          {children}
+        </div>
         <div className="bg-gray-900">
           <Navbar links={links} />
         </div>

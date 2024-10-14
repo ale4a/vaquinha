@@ -76,9 +76,7 @@ const GroupDetailPage = () => {
     setIsLoading(true);
     try {
       const amount = group.collateralAmount;
-      const { tx, error, success } = await depositCollateralAndJoin(
-        group
-      );
+      const { tx, error, success } = await depositCollateralAndJoin(group);
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
@@ -157,7 +155,6 @@ const GroupDetailPage = () => {
     0
   );
   const allPaymentsDone = totalPayments === group.totalMembers - 1;
-
   return (
     <>
       <TabTitleHeader text="Group Information" />
@@ -165,7 +162,7 @@ const GroupDetailPage = () => {
       {!loading && data && (
         <div className="flex flex-col gap-2">
           {data && <GroupSummary {...group} />}
-          {!isActive && !isConcluded && (
+          {!isActive && !isConcluded && group.slots > 0 && (
             <BuildingStatus
               value1={step1}
               label1={step1 ? 'Collateral Deposited' : 'Deposit Collateral'}
@@ -288,13 +285,31 @@ const GroupDetailPage = () => {
               />
             </>
           )}
-          <Message
-            messageText={
-              'It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately'
-            }
-          />
+          {group.status === GroupStatus.PENDING &&
+            !step1 &&
+            group.slots > 0 && (
+              <Message
+                messageText={
+                  'It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately.'
+                }
+              />
+            )}
+          {group.status === GroupStatus.PENDING && step1 && !step2 && (
+            <Message
+              messageText={
+                "We are waiting for the group to be fully filled by the specified date. If the group isn't complete by then, the collateral you deposited will be returned."
+              }
+            />
+          )}
+          {group.status === GroupStatus.PENDING && step1 && step2 && !step3 && (
+            <Message
+              messageText={
+                "The group is all set! We're just waiting for the start date to kick things off."
+              }
+            />
+          )}
           <div className="flex flex-col gap-5 justify-between mb-4">
-            {!step1 && (
+            {!step1 && !!group.slots && (
               <ButtonComponent
                 label="Join And Deposit Collateral"
                 type="primary"
