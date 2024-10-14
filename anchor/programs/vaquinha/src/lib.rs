@@ -8,27 +8,29 @@ pub mod vaquinha {
     use super::*;
 
     pub fn initialize_round(
-      ctx: Context<InitializeRound>,
-      round_id: String,
-      payment_amount: u64,
-      number_of_players: u8,
-      frequency_of_turns: i64,
+        ctx: Context<InitializeRound>,
+        round_id: String,
+        payment_amount: u64,
+        number_of_players: u8,
+        frequency_of_turns: i64,
     ) -> Result<()> {
         let round = &mut ctx.accounts.round;
         round.round_id = round_id;
         round.bump = ctx.bumps.round;
         round.payment_amount = payment_amount;
         round.number_of_players = number_of_players;
-        round.current_index_of_player = 0;
-        round.current_turn_paid_amount = 0;
         round.total_amount_locked = 0;
         round.available_slots = number_of_players;
         round.frequency_of_turns = frequency_of_turns;
         round.status = RoundStatus::Pending;
         round.token_mint = ctx.accounts.token_mint.key();
+        round.withdrawn_collateral = vec![false; number_of_players as usize];
+        round.turn_accumulations = vec![0; number_of_players as usize];
+        round.paid_turns = vec![0; number_of_players as usize];
+        round.withdrawn_turns = vec![0; number_of_players as usize];
 
         // Lock tokens for the initializer
-        let amount_to_lock = payment_amount * (number_of_players as u64);
+        let amount_to_lock = payment_amount * (number_of_players as u64) * (number_of_players as u64);
         token::transfer(
             CpiContext::new(
                 ctx.accounts.token_program.to_account_info(),
@@ -81,9 +83,18 @@ pub mod vaquinha {
         Ok(())
     }
 
-    pub fn pay_turn(ctx: Context<PayTurn>) -> Result<()> {
+    pub fn pay_turn(ctx: Context<PayTurn>, turn: u8) -> Result<()> {
         let round = &mut ctx.accounts.round;
         require!(round.status == RoundStatus::Active, ErrorCode::RoundNotActive);
+        require!(turn < round.number_of_players, ErrorCode::InvalidTurn);
+
+        let player_index = round.players.iter().position(|&p| p == ctx.accounts.player.key())
+            .ok_or(ErrorCode::PlayerNotInRound)?;
+
+        // Check that the player is not paying for their own turn
+        require!(player_index as u8 != turn, ErrorCode::CannotPayOwnTurn);
+
+        require!((round.paid_turns[player_index] & (1 << turn)) == 0, ErrorCode::TurnAlreadyPaid);
 
         token::transfer(
             CpiContext::new(
@@ -97,33 +108,39 @@ pub mod vaquinha {
             round.payment_amount,
         )?;
 
-        round.current_turn_paid_amount += round.payment_amount;
+        round.turn_accumulations[turn as usize] += round.payment_amount;
+        round.paid_turns[player_index] |= 1 << turn;
+
+        // Check if all turns are completed
+        if round.turn_accumulations.iter().all(|&amount| amount == round.payment_amount * ((round.number_of_players as u64) - 1)) {
+            round.status = RoundStatus::Completed;
+        }
 
         Ok(())
     }
 
     pub fn withdraw_turn(ctx: Context<WithdrawTurn>) -> Result<()> {
-        msg!("Round Token Account owner: {:?}", ctx.accounts.round_token_account.owner);
-        msg!("Round PDA: {:?}", ctx.accounts.round.key());
         let round = &ctx.accounts.round;
-        require!(round.status == RoundStatus::Active, ErrorCode::RoundNotActive);
+        require!(round.status == RoundStatus::Active || round.status == RoundStatus::Completed, ErrorCode::RoundNotActive);
     
-        // Check if it's the current player's turn
-        let current_player = round.players[round.current_index_of_player as usize];
-        require!(current_player == ctx.accounts.player.key(), ErrorCode::NotPlayersTurn);
+        let player_index = round.players.iter().position(|&p| p == ctx.accounts.player.key())
+            .ok_or(ErrorCode::PlayerNotInRound)?;
     
-        // Check if all other players have paid
+        let turn = player_index as u8;
+        require!(turn < round.number_of_players, ErrorCode::InvalidTurn);
+    
+        // Check if the turn has already been withdrawn
+        require!((round.withdrawn_turns[turn as usize] & (1 << player_index)) == 0, ErrorCode::TurnAlreadyWithdrawn);
+    
         let expected_amount = round.payment_amount * ((round.players.len() as u64) - 1);
-        require!(round.current_turn_paid_amount == expected_amount, ErrorCode::InsufficientFunds);
+        require!(round.turn_accumulations[turn as usize] == expected_amount, ErrorCode::InsufficientFunds);
     
-        // Transfer the funds to the player
-        let transfer_amount = round.current_turn_paid_amount;
+        let transfer_amount = expected_amount;
         let round_seeds = &[
             b"round",
             round.round_id.as_bytes(),
             &[ctx.bumps.round]
         ];
-        msg!("Round Seeds: {:?}", round_seeds);
     
         token::transfer(
             CpiContext::new_with_signer(
@@ -140,12 +157,48 @@ pub mod vaquinha {
     
         // Update round state
         let round = &mut ctx.accounts.round;
-        round.current_turn_paid_amount = 0;
-        round.current_index_of_player += 1;
+        round.withdrawn_turns[turn as usize] |= 1 << player_index;
     
-        if round.current_index_of_player as usize == round.players.len() {
-            round.status = RoundStatus::Completed;
-        }
+        msg!("Player {} withdrew {} tokens for turn {}", ctx.accounts.player.key(), transfer_amount, turn);
+    
+        Ok(())
+    }
+
+    pub fn withdraw_collateral(ctx: Context<WithdrawCollateral>) -> Result<()> {
+        let round = &ctx.accounts.round;
+        require!(round.status == RoundStatus::Completed, ErrorCode::RoundNotCompleted);
+    
+        let player_index = round.players.iter().position(|&p| p == ctx.accounts.player.key())
+            .ok_or(ErrorCode::PlayerNotInRound)?;
+    
+        require!(!round.withdrawn_collateral[player_index], ErrorCode::CollateralAlreadyWithdrawn);
+    
+        let withdraw_amount = round.payment_amount * (round.number_of_players as u64);
+    
+        let round_seeds = &[
+            b"round",
+            round.round_id.as_bytes(),
+            &[ctx.bumps.round]
+        ];
+    
+        token::transfer(
+            CpiContext::new_with_signer(
+                ctx.accounts.token_program.to_account_info(),
+                Transfer {
+                    from: ctx.accounts.round_token_account.to_account_info(),
+                    to: ctx.accounts.player_token_account.to_account_info(),
+                    authority: ctx.accounts.round.to_account_info(),
+                },
+                &[round_seeds]
+            ),
+            withdraw_amount,
+        )?;
+    
+        let round = &mut ctx.accounts.round;
+        round.total_amount_locked -= withdraw_amount;
+        round.withdrawn_collateral[player_index] = true;
+    
+        msg!("Player {} withdrew collateral of {} tokens", ctx.accounts.player.key(), withdraw_amount);
     
         Ok(())
     }
@@ -166,12 +219,14 @@ pub struct Round {
     pub token_mint: Pubkey,
     pub number_of_players: u8,
     pub players: Vec<Pubkey>,
-    pub current_index_of_player: u8,
-    pub current_turn_paid_amount: u64,
     pub total_amount_locked: u64,
     pub available_slots: u8,
     pub frequency_of_turns: i64,
     pub status: RoundStatus,
+    pub withdrawn_collateral: Vec<bool>,
+    pub turn_accumulations: Vec<u64>,
+    pub paid_turns: Vec<u64>,
+    pub withdrawn_turns: Vec<u8>,
 }
 
 #[derive(Accounts)]
@@ -186,12 +241,14 @@ pub struct InitializeRound<'info> {
                 32 + // token_mint
                 1 + // number_of_players
                 (32 * 50) + // players (assuming max 50 players)
-                1 + // current_index_of_player
-                8 + // current_turn_paid_amount
                 8 + // total_amount_locked
                 1 + // available_slots
                 8 + // frequency_of_turns
                 1 + // status
+                50 + // withdrawn_collateral (assuming max 50 players)
+                (8 * 50) + // turn_accumulations (assuming max 50 players)
+                (8 * 50) + // paid_turns (assuming max 50 players)
+                50 + // withdrawn_turns (assuming max 50 players)
                 50,  // some extra space for future use
         seeds = [b"round".as_ref(), round_id.as_bytes()],
         bump
@@ -248,6 +305,22 @@ pub struct WithdrawTurn<'info> {
     pub token_program: Program<'info, Token>,
 }
 
+#[derive(Accounts)]
+pub struct WithdrawCollateral<'info> {
+    #[account(
+        mut,
+        seeds = [b"round", round.round_id.as_bytes()],
+        bump
+    )]
+    pub round: Account<'info, Round>,
+    pub player: Signer<'info>,
+    #[account(mut)]
+    pub player_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub round_token_account: Account<'info, TokenAccount>,
+    pub token_program: Program<'info, Token>,
+}
+
 #[error_code]
 pub enum ErrorCode {
     #[msg("The round is not in pending status")]
@@ -261,5 +334,17 @@ pub enum ErrorCode {
     #[msg("Insufficient funds for withdrawal")]
     InsufficientFunds,
     #[msg("Turn already paid")]
-    TurnAlreadyPaid
+    TurnAlreadyPaid,
+    #[msg("The round is not completed")]
+    RoundNotCompleted,
+    #[msg("Player is not part of this round")]
+    PlayerNotInRound,
+    #[msg("Invalid turn")]
+    InvalidTurn,
+    #[msg("Turn has already been withdrawn")]
+    TurnAlreadyWithdrawn,
+    #[msg("Collateral has already been withdrawn")]
+    CollateralAlreadyWithdrawn,
+    #[msg("Players cannot pay for their own turn")]
+    CannotPayOwnTurn,
 }
