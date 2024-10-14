@@ -115,8 +115,7 @@ const Page = () => {
       }
       const amount = group.collateralAmount;
       const { tx, error, success } = await depositCollateralAndCreate(
-        group,
-        amount
+        group
       );
       if (!success) {
         await deleteGroup(group.id);

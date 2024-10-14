@@ -18,10 +18,9 @@ export const useVaquinhaDeposit = () => {
 
   const depositCollateralAndCreate = useCallback(
     async (
-      group: GroupResponseDTO,
-      amount: number
+      group: GroupResponseDTO
     ): Promise<{ tx: string; error: any; success: boolean }> => {
-      const paymentAmount = amount * USDC_DECIMALS;
+      const paymentAmount = group.amount * USDC_DECIMALS;
       const numberOfPlayers = group.totalMembers;
       const frequencyOfTurns = convertFrequencyToTimestamp(group.period);
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'; // Circle USDC
