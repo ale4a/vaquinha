@@ -41,23 +41,13 @@ export default function GroupTablePayments({
   const handleClick = async (round: number) => {
     setIsLoading(true);
     try {
-      const { tx, error, success } = await depositRoundPayment(
-        group.id,
-        group.amount,
-        group.totalMembers,
-        group.period
-      );
+      const amount = group.amount;
+      const { tx, error, success } = await depositRoundPayment(group, amount);
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
-      await depositGroupPayment(
-        group.id,
-        publicKey,
-        tx,
-        round,
-        group.collateralAmount
-      );
+      await depositGroupPayment(group.id, publicKey, tx, round, amount);
       await refetch();
     } catch (error) {
       logError(LogLevel.INFO)(error);
