@@ -1,4 +1,4 @@
-import { useInitializeRound } from '@/components/vaquinha/vaquinha-data-access';
+import { useProgramMethods } from '@/components/vaquinha/vaquinha-data-access';
 import { GroupPeriod, GroupResponseDTO } from '@/types';
 import { BN } from '@coral-xyz/anchor';
 import { useCallback } from 'react';
@@ -14,7 +14,7 @@ const convertFrequencyToTimestamp = (period: GroupPeriod): BN => {
 };
 
 export const useVaquinhaDeposit = () => {
-  const { initializeRound } = useInitializeRound();
+  const { initializeRound, addPlayer, payTurn } = useProgramMethods();
 
   const depositCollateralAndCreate = useCallback(
     async (
@@ -26,6 +26,7 @@ export const useVaquinhaDeposit = () => {
       const frequencyOfTurns = convertFrequencyToTimestamp(group.period);
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'; // Circle USDC
       const { tx, error } = await initializeRound(
+        group.id,
         paymentAmount,
         numberOfPlayers,
         frequencyOfTurns,
@@ -40,25 +41,29 @@ export const useVaquinhaDeposit = () => {
   const depositCollateralAndJoin = useCallback(
     async (
       group: GroupResponseDTO,
-      amount: number
     ): Promise<{ tx: string; error: any; success: boolean }> => {
-      const tx = 'testing';
-      const error = '';
+      const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
+      const { tx, error } = await addPlayer(
+        group.id,
+        tokenMintAddress
+      );
       const success = true;
-      return { tx, error, success };
+      return { tx: tx || 'testing', error, success };
     },
-    [initializeRound]
+    [addPlayer]
   );
 
   const depositRoundPayment = useCallback(
     async (
-      group: GroupResponseDTO,
-      amount: number
+      group: GroupResponseDTO
     ): Promise<{ tx: string; error: any; success: boolean }> => {
-      const tx = 'testing';
-      const error = '';
+      const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
+      const { tx, error } = await payTurn(
+        group.id,
+        tokenMintAddress
+      );
       const success = true;
-      return { tx, error, success };
+      return { tx: tx || 'testing', error, success };
     },
     []
   );

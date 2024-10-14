@@ -77,8 +77,7 @@ const GroupDetailPage = () => {
     try {
       const amount = group.collateralAmount;
       const { tx, error, success } = await depositCollateralAndJoin(
-        group,
-        amount
+        group
       );
       if (!success) {
         logError(LogLevel.INFO)(error);
@@ -96,7 +95,7 @@ const GroupDetailPage = () => {
     setIsLoading(true);
     try {
       const amount = group.amount;
-      const { tx, error, success } = await withdrawalEarnedRound(group, amount);
+      const { tx, error, success } = await withdrawalEarnedRound(group);
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');

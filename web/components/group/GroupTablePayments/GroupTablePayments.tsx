@@ -42,7 +42,7 @@ export default function GroupTablePayments({
     setIsLoading(true);
     try {
       const amount = group.amount;
-      const { tx, error, success } = await depositRoundPayment(group, amount);
+      const { tx, error, success } = await depositRoundPayment(group);
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');

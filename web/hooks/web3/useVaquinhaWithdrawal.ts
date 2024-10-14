@@ -1,7 +1,10 @@
 import { GroupResponseDTO } from '@/types';
 import { useCallback } from 'react';
+import { useProgramMethods } from '@/components/vaquinha/vaquinha-data-access';
 
 export const useVaquinhaWithdrawal = () => {
+  const { withdrawTurn } = useProgramMethods();
+
   const withdrawalCollateral = useCallback(
     async (
       group: GroupResponseDTO,
@@ -17,13 +20,15 @@ export const useVaquinhaWithdrawal = () => {
 
   const withdrawalEarnedRound = useCallback(
     async (
-      group: GroupResponseDTO,
-      amount: number
+      group: GroupResponseDTO
     ): Promise<{ tx: string; error: any; success: boolean }> => {
-      const tx = 'testing';
-      const error = '';
+      const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
+      const { tx, error } = await withdrawTurn(
+        group.id,
+        tokenMintAddress
+      );
       const success = true;
-      return { tx, error, success };
+      return { tx: tx || 'testing', error, success };
     },
     []
   );
