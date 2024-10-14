@@ -123,7 +123,7 @@
       "args": []
     },
     {
-      "name": "withdraw",
+      "name": "withdrawTurn",
       "accounts": [
         {
           "name": "round",

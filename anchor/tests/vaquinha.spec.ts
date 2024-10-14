@@ -326,7 +326,7 @@ describe('vaquinha', () => {
       console.log("Round Token Account:", roundTokenAccount.toString());
   
       const tx = await program.methods
-        .withdraw()
+        .withdrawTurn()
         .accounts({
           round: roundPDA,
           player: currentPlayer,

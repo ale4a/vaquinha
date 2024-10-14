@@ -123,7 +123,7 @@ export type Vaquinha = {
       "args": []
     },
     {
-      "name": "withdraw",
+      "name": "withdrawTurn",
       "accounts": [
         {
           "name": "round",
@@ -394,7 +394,7 @@ export const IDL: Vaquinha = {
       "args": []
     },
     {
-      "name": "withdraw",
+      "name": "withdrawTurn",
       "accounts": [
         {
           "name": "round",

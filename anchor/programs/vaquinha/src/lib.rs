@@ -102,7 +102,7 @@ pub mod vaquinha {
         Ok(())
     }
 
-    pub fn withdraw(ctx: Context<Withdraw>) -> Result<()> {
+    pub fn withdraw_turn(ctx: Context<WithdrawTurn>) -> Result<()> {
         msg!("Round Token Account owner: {:?}", ctx.accounts.round_token_account.owner);
         msg!("Round PDA: {:?}", ctx.accounts.round.key());
         let round = &ctx.accounts.round;
@@ -233,7 +233,7 @@ pub struct PayTurn<'info> {
 }
 
 #[derive(Accounts)]
-pub struct Withdraw<'info> {
+pub struct WithdrawTurn<'info> {
     #[account(
         mut,
         seeds = [b"round", round.round_id.as_bytes()],
