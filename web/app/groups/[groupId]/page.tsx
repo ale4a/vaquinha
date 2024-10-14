@@ -91,17 +91,13 @@ const GroupDetailPage = () => {
   const handleWithdrawEarnedRound = async () => {
     setIsLoading(true);
     try {
-      const { tx, error, success } = await withdrawalEarnedRound(
-        group.id,
-        group.amount,
-        group.totalMembers,
-        group.period
-      );
+      const amount = group.amount;
+      const { tx, error, success } = await withdrawalEarnedRound(group, amount);
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
-      await withdrawalGroupEarnedRound(group.id, publicKey, tx, group.amount);
+      await withdrawalGroupEarnedRound(group.id, publicKey, tx, amount);
       await refetch();
     } catch (error) {
       logError(LogLevel.INFO)(error);
@@ -112,22 +108,16 @@ const GroupDetailPage = () => {
   const handleWithdrawEarnedInterest = async () => {
     setIsLoading(true);
     try {
+      const amount = 0;
       const { tx, error, success } = await withdrawalEarnedInterest(
-        group.id,
-        group.amount,
-        group.totalMembers,
-        group.period
+        group,
+        amount
       );
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
-      await withdrawalGroupEarnedInterest(
-        group.id,
-        publicKey,
-        tx,
-        group.amount
-      );
+      await withdrawalGroupEarnedInterest(group.id, publicKey, tx, amount);
       await refetch();
     } catch (error) {
       logError(LogLevel.INFO)(error);
@@ -138,12 +128,8 @@ const GroupDetailPage = () => {
   const handleWithdrawCollateral = async () => {
     setIsLoading(true);
     try {
-      const { tx, error, success } = await withdrawalCollateral(
-        group.id,
-        group.amount,
-        group.totalMembers,
-        group.period
-      );
+      const amount = group.collateralAmount;
+      const { tx, error, success } = await withdrawalCollateral(group, amount);
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');

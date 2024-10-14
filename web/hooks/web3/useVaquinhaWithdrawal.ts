@@ -1,13 +1,11 @@
-import { GroupPeriod } from '@/types';
+import { GroupResponseDTO } from '@/types';
 import { useCallback } from 'react';
 
 export const useVaquinhaWithdrawal = () => {
   const withdrawalCollateral = useCallback(
     async (
-      groupId: string,
-      amount: number,
-      totalMembers: number,
-      period: GroupPeriod
+      group: GroupResponseDTO,
+      amount: number
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tx = 'testing';
       const error = '';
@@ -19,10 +17,8 @@ export const useVaquinhaWithdrawal = () => {
 
   const withdrawalEarnedRound = useCallback(
     async (
-      groupId: string,
-      amount: number,
-      totalMembers: number,
-      period: GroupPeriod
+      group: GroupResponseDTO,
+      amount: number
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tx = 'testing';
       const error = '';
@@ -34,10 +30,8 @@ export const useVaquinhaWithdrawal = () => {
 
   const withdrawalEarnedInterest = useCallback(
     async (
-      groupId: string,
-      amount: number,
-      totalMembers: number,
-      period: GroupPeriod
+      group: GroupResponseDTO,
+      amount: number
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tx = 'testing';
       const error = '';
