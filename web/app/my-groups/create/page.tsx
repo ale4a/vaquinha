@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/components/global/ButtonComponent/ButtonComponent';
+import ErrorView from '@/components/global/Error/ErrorView';
 import { InputDate } from '@/components/global/form';
 import InputSelect from '@/components/global/form/InputSelect/InputSelect';
 import { Option } from '@/components/global/form/InputSelect/InputSelect.types';
@@ -10,16 +11,13 @@ import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
 import { ONE_DAY } from '@/config/constants';
+import { useGroup, useVaquinhaDeposit } from '@/hooks';
 import { GroupCreateDTO, GroupCrypto, GroupPeriod, LogLevel } from '@/types';
 import { logError } from '@/utils/log';
-import { BN } from '@coral-xyz/anchor';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useInitializeRound } from '../../../components/vaquinha/vaquinha-data-access';
-
-const USDC_DECIMALS = 1000000;
 
 const optionsCrypto: Option<GroupCrypto>[] = [
   {
@@ -61,8 +59,8 @@ const optionsMembers: Option<number>[] = [
     value: 10,
   },
   {
-    text: '15',
-    value: 15,
+    text: '12',
+    value: 12,
   },
 ];
 
@@ -71,70 +69,69 @@ const messageText =
 
 const Page = () => {
   const now = new Date();
-  const [newGroup, setNewGroup] = useState<GroupCreateDTO>({
+  const [newGroup, setNewGroup] = useState<
+    Omit<GroupCreateDTO, 'customerPublicKey' | 'transactionSignature'>
+  >({
     name: '',
-    amount: 50,
+    amount: 0,
     crypto: GroupCrypto.USDC,
-    totalMembers: 2,
+    totalMembers: 0,
     period: GroupPeriod.MONTHLY,
     startsOnTimestamp: now.getTime() + ONE_DAY,
-    customerPublicKey: '',
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { publicKey } = useWallet();
-  const { initializeRound } = useInitializeRound();
+  const { depositCollateralAndCreate } = useVaquinhaDeposit();
+  const { createGroup, depositGroupCollateral, deleteGroup } = useGroup();
   useEffect(() => {
     if (!publicKey) {
       router.push('/groups');
     }
   }, [router, publicKey]);
 
-  const convertFrequencyToTimestamp = (period: 'weekly' | 'monthly'): BN => {
-    const SECONDS_PER_DAY = 86400; // 24 hours * 60 minutes * 60 seconds
-    const frequencyInDays = period === 'weekly' ? 7 : 30;
-    const frequencyInSeconds = frequencyInDays * SECONDS_PER_DAY;
-    // Return as BN (Big Number) which is commonly used for large integers in Solana
-    return new BN(frequencyInSeconds);
-  };
-
-  const onSave = async () => {
-    const paymentAmount = newGroup.amount * USDC_DECIMALS;
-    const numberOfPlayers = newGroup.totalMembers;
-    const frequencyOfTurns = convertFrequencyToTimestamp(newGroup.period);
-    const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'; // Circle USDC
-
-    setLoading(true);
-    const { tx, error } = await initializeRound(
-      paymentAmount,
-      numberOfPlayers,
-      frequencyOfTurns,
-      tokenMintAddress
-    );
-
-    if (tx || 2 * 2 === 4) {
-      try {
-        await fetch('/api/group/create', {
-          method: 'POST',
-          body: JSON.stringify({
-            ...newGroup,
-            customerPublicKey: publicKey,
-          }),
-        });
-        router.push('/my-groups?tab=pending');
-      } catch (error) {
-        logError(LogLevel.INFO)(error);
-      }
-    } else {
-      logError(LogLevel.INFO)(error);
-    }
-
-    setLoading(false);
-  };
-
+  console.log({ newGroup });
   if (loading) {
     return <LoadingSpinner />;
   }
+
+  if (!publicKey) {
+    return <ErrorView />;
+  }
+
+  const onSave = async () => {
+    setLoading(true);
+    try {
+      const group = await createGroup(
+        newGroup.name,
+        newGroup.amount,
+        newGroup.crypto,
+        newGroup.totalMembers,
+        newGroup.period,
+        newGroup.startsOnTimestamp,
+        publicKey
+      );
+      if (typeof group.id !== 'string') {
+        throw new Error('group not created');
+      }
+      const amount = group.collateralAmount;
+      const { tx, error, success } = await depositCollateralAndCreate(
+        group,
+        amount
+      );
+      if (!success) {
+        await deleteGroup(group.id);
+        logError(LogLevel.INFO)(error);
+        throw new Error('transaction error');
+      }
+      const collateralAmount = newGroup.amount * newGroup.totalMembers;
+      await depositGroupCollateral(group.id, publicKey, tx, amount);
+      router.push('/my-groups?tab=pending');
+    } catch (error) {
+      logError(LogLevel.INFO)(error);
+    }
+    setLoading(false);
+  };
 
   const filterDateTime = (time: Date) => {
     const selectedDate = new Date(time);
@@ -147,12 +144,16 @@ const Page = () => {
   return (
     <div>
       <TabTitleHeader text="Create new group" />
-      <div className="flex flex-col justify-center">
-        <div>
-          <div className="mb-3">
+      <div className="flex flex-col justify-center gap-2">
+        <div className="flex gap-2 w-full ">
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">
+              Name of the Group *
+            </label>
             <InputText
-              label="Group Name"
+              label="Group Name *"
               type="text"
+              placeHolder="Group Name *"
               value={newGroup.name}
               onChange={(name) =>
                 setNewGroup((prevState) => ({
@@ -161,17 +162,39 @@ const Page = () => {
                 }))
               }
             />
-            {!newGroup.name && <p className="text-accent-100">Required</p>}
           </div>
-          <div className="grid grid-cols-2 gap-2 mb-3">
+          {/* {!newGroup.name && <p className="text-accent-100">Required</p>} */}
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">
+              Number of the members
+            </label>
+            <InputSelect<number>
+              label="Members"
+              options={optionsMembers}
+              value={newGroup.totalMembers}
+              onChange={(totalMembers) =>
+                setNewGroup((prevState) => ({ ...prevState, totalMembers }))
+              }
+            />
+          </div>
+        </div>
+        <div className="flex gap-2 w-full">
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">
+              Amount of the Group
+            </label>
             <InputText<number>
               label="Amount"
               type="number"
-              value={newGroup.amount}
+              placeHolder="Amount of the group *"
+              value={newGroup.amount ? newGroup.amount : undefined}
               onChange={(amount) =>
                 setNewGroup((prevState) => ({ ...prevState, amount }))
               }
             />
+          </div>
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">Crypto</label>
             <InputSelect
               label="Crypto"
               options={optionsCrypto}
@@ -182,15 +205,12 @@ const Page = () => {
               }
             />
           </div>
-          <div className="grid grid-cols-3 gap-5 mb-4">
-            <InputSelect<number>
-              label="Members"
-              options={optionsMembers}
-              value={newGroup.totalMembers}
-              onChange={(totalMembers) =>
-                setNewGroup((prevState) => ({ ...prevState, totalMembers }))
-              }
-            />
+        </div>
+        <div className="flex gap-2 mb-4">
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">
+              Payment period
+            </label>
             <InputSelect
               label="Payment period"
               options={[
@@ -208,6 +228,9 @@ const Page = () => {
                 setNewGroup((prevState) => ({ ...prevState, period }))
               }
             />
+          </div>
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">Starts in</label>
             <InputDate
               label="Starts in"
               value={new Date(newGroup.startsOnTimestamp)}
@@ -221,31 +244,25 @@ const Page = () => {
               filterDate={filterDateTime}
             />
           </div>
-          <div className="flex justify-center text-2xl text-accent-100">
-            Group Information
-          </div>
-          <div className="mb-5">
-            <GroupSummary {...newGroup} />
-          </div>
-          <Message messageText={messageText} />
-          <div className="flex gap-5 my-5 justify-between">
-            <Link href="/my-groups" className="contents">
-              <Button
-                label="Cancel"
-                type="secondary"
-                size="large"
-                className="flex-1"
-              />
-            </Link>
-            <Button
-              label="Deposit Collateral"
-              type="primary"
-              size="large"
-              onClick={onSave}
-              disabled={!newGroup.name.length}
-              className="flex-1"
-            />
-          </div>
+        </div>
+        <div className="flex justify-center text-2xl text-accent-100">
+          Group Information
+        </div>
+        <div className="mb-5">
+          <GroupSummary {...newGroup} />
+        </div>
+        <Message messageText={messageText} />
+        <div className="flex flex-col gap-5 my-5 justify-between">
+          <Button
+            label="Create And Deposit Collateral"
+            type="primary"
+            size="large"
+            onClick={onSave}
+            disabled={!newGroup.name.length}
+          />
+          <Link href="/my-groups" className="contents">
+            <Button label="Cancel" type="secondary" size="large" />
+          </Link>
         </div>
       </div>
     </div>

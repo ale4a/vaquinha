@@ -7,7 +7,7 @@ import {
 import { CreateEntityDocument } from '@/types/commons';
 import { Filter, Sort } from 'mongodb';
 
-const { findByFilter, insertOne, findOne, updateOne } =
+const { findByFilter, insertOne, findOne, updateOne, deleteOne } =
   dbClient.crud<GroupBaseDocument>('group');
 
 export const getGroups = async (
@@ -28,3 +28,5 @@ export const updateGroup = async (
   id: string,
   doc: UpdateEntityDocument<GroupDocument>
 ) => updateOne(id, doc, null);
+
+export const deleteGroup = async (id: string) => deleteOne(id, null);

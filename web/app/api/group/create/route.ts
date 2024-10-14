@@ -1,8 +1,13 @@
+import { EMPTY_WITHDRAWALS_DOCUMENT } from '@/config/constants';
+import { toGroupResponseDTO } from '@/helpers';
 import { createGroup } from '@/services';
+import { getGroup } from '@/services/app/group/services';
 import { dbClient } from '@/services/database';
-import { GroupBaseDocument, GroupCreateDTO, GroupStatus } from '@/types';
+import { GroupBaseDocument, GroupCreateDTO } from '@/types';
+import { shuffle } from '@/utils/array';
 
 export async function POST(request: Request) {
+  // const now = new Date();
   await dbClient.connect();
 
   const {
@@ -15,27 +20,47 @@ export async function POST(request: Request) {
     customerPublicKey,
   } = (await request.json()) as GroupCreateDTO;
 
-  const collateral = amount * totalMembers;
+  const collateralAmount = amount * totalMembers;
+  const memberPositions = [];
+  for (let i = 1; i <= totalMembers; i++) {
+    memberPositions.push(i);
+  }
+  shuffle(memberPositions);
+  const position = memberPositions.pop() as number;
 
   const newGroup: GroupBaseDocument = {
     crypto,
     name,
     amount,
-    collateral,
+    collateralAmount,
     totalMembers,
     period,
     startsOnTimestamp,
-    status: GroupStatus.PENDING,
+    memberPositions: [...memberPositions],
     members: {
       [customerPublicKey]: {
+        position,
         publicKey: customerPublicKey,
         isOwner: true,
-        collateralDeposit: { timestamp: Date.now(), amount: collateral },
+        deposits: {
+          // [0]: {
+          //   amount: collateral,
+          //   round: 0,
+          //   timestamp: now.getTime(),
+          //   transactionSignature,
+          // },
+        },
+        withdrawals: EMPTY_WITHDRAWALS_DOCUMENT,
       },
     },
   };
 
   const result = await createGroup(newGroup);
 
-  return Response.json({ id: result.insertedId });
+  return Response.json({
+    content: toGroupResponseDTO(
+      await getGroup(result.insertedId.toString()),
+      customerPublicKey
+    ),
+  });
 }

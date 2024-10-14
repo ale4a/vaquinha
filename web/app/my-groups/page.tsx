@@ -9,6 +9,7 @@ import { ListGroups } from '@/components/group/ListGroups/ListGroups';
 import {
   GroupCrypto,
   GroupFilters,
+  GroupPeriod,
   GroupResponseDTO,
   GroupStatus,
 } from '@/types';
@@ -36,7 +37,7 @@ const Page = () => {
   const tab = searchParams.get('tab');
   const [currentTab, setCurrentTab] = useState(tab || MyGroupsTab.ACTIVE);
   const [filters, setFilters] = useState<GroupFilters>({
-    period: '',
+    period: GroupPeriod.ALL,
     orderBy: '+amount',
     crypto: GroupCrypto.USDC,
     amount: 0,
@@ -51,9 +52,11 @@ const Page = () => {
       fetch(
         `/api/group?customerPublicKey=${publicKey}&status=${currentTab}&orderBy=${encodeURIComponent(
           filters.orderBy
-        )}${filters.period ? `&period=${filters.period}` : ''}&crypto=${
-          filters.crypto
-        }${filters.amount ? `&amount=${filters.amount}` : ''}`
+        )}${
+          filters.period !== GroupPeriod.ALL ? `&period=${filters.period}` : ''
+        }&crypto=${filters.crypto}${
+          filters.amount ? `&amount=${filters.amount}` : ''
+        }`
       ).then((res) => res.json()),
   });
 
@@ -62,7 +65,7 @@ const Page = () => {
       <>
         <MainTabsHeader />
         <div className="flex-1 flex flex-col gap-4 justify-center items-center">
-          <p className="text-accent-100">Please select a valid wallet</p>
+          <p className="text-accent-100">Please select a wallet</p>
         </div>
       </>
     );

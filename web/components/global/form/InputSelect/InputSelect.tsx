@@ -1,3 +1,4 @@
+import { TiArrowSortedDown } from 'react-icons/ti';
 import { useId } from 'react';
 import { Props } from './InputSelect.types';
 
@@ -25,29 +26,35 @@ export default function InputSelect<T extends string | number = string>({
   const id = useId();
 
   return (
-    <div className={'flex flex-col ' + className}>
-      <label className={'text-accent-100 ' + SIZE_LABEL[size]} htmlFor={id}>
+    <div className={'flex flex-col w-full gap-1 ' + className}>
+      {/* <label className={'text-accent-100 ' + SIZE_LABEL[size]} htmlFor={id}>
         {label}
-      </label>
-      <select
-        id={id}
-        className={
-          'border border-white/40 rounded-lg bg-bg-200 outline-0 focus:bg-bg-300 text-accent-100 focus:ring-bg-200 ' +
-          SIZE_SELECT[size]
-        }
-        defaultValue={defaultValue} // Usa defaultValue aquí
-        value={value}
-        onChange={({ target }) => onChange?.(target.value as T)}
-      >
-        <option value="" disabled>
-          Choose an option
-        </option>
-        {options.map((option) => (
-          <option value={option.value} key={option.value}>
-            {option.text}
+      </label> */}
+      <div className="relative ">
+        <select
+          id={id}
+          className={
+            'appearance-none border w-full border-white/40 px-2 rounded-lg bg-bg-200 outline-0 focus:bg-bg-300 text-accent-100 focus:ring-bg-200 ' +
+            SIZE_SELECT[size] +
+            ' focus-within:border-primary-200 hover:border-primary-200 transition-colors duration-500'
+          }
+          defaultValue={defaultValue} // Usa defaultValue aquí
+          value={value}
+          onChange={({ target }) => onChange?.(target.value as T)}
+        >
+          <option value="" disabled>
+            Order by
           </option>
-        ))}
-      </select>
+          {options.map((option) => (
+            <option value={option.value} key={option.value}>
+              {option.text}
+            </option>
+          ))}
+        </select>
+        <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+          <TiArrowSortedDown />
+        </div>
+      </div>
     </div>
   );
 }

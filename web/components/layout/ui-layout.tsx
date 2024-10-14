@@ -11,8 +11,8 @@ export function UiLayout({
   links: { label: string; path: string }[];
 }) {
   return (
-    <div className="h-full flex justify-center bg-black">
-      <div className="w-full h-full bg-bg-100 flex flex-col">
+    <div className="h-full flex justify-center bg-bg-200">
+      <div className="w-full h-full sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl bg-bg-100 flex flex-col">
         {/* <div className="h-20 ">
           <MainTabsHeader />
         </div> */}
@@ -22,9 +22,7 @@ export function UiLayout({
             <ClusterUiSelect />
           </div>
         </div> */}
-        <div className="flex flex-col flex-grow overflow-y-auto px-4">
-          {children}
-        </div>
+        <div className="flex flex-col h-full mx-2">{children}</div>
         <div className="bg-gray-900">
           <Navbar links={links} />
         </div>

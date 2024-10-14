@@ -1,49 +1,56 @@
 'use client';
+
+import ErrorView from '@/components/global/Error/ErrorView';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
-import Table from '@/components/global/Table/Table';
-import { item } from '@/components/global/Table/Table.types';
+import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
+import GroupTablePayments from '@/components/group/GroupTablePayments/GroupTablePayments';
+import { GroupResponseDTO } from '@/types';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
 import React from 'react';
 
-const items: item[] = [
-  {
-    id: '0',
-    amount: 68,
-    paymentDeadline: '13-11-2024',
-    status: 'Paid',
-  },
-  {
-    id: '1',
-    amount: 69,
-    paymentDeadline: '14-11-2024',
-    status: 'Paid',
-  },
-  {
-    id: '2',
-    amount: 69,
-    paymentDeadline: '14-11-2024',
-    status: 'Paid',
-  },
-  {
-    id: '3',
-    amount: 69,
-    paymentDeadline: '14-11-2024',
-    status: 'Pay',
-  },
-  {
-    id: '4',
-    amount: 69,
-    paymentDeadline: '14-11-2024',
-    status: 'Pending',
-  },
-];
-
 const PaymentsPage = () => {
+  const { groupId } = useParams();
+  const { publicKey } = useWallet();
+  const {
+    isPending: isPendingData,
+    isLoading: isLoadingData,
+    isFetching: isFetchingData,
+    data,
+    error,
+    refetch,
+  } = useQuery<{
+    content: GroupResponseDTO;
+  }>({
+    enabled: !!publicKey,
+    queryKey: ['group', publicKey],
+    queryFn: () =>
+      fetch(`/api/group/${groupId}?customerPublicKey=${publicKey}`).then(
+        (res) => res.json()
+      ),
+  });
+
+  const loading = isPendingData || isLoadingData || isFetchingData;
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+  if (!data) {
+    return <LoadingSpinner />;
+  }
+  if (!publicKey) {
+    return <ErrorView />;
+  }
+
   return (
     <>
-      <div className="h-20">
-        <TabTitleHeader text="Group Information" />
-      </div>
-      <Table items={items} />
+      <TabTitleHeader text="Group Information" />
+      {loading && <LoadingSpinner />}
+      {error && !loading && !data && <ErrorView />}
+      {!loading && data && (
+        <GroupTablePayments group={data?.content} refetch={refetch} />
+      )}
     </>
   );
 };

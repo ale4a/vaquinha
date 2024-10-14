@@ -84,12 +84,14 @@ const getIcon = (label: string, isActive: boolean) => {
 
 const Navbar: React.FC<NavbarProps> = ({ links }) => {
   const pathname = usePathname();
+  const pathSegments = pathname.split('/').filter((segment) => segment);
+  const mainPath = '/' + pathSegments[0];
 
   return (
     <nav className=" bottom-0 w-full bg-bg-100 text-white shadow-top-custom">
       <ul className="h-20 flex justify-around items-center pt-5 pb-3">
         {links.map(({ label, path }) => {
-          const isActive = pathname === path;
+          const isActive = mainPath === path;
           return (
             <li key={label} className="text-center flex-1">
               <Link

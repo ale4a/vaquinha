@@ -5,4 +5,5 @@ export interface Props<T extends string | number = string> {
   onChange?: (value: T) => void;
   className?: string;
   size?: 'small' | 'medium' | 'large';
+  placeHolder?: string;
 }

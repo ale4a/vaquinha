@@ -19,13 +19,23 @@ const MainTabsHeader = () => {
           <Image
             src="/icons/back-arrow.svg"
             alt="Groups Active"
-            width={28}
-            height={28}
+            width={1}
+            height={1}
           />
         </button>
       )}
-      <div className="flex flex-1 justify-between items-center">
-        <p className="font-medium text-3xl">Vaquinha</p>
+      <div className="flex flex-1 flex-wrap justify-between items-center">
+        <div className="flex gap-0.5">
+          <Image
+            src="/favicon.ico"
+            alt="Groups Active"
+            width={30}
+            height={15}
+          />
+          <span className="font-medium text-xl text-end flex justify-end items-end ">
+            VAQUINHA
+          </span>
+        </div>
         <div className="flex-none space-x-1 flex wallets-buttons">
           <WalletButton />
           <ClusterUiSelect />

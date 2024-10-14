@@ -1,3 +1,4 @@
+import { TiArrowSortedDown } from 'react-icons/ti';
 import { Option } from '@/components/global/form/InputSelect/InputSelect.types';
 import React, { useId } from 'react';
 
@@ -20,7 +21,7 @@ const SIZE_LABEL = {
 };
 
 export interface CurrencyInputTextProps<T extends string | number = string> {
-  label: string;
+  label?: string;
   value?: number;
   onChange?: (value: number) => void;
   optionValue?: T;
@@ -28,6 +29,7 @@ export interface CurrencyInputTextProps<T extends string | number = string> {
   className?: string;
   size?: 'small' | 'medium' | 'large';
   options: Option<T>[];
+  placeHolder: string;
 }
 
 export function CurrencyInputText<T extends string | number = string>({
@@ -39,46 +41,57 @@ export function CurrencyInputText<T extends string | number = string>({
   onChangeOption,
   className,
   size = 'medium',
+  placeHolder,
 }: CurrencyInputTextProps<T>) {
   const id = useId();
   return (
-    <div className={'flex flex-col ' + className}>
-      <label
+    <div className={'flex flex-col gap-1 ' + className}>
+      {/* <label
         className={'text-sm text-accent-100 ' + SIZE_LABEL[size]}
         htmlFor={id}
       >
         {label}
-      </label>
-      <div className="bg-bg-200 flex flex-row border border-white/40 rounded-lg">
+      </label> */}
+      <div className="bg-bg-200 flex flex-row border border-white/40 rounded-lg px-2 focus-within:border-primary-200 hover:border-primary-200 transition-colors duration-500">
         <input
           className={
             'flex-1 bg-transparent outline-0 text-accent-100 text-xs ' +
             SIZE[size]
           }
+          min={0}
+          placeholder={placeHolder}
           id={id}
-          value={value}
+          autoComplete={'off'}
+          // TODO: its necessary to show placeholder at the begin, but the value is it necessary? because this works without value
+          // value={value}
           onChange={({ target }) => onChange?.(target.valueAsNumber)}
           type="number"
           style={{ width: 24 }}
         />
-        <select
-          id={id}
-          className={
-            'w-14 bg-transparent outline-0 text-accent-100 focus:ring-bg-200 text-xs ' +
-            SIZE_SELECT[size]
-          }
-          value={optionValue}
-          onChange={({ target }) => onChangeOption?.(target.value as T)}
-        >
-          <option value="" disabled>
-            Choose an option
-          </option>
-          {options.map((option) => (
-            <option value={option.value} key={option.value}>
-              {option.text}
-            </option>
-          ))}
-        </select>
+        <div className="border-l border-white/40 mx-2 my-2"></div>
+        <div className="relative">
+          <select
+            id={id}
+            className={
+              'appearance-none w-14 bg-transparent outline-0 text-accent-100 focus:ring-bg-200 text-xs ' +
+              SIZE_SELECT[size]
+            }
+            value={optionValue}
+            onChange={({ target }) => onChangeOption?.(target.value as T)}
+          >
+            {/* <option value="" disabled>
+              Choose an option
+            </option> */}
+            {options.map((option) => (
+              <option value={option.value} key={option.value}>
+                {option.text}
+              </option>
+            ))}
+          </select>
+          <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none">
+            <TiArrowSortedDown />
+          </div>
+        </div>
       </div>
     </div>
   );

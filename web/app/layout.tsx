@@ -2,6 +2,7 @@ import './global.css';
 import { ClusterProvider } from '@/components/cluster/cluster-data-access';
 import { UiLayout } from '@/components/layout/ui-layout';
 import { SolanaProvider } from '@/components/solana/solana-provider';
+import { NextUIProvider } from '@nextui-org/react';
 import { ReactQueryProvider } from './react-query-provider';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'sweetalert2/src/sweetalert2.scss';
@@ -25,13 +26,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ReactQueryProvider>
-          <ClusterProvider>
-            <SolanaProvider>
-              <UiLayout links={links}>{children}</UiLayout>
-            </SolanaProvider>
-          </ClusterProvider>
-        </ReactQueryProvider>
+        <NextUIProvider className="h-full">
+          <ReactQueryProvider>
+            <ClusterProvider>
+              <SolanaProvider>
+                <UiLayout links={links}>{children}</UiLayout>
+              </SolanaProvider>
+            </ClusterProvider>
+          </ReactQueryProvider>
+        </NextUIProvider>
       </body>
     </html>
   );

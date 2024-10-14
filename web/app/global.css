@@ -6,6 +6,8 @@ html,
 body {
   height: 100%;
   font-family: 'ClashDisplay', sans-serif;
+  background-color: #2C2E30 !important;
+  color: #F5F5F5;
 }
 
 .wallet-adapter-button-trigger {
@@ -25,6 +27,9 @@ body {
 .wallet-adapter-button {
   font-family: inherit !important;
   font-size: small !important;
+}
+
+.wallet-adapter-button {
   height: 2rem !important;
   min-height: 2rem !important;
 }

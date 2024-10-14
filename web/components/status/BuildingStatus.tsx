@@ -5,29 +5,30 @@ import StatusStarted from './started/StatusStarted';
 
 interface BuildingStatusProps {
   value1: boolean;
+  label1: string;
   value2: boolean;
-  label2?: string;
+  label2: string;
   value3: boolean;
-  label3?: string;
+  label3: string;
 }
 
 const BuildingStatus = ({
   value1,
+  label1,
   value2,
-  label2 = 'Pending Group',
+  label2,
   value3,
-  label3 = 'Active Group',
+  label3,
 }: BuildingStatusProps) => {
-  const statusNameFirst = 'Collateral Deposited';
   return (
     <div className="flex justify-evenly text-accent-200">
       {value1 ? (
         <>
-          <StatusCompleted nameStatus={statusNameFirst} />
+          <StatusCompleted nameStatus={label1} />
         </>
       ) : (
         <>
-          <StatusStarted nameStatus={statusNameFirst} />
+          <StatusStarted nameStatus={label1} />
         </>
       )}
       <Divider className={value1 ? 'border-primary-200' : ''} />

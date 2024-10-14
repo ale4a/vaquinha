@@ -1,25 +1,41 @@
 'use client';
+
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
+import ErrorView from '@/components/global/Error/ErrorView';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import SummaryAction from '@/components/global/SummaryAction/SummaryAction';
 import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
 import BuildingStatus from '@/components/status/BuildingStatus';
-import { GroupResponseDTO, LogLevel } from '@/types';
-import { showAlert } from '@/utils/commons';
+import { getPaymentsTable } from '@/helpers';
+import { useGroup, useVaquinhaDeposit } from '@/hooks';
+import { useVaquinhaWithdrawal } from '@/hooks/web3/useVaquinhaWithdrawal';
+import { GroupResponseDTO, GroupStatus, LogLevel } from '@/types';
+import { showAlertWithConfirmation } from '@/utils/commons';
 import { logError } from '@/utils/log';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
-import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
 const GroupDetailPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { groupId } = useParams();
   const { publicKey } = useWallet();
+  const { depositCollateralAndJoin } = useVaquinhaDeposit();
+  const {
+    withdrawalEarnedRound,
+    withdrawalEarnedInterest,
+    withdrawalCollateral,
+  } = useVaquinhaWithdrawal();
+  const {
+    depositGroupCollateral,
+    withdrawalGroupCollateral,
+    withdrawalGroupEarnedInterest,
+    withdrawalGroupEarnedRound,
+  } = useGroup();
   const {
     isPending: isPendingData,
     isLoading: isLoadingData,
@@ -39,31 +55,91 @@ const GroupDetailPage = () => {
 
   const loading = isPendingData || isLoadingData || isFetchingData;
 
-  const step01 = !!data?.content?.collateralDeposited;
-  const step02 = step01 && data.content.slots === 0;
-  const step03 = step01 && step02 && data.content.isActive;
-
   if (isLoading) {
     return <LoadingSpinner />;
   }
+  if (!data) {
+    return <LoadingSpinner />;
+  }
+  if (!publicKey) {
+    return <ErrorView />;
+  }
 
-  const depositCollateral = async () => {
+  const group = data.content;
+  const isActive = group.status === GroupStatus.ACTIVE;
+  const step1 = !!group.myDeposits[0]?.successfullyDeposited;
+  const step2 = step1 && group.slots === 0;
+  const step3 = step1 && step2 && isActive;
+
+  const handleDepositCollateral = async () => {
     setIsLoading(true);
-    const tx = '';
-    const error = '';
-    if (!tx) {
-      try {
-        await fetch(`/api/group/${groupId}/deposit-collateral`, {
-          method: 'POST',
-          body: JSON.stringify({
-            customerPublicKey: publicKey,
-          }),
-        });
-        await refetch();
-      } catch (error) {
+    try {
+      const amount = group.collateralAmount;
+      const { tx, error, success } = await depositCollateralAndJoin(
+        group,
+        amount
+      );
+      if (!success) {
         logError(LogLevel.INFO)(error);
+        throw new Error('transaction error');
       }
-    } else {
+      await depositGroupCollateral(group.id, publicKey, tx, amount);
+      await refetch();
+    } catch (error) {
+      logError(LogLevel.INFO)(error);
+    }
+    setIsLoading(false);
+  };
+
+  const handleWithdrawEarnedRound = async () => {
+    setIsLoading(true);
+    try {
+      const amount = group.amount;
+      const { tx, error, success } = await withdrawalEarnedRound(group, amount);
+      if (!success) {
+        logError(LogLevel.INFO)(error);
+        throw new Error('transaction error');
+      }
+      await withdrawalGroupEarnedRound(group.id, publicKey, tx, amount);
+      await refetch();
+    } catch (error) {
+      logError(LogLevel.INFO)(error);
+    }
+    setIsLoading(false);
+  };
+
+  const handleWithdrawEarnedInterest = async () => {
+    setIsLoading(true);
+    try {
+      const amount = 0;
+      const { tx, error, success } = await withdrawalEarnedInterest(
+        group,
+        amount
+      );
+      if (!success) {
+        logError(LogLevel.INFO)(error);
+        throw new Error('transaction error');
+      }
+      await withdrawalGroupEarnedInterest(group.id, publicKey, tx, amount);
+      await refetch();
+    } catch (error) {
+      logError(LogLevel.INFO)(error);
+    }
+    setIsLoading(false);
+  };
+
+  const handleWithdrawCollateral = async () => {
+    setIsLoading(true);
+    try {
+      const amount = group.collateralAmount;
+      const { tx, error, success } = await withdrawalCollateral(group, amount);
+      if (!success) {
+        logError(LogLevel.INFO)(error);
+        throw new Error('transaction error');
+      }
+      await withdrawalGroupCollateral(group.id, publicKey, tx, group.amount);
+      await refetch();
+    } catch (error) {
       logError(LogLevel.INFO)(error);
     }
     setIsLoading(false);
@@ -73,85 +149,123 @@ const GroupDetailPage = () => {
     router.push(`/groups/${groupId}/payments`);
   };
 
+  const { items, firstUnpaidItemIndex } = getPaymentsTable(group);
+
+  const totalPayments = Object.values(group.myDeposits).reduce(
+    (sum, deposit) =>
+      sum + (deposit.successfullyDeposited && deposit.round > 0 ? 1 : 0),
+    0
+  );
+  const allPaymentsDone = totalPayments === group.totalMembers - 1;
+
   return (
     <>
-      <div className="h-20">
-        <TabTitleHeader text="Group Information" />
-      </div>
+      <TabTitleHeader text="Group Information" />
       {loading && <LoadingSpinner />}
       {!loading && data && (
         <div className="flex flex-col gap-2">
-          {data && <GroupSummary {...data?.content} />}
-          <BuildingStatus value1={step01} value2={step02} value3={step03} />
-          <SummaryAction
-            title="Payments"
-            content={
-              <>
-                <p>Paid of 2/9</p>
-                <p>Payment Deadline: 14-10-2024</p>
-              </>
-            }
-            actionLabel="Paid"
-            type="primary"
-            onAction={handleNavigateToPayments}
-          />
-
-          <SummaryAction
-            title="Round earned"
-            content={
-              <>
-                <p>Current Position: 1</p>
-                <p>Your position: 3</p>
-              </>
-            }
-            actionLabel="Withdraw"
-            type="info"
-            onAction={() => {
-              showAlert(
-                'Success!',
-                'Do you want to continue?',
-                'success',
-                'Cool'
-              );
-            }}
-          />
-
-          <SummaryAction
-            title="Intersed earned"
-            content={<p>1.5 USDC 6%</p>}
-            actionLabel="Withdraw"
-            type="info"
-            onAction={() => {
-              showAlert(
-                'Success!',
-                'Do you want to continue?',
-                'success',
-                'Cool'
-              );
-            }}
-          />
-
-          <SummaryAction
-            title="Claim Collateral"
-            content={<p>300 USDC</p>}
-            actionLabel="Withdraw"
-            type="info"
-            onAction={() => {
-              showAlert(
-                'Success!',
-                'Do you want to continue?',
-                'success',
-                'Cool'
-              );
-            }}
-          />
-
+          {data && <GroupSummary {...group} />}
+          {!isActive && (
+            <BuildingStatus
+              value1={step1}
+              label1={step1 ? 'Collateral Deposited' : 'Deposit Collateral'}
+              value2={step2}
+              label2={
+                group.slots
+                  ? `Pending members ${group.totalMembers - group.slots} of ${
+                      group.totalMembers
+                    }`
+                  : `Completed members (${group.totalMembers})`
+              }
+              value3={step3}
+              label3="Waiting for starting date"
+            />
+          )}
+          {isActive && (
+            <>
+              <SummaryAction
+                title="Payments"
+                content={
+                  allPaymentsDone ? (
+                    <p className="text-success-green">All rounds are paid</p>
+                  ) : (
+                    <>
+                      <p>
+                        Paid {totalPayments} of {group.totalMembers - 1}
+                      </p>
+                      <p>
+                        Payment Deadline:{' '}
+                        {new Date(
+                          items[firstUnpaidItemIndex]
+                            ?.paymentDeadlineTimestamp || 0
+                        ).toDateString()}
+                      </p>
+                    </>
+                  )
+                }
+                actionLabel={allPaymentsDone ? 'View' : 'Pay'}
+                type={allPaymentsDone ? 'info' : 'primary'}
+                onAction={handleNavigateToPayments}
+              />
+              <SummaryAction
+                title="Round earned"
+                content={
+                  <>
+                    <p>Current position: {group.currentPosition}</p>
+                    <p>Your Position: {group.myPosition}</p>
+                  </>
+                }
+                actionLabel="Withdraw"
+                type={
+                  group.myPosition <= group.currentPosition
+                    ? 'info'
+                    : 'disabled'
+                }
+                onAction={handleWithdrawEarnedRound}
+              />
+              <SummaryAction
+                title="Intersed earned"
+                content={<p>1.5 USDC 6%</p>}
+                actionLabel="Withdraw"
+                type="info"
+                onAction={handleWithdrawEarnedInterest}
+              />
+              <SummaryAction
+                title="Claim Collateral"
+                content={<p>300 USDC</p>}
+                actionLabel="Withdraw"
+                type="info"
+                onAction={() => {
+                  if (group.status === GroupStatus.ACTIVE) {
+                    showAlertWithConfirmation(
+                      'Do you want to Pay?',
+                      'Testing',
+                      'info',
+                      handleWithdrawCollateral,
+                      'Pay Now Test'
+                    );
+                  }
+                  if (group.status === GroupStatus.CONCLUDED) {
+                    void handleWithdrawCollateral();
+                  }
+                }}
+              />
+            </>
+          )}
           <Message
             messageText={
               'It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately'
             }
           />
-          <div className="flex gap-5 justify-between mb-4">
+          <div className="flex flex-col gap-5 justify-between mb-4">
+            {!step1 && (
+              <ButtonComponent
+                label="Join And Deposit Collateral"
+                type="primary"
+                size="large"
+                onClick={handleDepositCollateral}
+              />
+            )}
             <ButtonComponent
               label="Back"
               type="secondary"
@@ -159,7 +273,6 @@ const GroupDetailPage = () => {
               onClick={() => {
                 window.history.back();
               }}
-              className="flex-1"
             />
           </div>
         </div>

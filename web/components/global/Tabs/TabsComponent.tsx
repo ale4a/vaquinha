@@ -48,15 +48,12 @@ const TabsComponent = <T extends string = string>({
   };
 
   return (
-    <div
-      className="flex px-2 overflow-auto justify-center border-b-2 border-solid border-accent-300"
-      style={{ borderBottomWidth: 1 }}
-    >
+    <div className="flex overflow-auto justify-around">
       {tabs.map((tab) => (
         <button
           key={tab.value}
           onClick={() => handleTabClick(tab.value)}
-          className={`relative px-4 py-2 ${
+          className={`relative w-full px-4 py-2 ${
             currentTab === tab.value ? 'text-accent-100' : 'text-accent-200'
           }`}
         >
