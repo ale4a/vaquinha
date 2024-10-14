@@ -75,7 +75,7 @@ const Page = () => {
     name: '',
     amount: 0,
     crypto: GroupCrypto.USDC,
-    totalMembers: 4,
+    totalMembers: 2,
     period: GroupPeriod.MONTHLY,
     startsOnTimestamp: now.getTime() + ONE_DAY,
   });
@@ -123,7 +123,6 @@ const Page = () => {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
-      const collateralAmount = newGroup.amount * newGroup.totalMembers;
       await depositGroupCollateral(group.id, publicKey, tx, amount);
       router.push('/my-groups?tab=pending');
     } catch (error) {
@@ -172,7 +171,10 @@ const Page = () => {
               options={optionsMembers}
               value={newGroup.totalMembers}
               onChange={(totalMembers) =>
-                setNewGroup((prevState) => ({ ...prevState, totalMembers }))
+                setNewGroup((prevState) => ({
+                  ...prevState,
+                  totalMembers: +totalMembers,
+                }))
               }
             />
           </div>

@@ -12,7 +12,7 @@ import { getPaymentsTable } from '@/helpers';
 import { useGroup, useVaquinhaDeposit } from '@/hooks';
 import { useVaquinhaWithdrawal } from '@/hooks/web3/useVaquinhaWithdrawal';
 import { GroupResponseDTO, GroupStatus, LogLevel } from '@/types';
-import { showAlertWithConfirmation } from '@/utils/commons';
+import { showAlert } from '@/utils/commons';
 import { logError } from '@/utils/log';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
@@ -67,6 +67,7 @@ const GroupDetailPage = () => {
 
   const group = data.content;
   const isActive = group.status === GroupStatus.ACTIVE;
+  const isConcluded = group.status === GroupStatus.CONCLUDED;
   const step1 = !!group.myDeposits[0]?.successfullyDeposited;
   const step2 = step1 && group.slots === 0;
   const step3 = step1 && step2 && isActive;
@@ -165,7 +166,7 @@ const GroupDetailPage = () => {
       {!loading && data && (
         <div className="flex flex-col gap-2">
           {data && <GroupSummary {...group} />}
-          {!isActive && (
+          {!isActive && !isConcluded && (
             <BuildingStatus
               value1={step1}
               label1={step1 ? 'Collateral Deposited' : 'Deposit Collateral'}
@@ -181,7 +182,7 @@ const GroupDetailPage = () => {
               label3="Waiting for starting date"
             />
           )}
-          {isActive && (
+          {(isActive || isConcluded) && (
             <>
               <SummaryAction
                 title="Payments"
@@ -215,38 +216,74 @@ const GroupDetailPage = () => {
                     <p>Your Position: {group.myPosition}</p>
                   </>
                 }
-                actionLabel="Withdraw"
+                actionLabel={
+                  group.myWithdrawals.round.successfullyWithdrawn
+                    ? 'Withdrawn'
+                    : 'Withdraw'
+                }
                 type={
-                  group.myPosition <= group.currentPosition
+                  group.myPosition <= group.currentPosition &&
+                  !group.myWithdrawals.round.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
                 }
-                onAction={handleWithdrawEarnedRound}
+                onAction={
+                  group.myPosition <= group.currentPosition &&
+                  !group.myWithdrawals.round.successfullyWithdrawn
+                    ? handleWithdrawEarnedRound
+                    : undefined
+                }
               />
               <SummaryAction
                 title="Intersed earned"
                 content={<p>1.5 USDC 6%</p>}
-                actionLabel="Withdraw"
-                type="info"
-                onAction={handleWithdrawEarnedInterest}
+                actionLabel={
+                  group.myWithdrawals.interest.successfullyWithdrawn
+                    ? 'Withdrawn'
+                    : 'Withdraw'
+                }
+                type={
+                  group.status === GroupStatus.CONCLUDED &&
+                  !group.myWithdrawals.interest.successfullyWithdrawn
+                    ? 'info'
+                    : 'disabled'
+                }
+                onAction={
+                  group.status === GroupStatus.CONCLUDED &&
+                  !group.myWithdrawals.interest.successfullyWithdrawn
+                    ? handleWithdrawEarnedInterest
+                    : undefined
+                }
               />
               <SummaryAction
                 title="Claim Collateral"
                 content={<p>300 USDC</p>}
                 actionLabel="Withdraw"
-                type="info"
+                type={
+                  group.status === GroupStatus.CONCLUDED &&
+                  !group.myWithdrawals.collateral.successfullyWithdrawn
+                    ? 'info'
+                    : 'disabled'
+                }
                 onAction={() => {
-                  if (group.status === GroupStatus.ACTIVE) {
-                    showAlertWithConfirmation(
-                      'Do you want to Pay?',
-                      'Testing',
-                      'info',
-                      handleWithdrawCollateral,
-                      'Pay Now Test'
-                    );
-                  }
+                  // if (group.status === GroupStatus.ACTIVE) {
+                  //   showAlertWithConfirmation(
+                  //     'Do you want to Pay?',
+                  //     'Testing',
+                  //     'info',
+                  //     handleWithdrawCollateral,
+                  //     'Pay Now Test'
+                  //   );
+                  // }
                   if (group.status === GroupStatus.CONCLUDED) {
                     void handleWithdrawCollateral();
+                  } else {
+                    showAlert(
+                      'Ups',
+                      'The collateral cannot be withdrawn if the Vaquinha has not finished yet',
+                      'info',
+                      'Understood'
+                    );
                   }
                 }}
               />

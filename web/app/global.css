@@ -45,6 +45,10 @@ body {
   }
 }
 
+.swal2-popup.swal2-modal.swal2-icon-info.swal2-show {
+  color: rgb(245 245 245 / var(--tw-text-opacity));
+}
+
 @font-face {
   font-family: 'ClashDisplay';
   src: url('/fonts/ClashDisplay/ClashDisplay.ttf') format('truetype');

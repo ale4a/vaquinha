@@ -5,7 +5,7 @@ type ISummaryAction = {
   title: string;
   content: string | JSX.Element;
   actionLabel: string;
-  onAction: () => void;
+  onAction?: () => void;
   type: string;
 };
 

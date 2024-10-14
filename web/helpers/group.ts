@@ -18,7 +18,6 @@ export const getGroupStatus = (group: GroupDocument) => {
       depositedCollaterals++;
     }
   }
-
   if (depositedCollaterals < group.totalMembers) {
     // pending, abandoned
     if (group.startsOnTimestamp >= Date.now()) {
