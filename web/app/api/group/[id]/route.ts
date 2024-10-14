@@ -1,4 +1,4 @@
-import { toGroupResponseDTO } from '@/services/app/group/helpers';
+import { toGroupResponseDTO } from '@/helpers';
 import { deleteGroup, getGroup } from '@/services/app/group/services';
 import { dbClient } from '@/services/database';
 import { GroupResponseDTO } from '@/types';

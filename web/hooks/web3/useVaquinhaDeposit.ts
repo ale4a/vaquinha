@@ -1,5 +1,5 @@
 import { useInitializeRound } from '@/components/vaquinha/vaquinha-data-access';
-import { GroupPeriod } from '@/types';
+import { GroupPeriod, GroupResponseDTO } from '@/types';
 import { BN } from '@coral-xyz/anchor';
 import { useCallback } from 'react';
 
@@ -18,14 +18,12 @@ export const useVaquinhaDeposit = () => {
 
   const depositCollateral = useCallback(
     async (
-      groupId: string,
-      amount: number,
-      totalMembers: number,
-      period: GroupPeriod
+      group: GroupResponseDTO,
+      amount: number
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const paymentAmount = amount * USDC_DECIMALS;
-      const numberOfPlayers = totalMembers;
-      const frequencyOfTurns = convertFrequencyToTimestamp(period);
+      const numberOfPlayers = group.totalMembers;
+      const frequencyOfTurns = convertFrequencyToTimestamp(group.period);
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'; // Circle USDC
       const { tx, error } = await initializeRound(
         paymentAmount,
@@ -34,24 +32,22 @@ export const useVaquinhaDeposit = () => {
         tokenMintAddress
       );
       const success = true;
-      return { tx: tx || '', error, success };
+      return { tx: tx || 'testing', error, success };
     },
     [initializeRound]
   );
 
   const depositRoundPayment = useCallback(
     async (
-      groupId: string,
-      amount: number,
-      totalMembers: number,
-      period: GroupPeriod
+      group: GroupResponseDTO,
+      amount: number
     ): Promise<{ tx: string; error: any; success: boolean }> => {
-      const tx = '';
+      const tx = 'testing';
       const error = '';
       const success = true;
-      return { tx: tx || '', error, success };
+      return { tx, error, success };
     },
-    [initializeRound]
+    []
   );
 
   return { depositCollateral, depositRoundPayment };

@@ -1,5 +1,5 @@
 import Summary from '@/components/Summary/Summary';
-import { GroupCrypto } from '@/types';
+import { GroupCrypto, GroupStatus } from '@/types';
 import { getRelativeTime } from '@/utils/time';
 import React from 'react';
 
@@ -10,6 +10,7 @@ export const GroupSummary = ({
   totalMembers,
   period,
   startsOnTimestamp,
+  status,
 }: {
   crypto: GroupCrypto;
   name: string;
@@ -17,6 +18,7 @@ export const GroupSummary = ({
   totalMembers: number;
   period: string;
   startsOnTimestamp: number;
+  status?: GroupStatus;
 }) => {
   const startsIn = startsOnTimestamp - Date.now();
 
@@ -48,7 +50,8 @@ export const GroupSummary = ({
           result: period,
         },
         {
-          title: 'Starts In',
+          title:
+            !status || status === GroupStatus.PENDING ? 'Starts In' : 'Started',
           result: getRelativeTime(startsIn),
         },
       ]}

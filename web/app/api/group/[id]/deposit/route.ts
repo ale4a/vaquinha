@@ -1,3 +1,4 @@
+import { EMPTY_WITHDRAWALS_DOCUMENT } from '@/config/constants';
 import { getGroup, updateGroup } from '@/services/app/group/services';
 import { dbClient } from '@/services/database';
 import { GroupBaseDocument, GroupDepositDTO } from '@/types';
@@ -10,31 +11,52 @@ export async function POST(
   await dbClient.connect();
 
   const groupId = params.id;
-  const { customerPublicKey, transactionSignature, round } =
+  const { customerPublicKey, transactionSignature, round, amount } =
     (await request.json()) as GroupDepositDTO;
+
+  // TODO: validate amount
+
   const group = await getGroup(groupId);
   const collateral = group.amount * group.totalMembers;
-
-  let newMembers: GroupBaseDocument['members'] = { ...group.members };
+  let newMembers: GroupBaseDocument['members'];
+  const memberPositions = [...group.memberPositions];
   if (round === 0) {
-    const position = group.memberPositions.pop() as number;
-    newMembers = {
-      ...group.members,
-      [customerPublicKey]: {
-        publicKey: customerPublicKey,
-        isOwner: false,
-        position,
-        deposits: {
-          [round]: {
-            amount: collateral,
-            round,
-            timestamp: now.getTime(),
-            transactionSignature,
+    if (group.members[customerPublicKey]) {
+      newMembers = {
+        ...group.members,
+        [customerPublicKey]: {
+          ...group.members[customerPublicKey],
+          deposits: {
+            [round]: {
+              amount: collateral,
+              round,
+              timestamp: now.getTime(),
+              transactionSignature,
+            },
           },
+          withdrawals: EMPTY_WITHDRAWALS_DOCUMENT,
         },
-        withdrawals: {},
-      },
-    };
+      };
+    } else {
+      const position = memberPositions.pop() as number;
+      newMembers = {
+        ...group.members,
+        [customerPublicKey]: {
+          publicKey: customerPublicKey,
+          isOwner: false,
+          position,
+          deposits: {
+            [round]: {
+              amount: collateral,
+              round,
+              timestamp: now.getTime(),
+              transactionSignature,
+            },
+          },
+          withdrawals: EMPTY_WITHDRAWALS_DOCUMENT,
+        },
+      };
+    }
   } else {
     newMembers = {
       ...group.members,
@@ -55,7 +77,7 @@ export async function POST(
 
   const result = await updateGroup(groupId, {
     members: newMembers,
-    memberPositions: group.memberPositions,
+    memberPositions: [...memberPositions],
   });
 
   return Response.json({ message: 'updated' });

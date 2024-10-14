@@ -3,6 +3,9 @@ import {
   GroupCrypto,
   GroupDepositDTO,
   GroupPeriod,
+  GroupResponseDTO,
+  GroupWithdrawalDTO,
+  GroupWithdrawalType,
 } from '@/types';
 import type { PublicKey } from '@solana/web3.js';
 import { useCallback } from 'react';
@@ -32,7 +35,7 @@ export const useGroup = () => {
         body: JSON.stringify(newGroupPayload),
       });
       const body = await result.json();
-      return body?.content?.id;
+      return body?.content as GroupResponseDTO;
     },
     []
   );
@@ -84,10 +87,76 @@ export const useGroup = () => {
     []
   );
 
+  const withdrawalGroupCollateral = useCallback(
+    async (
+      groupId: string,
+      publicKey: PublicKey,
+      transactionSignature: string,
+      amount: number
+    ) => {
+      const payload: GroupWithdrawalDTO = {
+        customerPublicKey: publicKey.toBase58(),
+        transactionSignature,
+        type: GroupWithdrawalType.COLLATERAL,
+        amount,
+      };
+      return await fetch(`/api/group/${groupId}/withdrawal`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+    },
+    []
+  );
+
+  const withdrawalGroupEarnedInterest = useCallback(
+    async (
+      groupId: string,
+      publicKey: PublicKey,
+      transactionSignature: string,
+      amount: number
+    ) => {
+      const payload: GroupWithdrawalDTO = {
+        customerPublicKey: publicKey.toBase58(),
+        transactionSignature,
+        type: GroupWithdrawalType.INTEREST,
+        amount,
+      };
+      return await fetch(`/api/group/${groupId}/withdrawal`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+    },
+    []
+  );
+
+  const withdrawalGroupEarnedRound = useCallback(
+    async (
+      groupId: string,
+      publicKey: PublicKey,
+      transactionSignature: string,
+      amount: number
+    ) => {
+      const payload: GroupWithdrawalDTO = {
+        customerPublicKey: publicKey.toBase58(),
+        transactionSignature,
+        type: GroupWithdrawalType.ROUND,
+        amount,
+      };
+      return await fetch(`/api/group/${groupId}/withdrawal`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+    },
+    []
+  );
+
   return {
     createGroup,
     deleteGroup,
     depositGroupCollateral,
     depositGroupPayment,
+    withdrawalGroupCollateral,
+    withdrawalGroupEarnedRound,
+    withdrawalGroupEarnedInterest,
   };
 };

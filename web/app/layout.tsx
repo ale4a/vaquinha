@@ -2,10 +2,10 @@ import './global.css';
 import { ClusterProvider } from '@/components/cluster/cluster-data-access';
 import { UiLayout } from '@/components/layout/ui-layout';
 import { SolanaProvider } from '@/components/solana/solana-provider';
+import { NextUIProvider } from '@nextui-org/react';
 import { ReactQueryProvider } from './react-query-provider';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'sweetalert2/src/sweetalert2.scss';
-import { NextUIProvider } from '@nextui-org/react';
 
 export const metadata = {
   title: 'vaquinha',
@@ -29,9 +29,9 @@ export default function RootLayout({
         <ReactQueryProvider>
           <ClusterProvider>
             <SolanaProvider>
-              <UiLayout links={links}>
-                <NextUIProvider>{children}</NextUIProvider>
-              </UiLayout>
+              <NextUIProvider className="h-full">
+                <UiLayout links={links}>{children}</UiLayout>
+              </NextUIProvider>
             </SolanaProvider>
           </ClusterProvider>
         </ReactQueryProvider>
