@@ -75,7 +75,7 @@ const Page = () => {
     name: '',
     amount: 0,
     crypto: GroupCrypto.USDC,
-    totalMembers: 0,
+    totalMembers: 4,
     period: GroupPeriod.MONTHLY,
     startsOnTimestamp: now.getTime() + ONE_DAY,
   });
@@ -90,7 +90,6 @@ const Page = () => {
     }
   }, [router, publicKey]);
 
-  console.log({ newGroup });
   if (loading) {
     return <LoadingSpinner />;
   }
@@ -153,7 +152,7 @@ const Page = () => {
             <InputText
               label="Group Name *"
               type="text"
-              placeHolder="Group Name *"
+              placeHolder="Group Name"
               value={newGroup.name}
               onChange={(name) =>
                 setNewGroup((prevState) => ({
@@ -186,8 +185,7 @@ const Page = () => {
             <InputText<number>
               label="Amount"
               type="number"
-              placeHolder="Amount of the group *"
-              value={newGroup.amount ? newGroup.amount : undefined}
+              value={newGroup.amount}
               onChange={(amount) =>
                 setNewGroup((prevState) => ({ ...prevState, amount }))
               }
