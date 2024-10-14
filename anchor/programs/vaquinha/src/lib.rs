@@ -30,7 +30,7 @@ pub mod vaquinha {
         round.withdrawn_turns = vec![0; number_of_players as usize];
 
         // Lock tokens for the initializer
-        let amount_to_lock = payment_amount * (number_of_players as u64) * (number_of_players as u64);
+        let amount_to_lock = payment_amount * (number_of_players as u64);
         token::transfer(
             CpiContext::new(
                 ctx.accounts.token_program.to_account_info(),
@@ -112,7 +112,7 @@ pub mod vaquinha {
         round.paid_turns[player_index] |= 1 << turn;
 
         // Check if all turns are completed
-        if round.turn_accumulations.iter().all(|&amount| amount == round.payment_amount * ((round.number_of_players as u64) - 1)) {
+        if round.turn_accumulations.iter().all(|&amount| amount == round.payment_amount * (round.number_of_players as u64 - 1)) {
             round.status = RoundStatus::Completed;
         }
 
