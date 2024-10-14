@@ -31,6 +31,7 @@ export default function InputText<T extends string | number = string>({
         min={0}
         placeholder={placeHolder}
         type={type}
+        autoComplete="off"
         value={value}
         onChange={({ target }) => onChange?.(target.value as T)}
       />
