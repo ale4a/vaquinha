@@ -186,7 +186,7 @@ export const useProgramMethods = () => {
        );
        try {
         const tx = await program.methods
-         .withdraw()
+         .withdrawTurn()
          .accounts({
            round: roundPDA,//roundKeypair.publicKey,
            player: wallet.publicKey as PublicKey,
