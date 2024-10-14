@@ -9,7 +9,6 @@ export interface GroupTablePaymentItem {
 }
 
 export interface GroupTablePaymentsProps {
-  items: GroupTablePaymentItem[];
   group: GroupResponseDTO;
   refetch: QueryObserverBaseResult['refetch'];
 }

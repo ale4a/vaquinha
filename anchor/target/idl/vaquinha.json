@@ -8,7 +8,7 @@
         {
           "name": "round",
           "isMut": true,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "initializer",
@@ -42,6 +42,10 @@
         }
       ],
       "args": [
+        {
+          "name": "roundId",
+          "type": "string"
+        },
         {
           "name": "paymentAmount",
           "type": "u64"
@@ -106,7 +110,38 @@
           "isSigner": false
         },
         {
-          "name": "recipientTokenAccount",
+          "name": "roundTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw",
+      "accounts": [
+        {
+          "name": "round",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "playerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "roundTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -125,6 +160,14 @@
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "roundId",
+            "type": "string"
+          },
           {
             "name": "paymentAmount",
             "type": "u64"
@@ -212,6 +255,16 @@
       "code": 6003,
       "name": "NotPlayersTurn",
       "msg": "It's not this player's turn to pay"
+    },
+    {
+      "code": 6004,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient funds for withdrawal"
+    },
+    {
+      "code": 6005,
+      "name": "TurnAlreadyPaid",
+      "msg": "Turn already paid"
     }
   ],
   "metadata": {

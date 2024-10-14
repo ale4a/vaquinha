@@ -1,6 +1,7 @@
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
 import ErrorView from '@/components/global/Error/ErrorView';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
+import { getPaymentsTable } from '@/helpers';
 import { useGroup, useVaquinhaDeposit } from '@/hooks';
 import { LogLevel } from '@/types';
 import { logError } from '@/utils/log';
@@ -9,7 +10,6 @@ import React, { useState } from 'react';
 import { GroupTablePaymentsProps } from './GroupTablePayments.types';
 
 export default function GroupTablePayments({
-  items,
   group,
   refetch,
 }: GroupTablePaymentsProps) {
@@ -24,6 +24,8 @@ export default function GroupTablePayments({
   if (!publicKey) {
     return <ErrorView />;
   }
+
+  const { items } = getPaymentsTable(group);
 
   const getStatusType = (status: string): string => {
     switch (status) {
@@ -77,17 +79,19 @@ export default function GroupTablePayments({
             className="grid grid-cols-[1fr_2fr_2fr_2fr] py-4 px-1 text-sm gap-2 bg-bg-200 hover:bg-bg-300 transition-colors duration-300 text-accent-100"
             key={round}
           >
-            <span className="pl-3">{i + 1}</span>
-            <span>
+            <div className="pl-3 self-center">{i + 1}</div>
+            <div className="self-center">
               {amount} {group.crypto}
-            </span>
-            <span>
+            </div>
+            <div className="self-center">
               {round === group.myPosition
                 ? '-'
                 : new Date(paymentDeadlineTimestamp).toDateString()}
-            </span>
-            <span>
-              {round === group.myPosition ? (
+            </div>
+            <div className="self-center">
+              {status === 'Paid' ? (
+                <span className="text-success-green">Paid</span>
+              ) : round === group.myPosition ? (
                 "It's your round"
               ) : (
                 <ButtonComponent
@@ -97,7 +101,7 @@ export default function GroupTablePayments({
                   disabled={status !== 'Pay'}
                 />
               )}
-            </span>
+            </div>
           </div>
         );
       })}

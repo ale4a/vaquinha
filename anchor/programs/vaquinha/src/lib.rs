@@ -9,12 +9,14 @@ pub mod vaquinha {
 
     pub fn initialize_round(
       ctx: Context<InitializeRound>,
+      round_id: String,
       payment_amount: u64,
       number_of_players: u8,
       frequency_of_turns: i64,
     ) -> Result<()> {
-        msg!("stg0");
         let round = &mut ctx.accounts.round;
+        round.round_id = round_id;
+        round.bump = ctx.bumps.round;
         round.payment_amount = payment_amount;
         round.number_of_players = number_of_players;
         round.current_index_of_player = 0;
@@ -24,7 +26,6 @@ pub mod vaquinha {
         round.frequency_of_turns = frequency_of_turns;
         round.status = RoundStatus::Pending;
         round.token_mint = ctx.accounts.token_mint.key();
-        msg!("stg1");
 
         // Lock tokens for the initializer
         let amount_to_lock = payment_amount * (number_of_players as u64);
@@ -40,14 +41,11 @@ pub mod vaquinha {
             amount_to_lock,
         )?;
 
-        msg!("stg2");
-
         // Update round state
         round.players.push(ctx.accounts.initializer.key());
         round.total_amount_locked += amount_to_lock;
         round.available_slots -= 1;
 
-        msg!("stg3");
         Ok(())
     }
 
@@ -87,35 +85,70 @@ pub mod vaquinha {
         let round = &mut ctx.accounts.round;
         require!(round.status == RoundStatus::Active, ErrorCode::RoundNotActive);
 
-        // Transfer payment to the current turn's player
-        // let current_turn_player = round.players[round.current_index_of_player as usize];
         token::transfer(
             CpiContext::new(
                 ctx.accounts.token_program.to_account_info(),
                 Transfer {
                     from: ctx.accounts.player_token_account.to_account_info(),
-                    to: ctx.accounts.recipient_token_account.to_account_info(),
+                    to: ctx.accounts.round_token_account.to_account_info(),
                     authority: ctx.accounts.player.to_account_info(),
                 },
             ),
             round.payment_amount,
         )?;
 
-        // Update round state
-        // round.current_index_of_player += 1;
         round.current_turn_paid_amount += round.payment_amount;
-        if round.current_turn_paid_amount == round.payment_amount * (round.players.len() as u64 - 1) {
-            round.current_index_of_player += 1;
-            round.current_turn_paid_amount = 0;
-        }
-        if round.current_index_of_player as usize == round.players.len() {
-            round.status = RoundStatus::Completed;
-        }
 
         Ok(())
     }
 
-    // Additional methods would be implemented here
+    pub fn withdraw(ctx: Context<Withdraw>) -> Result<()> {
+        msg!("Round Token Account owner: {:?}", ctx.accounts.round_token_account.owner);
+        msg!("Round PDA: {:?}", ctx.accounts.round.key());
+        let round = &ctx.accounts.round;
+        require!(round.status == RoundStatus::Active, ErrorCode::RoundNotActive);
+    
+        // Check if it's the current player's turn
+        let current_player = round.players[round.current_index_of_player as usize];
+        require!(current_player == ctx.accounts.player.key(), ErrorCode::NotPlayersTurn);
+    
+        // Check if all other players have paid
+        let expected_amount = round.payment_amount * ((round.players.len() as u64) - 1);
+        require!(round.current_turn_paid_amount == expected_amount, ErrorCode::InsufficientFunds);
+    
+        // Transfer the funds to the player
+        let transfer_amount = round.current_turn_paid_amount;
+        let round_seeds = &[
+            b"round",
+            round.round_id.as_bytes(),
+            &[ctx.bumps.round]
+        ];
+        msg!("Round Seeds: {:?}", round_seeds);
+    
+        token::transfer(
+            CpiContext::new_with_signer(
+                ctx.accounts.token_program.to_account_info(),
+                Transfer {
+                    from: ctx.accounts.round_token_account.to_account_info(),
+                    to: ctx.accounts.player_token_account.to_account_info(),
+                    authority: ctx.accounts.round.to_account_info(),
+                },
+                &[round_seeds]
+            ),
+            transfer_amount,
+        )?;
+    
+        // Update round state
+        let round = &mut ctx.accounts.round;
+        round.current_turn_paid_amount = 0;
+        round.current_index_of_player += 1;
+    
+        if round.current_index_of_player as usize == round.players.len() {
+            round.status = RoundStatus::Completed;
+        }
+    
+        Ok(())
+    }
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, PartialEq, Eq)]
@@ -127,6 +160,8 @@ pub enum RoundStatus {
 
 #[account]
 pub struct Round {
+    pub bump: u8,
+    pub round_id: String,
     pub payment_amount: u64,
     pub token_mint: Pubkey,
     pub number_of_players: u8,
@@ -140,8 +175,27 @@ pub struct Round {
 }
 
 #[derive(Accounts)]
+#[instruction(round_id: String)]
 pub struct InitializeRound<'info> {
-    #[account(init, payer = initializer, space = 8 + 32 + 32 + 1 + 32 * 50 + 1 + 8 + 8 + 1 + 8 + 1)]
+    #[account(
+        init, 
+        payer = initializer, 
+        space = 8 + // discriminator
+                8 + // payment_amount
+                32 +
+                32 + // token_mint
+                1 + // number_of_players
+                (32 * 50) + // players (assuming max 50 players)
+                1 + // current_index_of_player
+                8 + // current_turn_paid_amount
+                8 + // total_amount_locked
+                1 + // available_slots
+                8 + // frequency_of_turns
+                1 + // status
+                50,  // some extra space for future use
+        seeds = [b"round".as_ref(), round_id.as_bytes()],
+        bump
+    )]
     pub round: Account<'info, Round>,
     #[account(mut)]
     pub initializer: Signer<'info>,
@@ -174,7 +228,23 @@ pub struct PayTurn<'info> {
     #[account(mut)]
     pub player_token_account: Account<'info, TokenAccount>,
     #[account(mut)]
-    pub recipient_token_account: Account<'info, TokenAccount>,
+    pub round_token_account: Account<'info, TokenAccount>,
+    pub token_program: Program<'info, Token>,
+}
+
+#[derive(Accounts)]
+pub struct Withdraw<'info> {
+    #[account(
+        mut,
+        seeds = [b"round", round.round_id.as_bytes()],
+        bump
+    )]
+    pub round: Account<'info, Round>,
+    pub player: Signer<'info>,
+    #[account(mut)]
+    pub player_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub round_token_account: Account<'info, TokenAccount>,
     pub token_program: Program<'info, Token>,
 }
 
@@ -188,4 +258,8 @@ pub enum ErrorCode {
     RoundNotActive,
     #[msg("It's not this player's turn to pay")]
     NotPlayersTurn,
+    #[msg("Insufficient funds for withdrawal")]
+    InsufficientFunds,
+    #[msg("Turn already paid")]
+    TurnAlreadyPaid
 }

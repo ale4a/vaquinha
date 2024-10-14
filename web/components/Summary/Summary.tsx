@@ -7,7 +7,7 @@ const Summary = ({ itemsSummary }: { itemsSummary: ItemsSummary[] }) => {
       {itemsSummary.map((item, index) => (
         <div key={index} className="flex justify-between py-1">
           <span className="font-thin">{item.title}</span>
-          <span className="text-xl">{item.result}</span>
+          <span className="text-lg">{item.result}</span>
         </div>
       ))}
     </div>

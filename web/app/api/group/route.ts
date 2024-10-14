@@ -1,8 +1,5 @@
+import { getGroupStatus, toGroupResponseDTO } from '@/helpers';
 import { getGroups } from '@/services';
-import {
-  getGroupStatus,
-  toGroupResponseDTO,
-} from '@/services/app/group/helpers';
 import { dbClient } from '@/services/database';
 import {
   EntityState,

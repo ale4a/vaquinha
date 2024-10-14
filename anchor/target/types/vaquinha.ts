@@ -8,7 +8,7 @@ export type Vaquinha = {
         {
           "name": "round",
           "isMut": true,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "initializer",
@@ -42,6 +42,10 @@ export type Vaquinha = {
         }
       ],
       "args": [
+        {
+          "name": "roundId",
+          "type": "string"
+        },
         {
           "name": "paymentAmount",
           "type": "u64"
@@ -106,7 +110,38 @@ export type Vaquinha = {
           "isSigner": false
         },
         {
-          "name": "recipientTokenAccount",
+          "name": "roundTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw",
+      "accounts": [
+        {
+          "name": "round",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "playerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "roundTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -125,6 +160,14 @@ export type Vaquinha = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "roundId",
+            "type": "string"
+          },
           {
             "name": "paymentAmount",
             "type": "u64"
@@ -212,6 +255,16 @@ export type Vaquinha = {
       "code": 6003,
       "name": "NotPlayersTurn",
       "msg": "It's not this player's turn to pay"
+    },
+    {
+      "code": 6004,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient funds for withdrawal"
+    },
+    {
+      "code": 6005,
+      "name": "TurnAlreadyPaid",
+      "msg": "Turn already paid"
     }
   ]
 };
@@ -226,7 +279,7 @@ export const IDL: Vaquinha = {
         {
           "name": "round",
           "isMut": true,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "initializer",
@@ -260,6 +313,10 @@ export const IDL: Vaquinha = {
         }
       ],
       "args": [
+        {
+          "name": "roundId",
+          "type": "string"
+        },
         {
           "name": "paymentAmount",
           "type": "u64"
@@ -324,7 +381,38 @@ export const IDL: Vaquinha = {
           "isSigner": false
         },
         {
-          "name": "recipientTokenAccount",
+          "name": "roundTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw",
+      "accounts": [
+        {
+          "name": "round",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "playerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "roundTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -343,6 +431,14 @@ export const IDL: Vaquinha = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "roundId",
+            "type": "string"
+          },
           {
             "name": "paymentAmount",
             "type": "u64"
@@ -430,6 +526,16 @@ export const IDL: Vaquinha = {
       "code": 6003,
       "name": "NotPlayersTurn",
       "msg": "It's not this player's turn to pay"
+    },
+    {
+      "code": 6004,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient funds for withdrawal"
+    },
+    {
+      "code": 6005,
+      "name": "TurnAlreadyPaid",
+      "msg": "Turn already paid"
     }
   ]
 };

@@ -1,4 +1,7 @@
+import { EMPTY_WITHDRAWALS_DOCUMENT } from '@/config/constants';
+import { toGroupResponseDTO } from '@/helpers';
 import { createGroup } from '@/services';
+import { getGroup } from '@/services/app/group/services';
 import { dbClient } from '@/services/database';
 import { GroupBaseDocument, GroupCreateDTO } from '@/types';
 import { shuffle } from '@/utils/array';
@@ -33,7 +36,7 @@ export async function POST(request: Request) {
     totalMembers,
     period,
     startsOnTimestamp,
-    memberPositions,
+    memberPositions: [...memberPositions],
     members: {
       [customerPublicKey]: {
         position,
@@ -47,12 +50,17 @@ export async function POST(request: Request) {
           //   transactionSignature,
           // },
         },
-        withdrawals: {},
+        withdrawals: EMPTY_WITHDRAWALS_DOCUMENT,
       },
     },
   };
 
   const result = await createGroup(newGroup);
 
-  return Response.json({ content: { id: result.insertedId } });
+  return Response.json({
+    content: toGroupResponseDTO(
+      await getGroup(result.insertedId.toString()),
+      customerPublicKey
+    ),
+  });
 }

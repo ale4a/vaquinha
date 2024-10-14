@@ -31,9 +31,9 @@ export interface GroupMember {
     };
   };
   withdrawals: {
-    [key: number]: {
+    [key in GroupWithdrawalType]: {
       amount: number;
-      round: number; // 0: collateral,
+      type: GroupWithdrawalType;
       timestamp: number;
       transactionSignature: string;
     };
@@ -72,6 +72,19 @@ export interface GroupDepositDTO {
   amount: number;
 }
 
+export enum GroupWithdrawalType {
+  COLLATERAL = 'collateral',
+  INTEREST = 'interest',
+  ROUND = 'round',
+}
+
+export interface GroupWithdrawalDTO {
+  customerPublicKey: string;
+  transactionSignature: string;
+  type: GroupWithdrawalType;
+  amount: number;
+}
+
 export interface GroupResponseDTO {
   id: string;
   crypto: GroupCrypto;
@@ -83,16 +96,25 @@ export interface GroupResponseDTO {
       amount: number;
       round: number; // 0: collateral, [1, N] rounds
       timestamp: number;
-      paid: boolean;
+      successfullyDeposited: boolean;
     };
   };
   totalMembers: number;
   slots: number;
   period: GroupPeriod;
+  currentPosition: number;
   myPosition: number;
   startsOnTimestamp: number;
   status: GroupStatus;
   isOwner: boolean;
+  myWithdrawals: {
+    [key in GroupWithdrawalType]: {
+      amount: number;
+      type: GroupWithdrawalType;
+      timestamp: number;
+      successfullyWithdrawn: boolean;
+    };
+  };
 }
 
 export type GroupDocument = EntityDocument<GroupBaseDocument>;

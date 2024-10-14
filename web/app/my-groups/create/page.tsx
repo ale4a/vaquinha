@@ -102,7 +102,7 @@ const Page = () => {
   const onSave = async () => {
     setLoading(true);
     try {
-      const groupId = await createGroup(
+      const group = await createGroup(
         newGroup.name,
         newGroup.amount,
         newGroup.crypto,
@@ -111,22 +111,18 @@ const Page = () => {
         newGroup.startsOnTimestamp,
         publicKey
       );
-      if (typeof groupId !== 'string') {
+      if (typeof group.id !== 'string') {
         throw new Error('group not created');
       }
-      const { tx, error, success } = await depositCollateral(
-        groupId,
-        newGroup.amount,
-        newGroup.totalMembers,
-        newGroup.period
-      );
+      const amount = group.collateralAmount;
+      const { tx, error, success } = await depositCollateral(group, amount);
       if (!success) {
-        await deleteGroup(groupId);
+        await deleteGroup(group.id);
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
       const collateralAmount = newGroup.amount * newGroup.totalMembers;
-      await depositGroupCollateral(groupId, publicKey, tx, collateralAmount);
+      await depositGroupCollateral(group.id, publicKey, tx, amount);
       router.push('/my-groups?tab=pending');
     } catch (error) {
       logError(LogLevel.INFO)(error);
