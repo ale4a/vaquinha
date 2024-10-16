@@ -88,7 +88,6 @@ pub mod vaquinha {
 
     pub fn pay_turn(ctx: Context<PayTurn>, turn: u8) -> Result<()> {
         let round = &mut ctx.accounts.round;
-        // let recipient_index = round.positions[turn as usize] as u8;
         let recipient_index = round.positions.iter().position(|&p| p == turn).ok_or(ErrorCode::InvalidTurn)?;
         require!(round.status == RoundStatus::Active, ErrorCode::RoundNotActive);
 
