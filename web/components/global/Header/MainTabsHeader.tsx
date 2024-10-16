@@ -33,7 +33,7 @@ const MainTabsHeader = () => {
             height={15}
           />
           <span className="font-medium text-xl text-end flex justify-end items-end ">
-            VAQUINHA
+            VAQUITA
           </span>
         </div>
         <div className="flex-none space-x-1 flex wallets-buttons">

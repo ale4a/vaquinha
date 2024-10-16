@@ -13,7 +13,7 @@ export const metadata = {
 };
 
 const links: { label: string; path: string }[] = [
-  { label: 'Groups', path: '/groups' },
+  { label: 'Join Group', path: '/groups' },
   { label: 'My Groups', path: '/my-groups' },
   { label: 'Profile', path: '/profile' },
 ];
