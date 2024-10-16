@@ -24,7 +24,8 @@ export const useProgramMethods = () => {
       paymentAmount: number,
       numberOfPlayers: number,
       frequencyOfTurns: number,
-      tokenMintAddress: string) {
+      tokenMintAddress: string,
+      position: number) {
 
       const paymentAmountBN = new BN(paymentAmount);
       const frequencyOfTurnsBN = new BN(frequencyOfTurns);
@@ -57,7 +58,7 @@ export const useProgramMethods = () => {
 
       try {
         const tx = await program.methods
-          .initializeRound(roundId, paymentAmountBN, numberOfPlayers, frequencyOfTurnsBN)
+          .initializeRound(roundId, paymentAmountBN, numberOfPlayers, frequencyOfTurnsBN, position)
           .accounts({
             round: roundPDA,
             initializer: wallet.publicKey as PublicKey,
@@ -81,7 +82,7 @@ export const useProgramMethods = () => {
       }
     },
 
-    addPlayer: async function (roundId: string, tokenMintAddress: string) {
+    addPlayer: async function (roundId: string, tokenMintAddress: string, position: number) {
       const tokenMint = new PublicKey(tokenMintAddress);
       const playerTokenAccount = await getAssociatedTokenAddress(
         tokenMint,
@@ -99,7 +100,7 @@ export const useProgramMethods = () => {
 
       try {
         const tx = await program.methods
-          .addPlayer()
+          .addPlayer(position)
           .accounts({
             round: roundPDA,
             player: wallet.publicKey as PublicKey,

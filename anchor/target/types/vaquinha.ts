@@ -57,6 +57,10 @@ export type Vaquinha = {
         {
           "name": "frequencyOfTurns",
           "type": "i64"
+        },
+        {
+          "name": "position",
+          "type": "u8"
         }
       ]
     },
@@ -89,7 +93,12 @@ export type Vaquinha = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "position",
+          "type": "u8"
+        }
+      ]
     },
     {
       "name": "payTurn",
@@ -260,6 +269,12 @@ export type Vaquinha = {
           },
           {
             "name": "withdrawnTurns",
+            "type": {
+              "vec": "bool"
+            }
+          },
+          {
+            "name": "positions",
             "type": "bytes"
           }
         ]
@@ -408,6 +423,10 @@ export const IDL: Vaquinha = {
         {
           "name": "frequencyOfTurns",
           "type": "i64"
+        },
+        {
+          "name": "position",
+          "type": "u8"
         }
       ]
     },
@@ -440,7 +459,12 @@ export const IDL: Vaquinha = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "position",
+          "type": "u8"
+        }
+      ]
     },
     {
       "name": "payTurn",
@@ -611,6 +635,12 @@ export const IDL: Vaquinha = {
           },
           {
             "name": "withdrawnTurns",
+            "type": {
+              "vec": "bool"
+            }
+          },
+          {
+            "name": "positions",
             "type": "bytes"
           }
         ]
