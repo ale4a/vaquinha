@@ -129,13 +129,13 @@ const GroupDetailPage = () => {
   const handleWithdrawCollateral = async () => {
     setIsLoading(true);
     try {
-      const amount = group.collateralAmount;
-      const { tx, error, success } = await withdrawalCollateral(group, amount);
+      const { tx, error, success } = await withdrawalCollateral(group);
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
-      await withdrawalGroupCollateral(group.id, publicKey, tx, group.amount);
+      const amount = group.collateralAmount;
+      await withdrawalGroupCollateral(group.id, publicKey, tx, amount);
       await refetch();
     } catch (error) {
       logError(LogLevel.INFO)(error);
