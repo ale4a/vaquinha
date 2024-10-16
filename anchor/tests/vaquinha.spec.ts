@@ -57,7 +57,7 @@ describe('vaquinha', () => {
     );
 
     const result = await program.methods
-      .initializeRound(roundId, paymentAmountBN, numberOfPlayers, frequencyOfTurnsBN)
+      .initializeRound(roundId, paymentAmountBN, numberOfPlayers, frequencyOfTurnsBN, 0)
       .accounts({
         round: roundPDA, //roundKeypair.publicKey,
         initializer: payer.publicKey,
@@ -140,7 +140,7 @@ describe('vaquinha', () => {
       // Add the player to the round
       console.log("Adding player to round...");
       await program.methods
-        .addPlayer()
+        .addPlayer(1)
         .accounts({
           round: roundPDA,//roundKeypair.publicKey,
           player: newPlayer.publicKey,

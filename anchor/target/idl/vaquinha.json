@@ -57,6 +57,10 @@
         {
           "name": "frequencyOfTurns",
           "type": "i64"
+        },
+        {
+          "name": "position",
+          "type": "u8"
         }
       ]
     },
@@ -89,7 +93,12 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "position",
+          "type": "u8"
+        }
+      ]
     },
     {
       "name": "payTurn",
@@ -260,6 +269,12 @@
           },
           {
             "name": "withdrawnTurns",
+            "type": {
+              "vec": "bool"
+            }
+          },
+          {
+            "name": "positions",
             "type": "bytes"
           }
         ]
