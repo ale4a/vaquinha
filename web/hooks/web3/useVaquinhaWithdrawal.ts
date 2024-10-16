@@ -1,6 +1,6 @@
+import { useProgramMethods } from '@/components/vaquinha/vaquinha-data-access';
 import { GroupResponseDTO } from '@/types';
 import { useCallback } from 'react';
-import { useProgramMethods } from '@/components/vaquinha/vaquinha-data-access';
 
 export const useVaquinhaWithdrawal = () => {
   const { withdrawTurn, withdrawCollateral } = useProgramMethods();
@@ -14,8 +14,8 @@ export const useVaquinhaWithdrawal = () => {
         group.id,
         tokenMintAddress
       );
-      const success = true;
-      return { tx: tx || 'testing', error, success };
+
+      return { tx: tx || '', error, success: !!tx && !error };
     },
     [withdrawCollateral]
   );
@@ -25,12 +25,9 @@ export const useVaquinhaWithdrawal = () => {
       group: GroupResponseDTO
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
-      const { tx, error } = await withdrawTurn(
-        group.id,
-        tokenMintAddress
-      );
-      const success = true;
-      return { tx: tx || 'testing', error, success };
+      const { tx, error } = await withdrawTurn(group.id, tokenMintAddress);
+
+      return { tx: tx || '', error, success: !!tx && !error };
     },
     [withdrawTurn]
   );

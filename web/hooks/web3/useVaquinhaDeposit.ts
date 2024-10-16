@@ -32,15 +32,15 @@ export const useVaquinhaDeposit = () => {
         tokenMintAddress,
         group.myPosition
       );
-      const success = true;
-      return { tx: tx || 'testing', error, success };
+
+      return { tx: tx || '', error, success: !!tx && !error };
     },
     [initializeRound]
   );
 
   const depositCollateralAndJoin = useCallback(
     async (
-      group: GroupResponseDTO,
+      group: GroupResponseDTO
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
       const { tx, error } = await addPlayer(
@@ -48,8 +48,8 @@ export const useVaquinhaDeposit = () => {
         tokenMintAddress,
         group.myPosition
       );
-      const success = true;
-      return { tx: tx || 'testing', error, success };
+
+      return { tx: tx || '', error, success: !!tx && !error };
     },
     [addPlayer]
   );
@@ -60,15 +60,11 @@ export const useVaquinhaDeposit = () => {
       turn: number
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
-      const { tx, error } = await payTurn(
-        group.id,
-        tokenMintAddress,
-        turn
-      );
-      const success = true;
-      return { tx: tx || 'testing', error, success };
+      const { tx, error } = await payTurn(group.id, tokenMintAddress, turn);
+
+      return { tx: tx || '', error, success: !!tx && !error };
     },
-    []
+    [payTurn]
   );
 
   return {
