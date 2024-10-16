@@ -29,7 +29,8 @@ export const useVaquinhaDeposit = () => {
         paymentAmount,
         numberOfPlayers,
         frequencyOfTurns,
-        tokenMintAddress
+        tokenMintAddress,
+        group.myPosition
       );
       const success = true;
       return { tx: tx || 'testing', error, success };
@@ -44,7 +45,8 @@ export const useVaquinhaDeposit = () => {
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
       const { tx, error } = await addPlayer(
         group.id,
-        tokenMintAddress
+        tokenMintAddress,
+        group.myPosition
       );
       const success = true;
       return { tx: tx || 'testing', error, success };
