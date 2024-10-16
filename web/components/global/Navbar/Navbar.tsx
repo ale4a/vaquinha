@@ -13,7 +13,7 @@ type NavbarProps = {
 
 const getIcon = (label: string, isActive: boolean) => {
   switch (label) {
-    case 'Groups':
+    case 'Join Group':
       return isActive ? (
         <Image
           src="/icons/groups-active.svg"
