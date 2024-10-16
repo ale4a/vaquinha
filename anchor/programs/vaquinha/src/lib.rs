@@ -88,15 +88,15 @@ pub mod vaquinha {
 
     pub fn pay_turn(ctx: Context<PayTurn>, turn: u8) -> Result<()> {
         let round = &mut ctx.accounts.round;
-        let recipient_index = round.positions[turn as usize] as u8;
+        // let recipient_index = round.positions[turn as usize] as u8;
+        let recipient_index = round.positions.iter().position(|&p| p == turn).ok_or(ErrorCode::InvalidTurn)?;
         require!(round.status == RoundStatus::Active, ErrorCode::RoundNotActive);
-        require!(recipient_index < round.number_of_players, ErrorCode::InvalidTurn);
 
         let player_index = round.players.iter().position(|&p| p == ctx.accounts.player.key())
             .ok_or(ErrorCode::PlayerNotInRound)?;
 
         // Check that the player is not paying for their own turn
-        require!(player_index as u8 != recipient_index, ErrorCode::CannotPayOwnTurn);
+        require!(player_index as u8 != recipient_index as u8, ErrorCode::CannotPayOwnTurn);
 
         require!((round.paid_turns[player_index] & (1 << recipient_index)) == 0, ErrorCode::TurnAlreadyPaid);
 
