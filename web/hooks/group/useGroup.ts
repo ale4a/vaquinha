@@ -44,6 +44,44 @@ export const useGroup = () => {
     return await fetch(`/api/group/${groupId}`, { method: 'DELETE' });
   }, []);
 
+  const getGroup = useCallback(async (groupId: string) => {
+    return await fetch(`/api/group/${groupId}`, { method: 'GET' });
+  }, []);
+
+  const joinGroup = useCallback(
+    async (
+      groupId: string,
+      publicKey: PublicKey
+    ): Promise<GroupResponseDTO> => {
+      const payload = {
+        customerPublicKey: publicKey.toBase58(),
+      };
+      const result = await fetch(`/api/group/${groupId}/join`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      return (await result.json()).content;
+    },
+    []
+  );
+
+  const disjoinGroup = useCallback(
+    async (
+      groupId: string,
+      publicKey: PublicKey
+    ): Promise<GroupResponseDTO> => {
+      const payload = {
+        customerPublicKey: publicKey.toBase58(),
+      };
+      const result = await fetch(`/api/group/${groupId}/disjoin`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      return await result.json();
+    },
+    []
+  );
+
   const depositGroupCollateral = useCallback(
     async (
       groupId: string,
@@ -151,7 +189,10 @@ export const useGroup = () => {
   );
 
   return {
+    getGroup,
     createGroup,
+    joinGroup,
+    disjoinGroup,
     deleteGroup,
     depositGroupCollateral,
     depositGroupPayment,

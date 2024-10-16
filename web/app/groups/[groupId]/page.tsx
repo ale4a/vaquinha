@@ -31,6 +31,8 @@ const GroupDetailPage = () => {
     withdrawalCollateral,
   } = useVaquinhaWithdrawal();
   const {
+    joinGroup,
+    disjoinGroup,
     depositGroupCollateral,
     withdrawalGroupCollateral,
     withdrawalGroupEarnedInterest,
@@ -75,15 +77,20 @@ const GroupDetailPage = () => {
   const handleDepositCollateral = async () => {
     setIsLoading(true);
     try {
-      const amount = group.collateralAmount;
-      const { tx, error, success } = await depositCollateralAndJoin(group);
+      const joinedGroup = await joinGroup(group.id, publicKey);
+      const amount = joinedGroup.collateralAmount;
+      console.log({ joinedGroup });
+      const { tx, error, success } = await depositCollateralAndJoin(
+        joinedGroup
+      );
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
-      await depositGroupCollateral(group.id, publicKey, tx, amount);
+      await depositGroupCollateral(joinedGroup.id, publicKey, tx, amount);
       await refetch();
     } catch (error) {
+      await disjoinGroup(group.id, publicKey);
       logError(LogLevel.INFO)(error);
     }
     setIsLoading(false);
