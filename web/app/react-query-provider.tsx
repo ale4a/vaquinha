@@ -1,14 +1,20 @@
 'use client';
 
-import React, { ReactNode, useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import React, { ReactNode } from 'react';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+    },
+  },
+});
 
 export function ReactQueryProvider({ children }: { children: ReactNode }) {
-  const [client] = useState(new QueryClient());
-
   return (
-    <QueryClientProvider client={client}>
+    <QueryClientProvider client={queryClient}>
       <ReactQueryStreamedHydration>{children}</ReactQueryStreamedHydration>
     </QueryClientProvider>
   );

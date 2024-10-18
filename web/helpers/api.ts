@@ -1,0 +1,5 @@
+import { NEXT_PUBLIC_API } from '@/config/settings';
+
+export const includeApi = (route: string) => {
+  return `${NEXT_PUBLIC_API}/api/v1${route}`;
+};

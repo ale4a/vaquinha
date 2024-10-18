@@ -6,6 +6,8 @@ import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import Tabs from '@/components/global/Tabs/TabsComponent';
 import { GroupFiltersHead } from '@/components/group/GroupFiltersHead/GroupFiltersHead';
 import { ListGroups } from '@/components/group/ListGroups/ListGroups';
+import { REFETCH_INTERVAL } from '@/config/constants';
+import { useGroup } from '@/hooks';
 import {
   GroupCrypto,
   GroupFilters,
@@ -42,22 +44,24 @@ const Page = () => {
     crypto: GroupCrypto.USDC,
     amount: 0,
   });
+  const { getGroups } = useGroup();
   const { publicKey } = useWallet();
   const { isPending, isLoading, isFetching, data } = useQuery<{
     contents: GroupResponseDTO[];
   }>({
+    refetchInterval: REFETCH_INTERVAL,
     enabled: !!publicKey,
     queryKey: ['groups', currentTab, publicKey, filters],
     queryFn: () =>
-      fetch(
-        `/api/group?myGroups=true&customerPublicKey=${publicKey}&status=${currentTab}&orderBy=${encodeURIComponent(
-          filters.orderBy
-        )}${
-          filters.period !== GroupPeriod.ALL ? `&period=${filters.period}` : ''
-        }&crypto=${filters.crypto}${
-          filters.amount ? `&amount=${filters.amount}` : ''
-        }`
-      ).then((res) => res.json()),
+      getGroups({
+        myGroups: true,
+        publicKey,
+        crypto: filters.crypto,
+        orderBy: filters.orderBy,
+        amount: filters.amount,
+        period: filters.period,
+        status: currentTab as GroupStatus,
+      }),
   });
 
   if (!publicKey) {
@@ -71,7 +75,7 @@ const Page = () => {
     );
   }
 
-  const loading = isPending || isLoading || isFetching;
+  const loading = isPending || isLoading; // || isFetching;
 
   return (
     <>

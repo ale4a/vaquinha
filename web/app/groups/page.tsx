@@ -3,12 +3,9 @@
 import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
 import { GroupFiltersHead } from '@/components/group/GroupFiltersHead/GroupFiltersHead';
 import { ListGroups } from '@/components/group/ListGroups/ListGroups';
-import {
-  GroupCrypto,
-  GroupFilters,
-  GroupPeriod,
-  GroupResponseDTO,
-} from '@/types';
+import { REFETCH_INTERVAL } from '@/config/constants';
+import { useGroup } from '@/hooks';
+import { GroupCrypto, GroupFilters, GroupPeriod } from '@/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
@@ -21,21 +18,21 @@ const GroupPage = () => {
     amount: 0,
   });
   const { publicKey } = useWallet();
-  const { isPending, isLoading, isFetching, data } = useQuery<{
-    contents: GroupResponseDTO[];
-  }>({
+  const { getGroups } = useGroup();
+  const { isPending, isLoading, data } = useQuery({
+    refetchInterval: REFETCH_INTERVAL,
     queryKey: ['groups', filters, publicKey],
     queryFn: () =>
-      fetch(
-        `/api/group?orderBy=${encodeURIComponent(filters.orderBy)}${
-          filters.period !== GroupPeriod.ALL ? `&period=${filters.period}` : ''
-        }&crypto=${filters.crypto}${
-          filters.amount ? `&amount=${filters.amount}` : ''
-        }${publicKey ? `&customerPublicKey=${publicKey.toBase58()}` : ''}`
-      ).then((res) => res.json()),
+      getGroups({
+        publicKey,
+        crypto: filters.crypto,
+        orderBy: filters.orderBy,
+        amount: filters.amount,
+        period: filters.period,
+      }),
   });
 
-  const loading = isPending || isLoading || isFetching;
+  const loading = isPending || isLoading; // || isFetching;
   const groups = data?.contents || [];
 
   return (

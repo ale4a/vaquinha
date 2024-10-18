@@ -1,9 +1,11 @@
+import { includeApi } from '@/helpers/api';
 import {
   GroupCreateDTO,
   GroupCrypto,
   GroupDepositDTO,
   GroupPeriod,
   GroupResponseDTO,
+  GroupStatus,
   GroupWithdrawalDTO,
   GroupWithdrawalType,
 } from '@/types';
@@ -11,6 +13,42 @@ import type { PublicKey } from '@solana/web3.js';
 import { useCallback } from 'react';
 
 export const useGroup = () => {
+  const getGroups = useCallback(
+    async ({
+      orderBy,
+      crypto,
+      myGroups,
+      publicKey,
+      status,
+      period,
+      amount,
+    }: {
+      orderBy: string;
+      crypto: string;
+      myGroups?: true;
+      publicKey?: PublicKey | null;
+      status?: GroupStatus;
+      period?: GroupPeriod;
+      amount?: number;
+    }): Promise<{ contents: GroupResponseDTO[] }> => {
+      const response = await fetch(
+        includeApi(
+          '/group' +
+            `?orderBy=${encodeURIComponent(orderBy)}` +
+            `&crypto=${crypto}` +
+            `${period !== GroupPeriod.ALL ? `&period=${period}` : ''}` +
+            `${myGroups ? `&myGroups=true` : ''}` +
+            `${amount ? `&amount=${amount}` : ''}` +
+            `${publicKey ? `&customerPublicKey=${publicKey.toBase58()}` : ''}` +
+            `${status ? `&status=${status}` : ''}`
+        )
+      );
+
+      return await response.json();
+    },
+    []
+  );
+
   const createGroup = useCallback(
     async (
       name: string,
@@ -30,9 +68,12 @@ export const useGroup = () => {
         startsOnTimestamp: startsOnTimestamp,
         customerPublicKey: publicKey.toBase58(),
       };
-      const result = await fetch('/api/group/create', {
+      const result = await fetch(includeApi('/group/create'), {
         method: 'POST',
         body: JSON.stringify(newGroupPayload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       const body = await result.json();
       return body?.content as GroupResponseDTO;
@@ -41,12 +82,26 @@ export const useGroup = () => {
   );
 
   const deleteGroup = useCallback(async (groupId: string) => {
-    return await fetch(`/api/group/${groupId}`, { method: 'DELETE' });
+    return await fetch(includeApi(`/group/${groupId}`), {
+      method: 'DELETE',
+    });
   }, []);
 
-  const getGroup = useCallback(async (groupId: string) => {
-    return await fetch(`/api/group/${groupId}`, { method: 'GET' });
-  }, []);
+  const getGroup = useCallback(
+    async (
+      groupId: string,
+      publicKey?: PublicKey
+    ): Promise<{ content: GroupResponseDTO }> => {
+      const result = await fetch(
+        includeApi(
+          `/group/${groupId}?customerPublicKey=${publicKey?.toBase58()}`
+        ),
+        { method: 'GET' }
+      );
+      return await result.json();
+    },
+    []
+  );
 
   const joinGroup = useCallback(
     async (
@@ -56,9 +111,12 @@ export const useGroup = () => {
       const payload = {
         customerPublicKey: publicKey.toBase58(),
       };
-      const result = await fetch(`/api/group/${groupId}/join`, {
+      const result = await fetch(includeApi(`/group/${groupId}/join`), {
         method: 'POST',
         body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       return (await result.json()).content;
     },
@@ -73,9 +131,12 @@ export const useGroup = () => {
       const payload = {
         customerPublicKey: publicKey.toBase58(),
       };
-      const result = await fetch(`/api/group/${groupId}/disjoin`, {
+      const result = await fetch(includeApi(`/group/${groupId}/disjoin`), {
         method: 'POST',
         body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       return await result.json();
     },
@@ -95,9 +156,12 @@ export const useGroup = () => {
         round: 0,
         amount,
       };
-      return await fetch(`/api/group/${groupId}/deposit`, {
+      return await fetch(includeApi(`/group/${groupId}/deposit`), {
         method: 'POST',
         body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     },
     []
@@ -117,9 +181,12 @@ export const useGroup = () => {
         round,
         amount,
       };
-      return await fetch(`/api/group/${groupId}/deposit`, {
+      return await fetch(includeApi(`/group/${groupId}/deposit`), {
         method: 'POST',
         body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     },
     []
@@ -138,9 +205,12 @@ export const useGroup = () => {
         type: GroupWithdrawalType.COLLATERAL,
         amount,
       };
-      return await fetch(`/api/group/${groupId}/withdrawal`, {
+      return await fetch(includeApi(`/group/${groupId}/withdrawal`), {
         method: 'POST',
         body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     },
     []
@@ -159,9 +229,12 @@ export const useGroup = () => {
         type: GroupWithdrawalType.INTEREST,
         amount,
       };
-      return await fetch(`/api/group/${groupId}/withdrawal`, {
+      return await fetch(includeApi(`/group/${groupId}/withdrawal`), {
         method: 'POST',
         body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     },
     []
@@ -180,15 +253,19 @@ export const useGroup = () => {
         type: GroupWithdrawalType.ROUND,
         amount,
       };
-      return await fetch(`/api/group/${groupId}/withdrawal`, {
+      return await fetch(includeApi(`/group/${groupId}/withdrawal`), {
         method: 'POST',
         body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     },
     []
   );
 
   return {
+    getGroups,
     getGroup,
     createGroup,
     joinGroup,

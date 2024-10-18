@@ -1,7 +1,39 @@
 'use client';
 
+import { includeApi } from '@/helpers/api';
 import { ReactNode } from 'react';
 import Navbar from '../global/Navbar/Navbar';
+
+declare global {
+  interface Window {
+    __TEST__: any;
+  }
+}
+
+if (typeof window !== 'undefined') {
+  console.log('updateStartsOnTimestamp loaded :P');
+  window.__TEST__ = {};
+  window.__TEST__.updateStartsOnTimestamp = async (
+    groupId: string,
+    startsOnTimestamp: number
+  ) => {
+    const response = await fetch(
+      includeApi(`/group/${groupId}/set-timestamp`),
+      {
+        method: 'POST',
+        body: JSON.stringify({ startsOnTimestamp }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    const result = await response.json();
+    if (result.success) {
+      window.location.reload();
+    }
+    console.log(result);
+  };
+}
 
 export function UiLayout({
   children,

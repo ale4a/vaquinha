@@ -31,6 +31,7 @@ const GroupDetailPage = () => {
     withdrawalCollateral,
   } = useVaquinhaWithdrawal();
   const {
+    getGroup,
     joinGroup,
     disjoinGroup,
     depositGroupCollateral,
@@ -49,10 +50,7 @@ const GroupDetailPage = () => {
   }>({
     enabled: !!publicKey,
     queryKey: ['group', publicKey],
-    queryFn: () =>
-      fetch(`/api/group/${groupId}?customerPublicKey=${publicKey}`).then(
-        (res) => res.json()
-      ),
+    queryFn: () => getGroup(groupId as string, publicKey!),
   });
 
   const loading = isPendingData || isLoadingData || isFetchingData;
@@ -79,7 +77,6 @@ const GroupDetailPage = () => {
     try {
       const joinedGroup = await joinGroup(group.id, publicKey);
       const amount = joinedGroup.collateralAmount;
-      console.log({ joinedGroup });
       const { tx, error, success } = await depositCollateralAndJoin(
         joinedGroup
       );

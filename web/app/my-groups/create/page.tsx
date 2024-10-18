@@ -29,6 +29,7 @@ const optionsCrypto: Option<GroupCrypto>[] = [
     value: GroupCrypto.SOL,
   },
 ];
+
 const optionsMembers: Option<number>[] = [
   {
     text: '2',
@@ -114,9 +115,7 @@ const Page = () => {
         throw new Error('group not created');
       }
       const amount = group.collateralAmount;
-      const { tx, error, success } = await depositCollateralAndCreate(
-        group
-      );
+      const { tx, error, success } = await depositCollateralAndCreate(group);
       if (!success) {
         await deleteGroup(group.id);
         logError(LogLevel.INFO)(error);
@@ -188,7 +187,7 @@ const Page = () => {
               type="number"
               value={newGroup.amount}
               onChange={(amount) =>
-                setNewGroup((prevState) => ({ ...prevState, amount }))
+                setNewGroup((prevState) => ({ ...prevState, amount: +amount }))
               }
             />
           </div>

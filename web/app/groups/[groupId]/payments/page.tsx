@@ -5,6 +5,7 @@ import ErrorView from '@/components/global/Error/ErrorView';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import GroupTablePayments from '@/components/group/GroupTablePayments/GroupTablePayments';
+import { useGroup } from '@/hooks';
 import { GroupResponseDTO } from '@/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
@@ -15,6 +16,7 @@ const PaymentsPage = () => {
   const router = useRouter();
   const { groupId } = useParams();
   const { publicKey } = useWallet();
+  const { getGroup } = useGroup();
   const {
     isPending: isPendingData,
     isLoading: isLoadingData,
@@ -27,10 +29,7 @@ const PaymentsPage = () => {
   }>({
     enabled: !!publicKey,
     queryKey: ['group', publicKey],
-    queryFn: () =>
-      fetch(`/api/group/${groupId}?customerPublicKey=${publicKey}`).then(
-        (res) => res.json()
-      ),
+    queryFn: () => getGroup(groupId as string, publicKey!),
   });
 
   const loading = isPendingData || isLoadingData || isFetchingData;
