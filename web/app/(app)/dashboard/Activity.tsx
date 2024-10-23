@@ -70,8 +70,8 @@ export const Activity = () => {
   console.log({ transactions });
   return (
     <>
-      <div className="flex flex-row gap-2">
-        <h1>Activity</h1>
+      <div className="flex flex-row gap-2 items-center">
+        <h1 className="text-large font-medium">Activity</h1>
         <FaArrowRotateRight onClick={() => setTimestamp(Date.now())} />
       </div>
       <div className="flex flex-row gap-2 w-full border-primary-100 p-4 rounded bg-bg-200 mb-2">

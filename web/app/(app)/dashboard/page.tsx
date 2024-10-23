@@ -34,13 +34,12 @@ const Page = () => {
 
   return (
     <div className="px-4">
-      <div className="h-20 ">
-        <MainTabsHeader />
-      </div>
-      <div className="mt-4">
-        <h1>My wallet balance</h1>
-        <MyWalletCard />
-        <h1>Statistics</h1>
+      <MainTabsHeader />
+      <div className="flex flex-col gap-6 mt-6">
+        <div>
+          <h1 className="text-lg font-medium">My wallet balance</h1>
+          <MyWalletCard />
+        </div>
         <Statistics />
         <Activity />
       </div>
