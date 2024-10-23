@@ -78,7 +78,7 @@ const Page = () => {
   const loading = isPending || isLoading; // || isFetching;
 
   return (
-    <>
+    <div className="px-4">
       <MainTabsHeader />
       <Tabs tabs={tabs} onTabClick={setCurrentTab} currentTab={currentTab} />
       <GroupFiltersHead filters={filters} setFilters={setFilters} />
@@ -112,7 +112,7 @@ const Page = () => {
           </div>
         )}
       <ListGroups groups={data?.contents || []} loading={loading} />
-    </>
+    </div>
   );
 };
 

@@ -166,7 +166,7 @@ const GroupDetailPage = () => {
   const allPaymentsDone = totalPayments === group.totalMembers - 1;
 
   return (
-    <>
+    <div className="px-4">
       <TabTitleHeader text="Group Information" />
       {loading && <LoadingSpinner />}
       {!loading && data && (
@@ -338,7 +338,7 @@ const GroupDetailPage = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

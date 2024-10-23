@@ -48,7 +48,7 @@ export function UiLayout({
         <div className="hidden sm:block bg-gray-900 z-10">
           <Navbar links={links} />
         </div>
-        <div className="flex flex-col flex-1 px-4 overflow-y-auto sm:px-20 md:px-28 lg:px-32 xl:px-36 2xl:px-44 ">
+        <div className="flex flex-col flex-1 overflow-y-auto sm:px-20 md:px-28 lg:px-32 xl:px-36 2xl:px-44 ">
           {children}
         </div>
         <div className="block sm:hidden bg-gray-900">

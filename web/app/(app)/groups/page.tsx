@@ -36,11 +36,11 @@ const GroupPage = () => {
   const groups = data?.contents || [];
 
   return (
-    <>
+    <div className="px-4">
       <MainTabsHeader />
       <GroupFiltersHead filters={filters} setFilters={setFilters} />
       <ListGroups groups={groups} loading={loading} />
-    </>
+    </div>
   );
 };
 
