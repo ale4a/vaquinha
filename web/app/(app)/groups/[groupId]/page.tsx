@@ -181,6 +181,7 @@ const GroupDetailPage = () => {
     0
   );
   const allPaymentsDone = totalPayments === group.totalMembers - 1;
+  console.log({ group });
 
   return (
     <div className="px-4">
@@ -235,13 +236,17 @@ const GroupDetailPage = () => {
                 title="Round earned"
                 content={
                   <>
-                    <p>Current position: {group.currentPosition}</p>
+                    {isActive ? (
+                      <p>Current position: {group.currentPosition}</p>
+                    ) : (
+                      <p></p>
+                    )}
                     <p>Your Position: {group.myPosition}</p>
                   </>
                 }
                 actionLabel={
                   group.myWithdrawals.round.successfullyWithdrawn
-                    ? 'Withdrawn'
+                    ? 'Withdrawn ✔'
                     : 'Withdraw'
                 }
                 type={
@@ -280,8 +285,12 @@ const GroupDetailPage = () => {
               />
               <SummaryAction
                 title="Claim Collateral"
-                content={<p>300 USDC</p>}
-                actionLabel="Withdraw"
+                content={<p>{group.collateralAmount} USDC</p>}
+                actionLabel={
+                  group.myWithdrawals.collateral.successfullyWithdrawn
+                    ? 'Withdrawn ✔'
+                    : 'Withdraw'
+                }
                 type={
                   group.status === GroupStatus.CONCLUDED &&
                   !group.myWithdrawals.collateral.successfullyWithdrawn
