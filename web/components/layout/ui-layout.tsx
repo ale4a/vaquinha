@@ -11,7 +11,7 @@ declare global {
 }
 
 if (typeof window !== 'undefined') {
-  console.log('updateStartsOnTimestamp loaded :D');
+  console.log('updateStartsOnTimestamp loaded :,D');
   window.__TEST__ = {};
   window.__TEST__.updateStartsOnTimestamp = async (
     groupId: string,
