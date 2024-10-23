@@ -59,75 +59,74 @@ export const Activity = () => {
     void getTransactions();
   }, [connection, publicKey, timestamp]);
 
-  if (loading) {
-    return (
-      <div className="p-6">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
-  console.log({ transactions });
   return (
     <>
       <div className="flex flex-row gap-2 items-center">
         <h1 className="text-large font-medium">Activity</h1>
         <FaArrowRotateRight onClick={() => setTimestamp(Date.now())} />
       </div>
-      <div className="flex flex-row gap-2 w-full border-primary-100 p-4 rounded bg-bg-200 mb-2">
-        <div className="truncate flex-1 font-semibold">Signature</div>
-        <div className="flex-1 text-center font-semibold">Date</div>
-        <div className="flex-1 text-center font-semibold">Amount</div>
-        <div className="flex-1 text-center font-semibold">Fee (SOL)</div>
-      </div>
-      <div className="flex flex-col gap-2 items-center">
-        {transactions.map(
-          ({ parsedTransactionWithMeta, confirmedSignatureInfo }) => {
-            const date = new Date(
-              (parsedTransactionWithMeta.blockTime || 0) * 1000
-            );
-            const amounts: { [key: string]: number } = {};
-            for (const p of parsedTransactionWithMeta.meta?.preTokenBalances ??
-              []) {
-              amounts[p.owner ?? ''] = +p.uiTokenAmount.amount;
-            }
-            for (const p of parsedTransactionWithMeta.meta?.postTokenBalances ??
-              []) {
-              amounts[p.owner ?? ''] =
-                (+p.uiTokenAmount.amount - amounts[p.owner ?? '']) /
-                10 ** p.uiTokenAmount.decimals;
-            }
-            const amount = amounts[publicKey?.toBase58() || ''] ?? 0;
-            return (
-              <div
-                className="flex flex-row gap-2 w-full border-primary-100 p-4 rounded bg-bg-200"
-                key={parsedTransactionWithMeta.transaction.signatures.join(',')}
-              >
-                <div className="truncate flex-1">
-                  {confirmedSignatureInfo.signature}
-                </div>
-                <div className="flex-1 text-center">
-                  <div>{date.toLocaleDateString()}</div>
-                  <div>{date.toLocaleTimeString()}</div>
-                </div>
-                <div
-                  className={
-                    'flex-1 text-center' +
-                    (amount > 0 ? ' text-green-500' : '') +
-                    (amount < 0 ? ' text-red-500' : '')
-                  }
-                >
-                  {amount > 0 ? '+' : ''}
-                  {amount}
-                </div>
-                <div className="flex-1 text-center">
-                  {(parsedTransactionWithMeta.meta?.fee ?? 0) / 1000000000}
-                </div>
-              </div>
-            );
-          }
-        )}
-      </div>
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <div className="flex flex-row gap-2 w-full border-primary-100 p-4 rounded bg-bg-200 mb-2">
+            <div className="truncate flex-1 font-semibold">Signature</div>
+            <div className="flex-1 text-center font-semibold">Date</div>
+            <div className="flex-1 text-center font-semibold">Amount</div>
+            <div className="flex-1 text-center font-semibold">Fee (SOL)</div>
+          </div>
+          <div className="flex flex-col gap-2 items-center">
+            {transactions.map(
+              ({ parsedTransactionWithMeta, confirmedSignatureInfo }) => {
+                const date = new Date(
+                  (parsedTransactionWithMeta.blockTime || 0) * 1000
+                );
+                const amounts: { [key: string]: number } = {};
+                for (const p of parsedTransactionWithMeta.meta
+                  ?.preTokenBalances ?? []) {
+                  amounts[p.owner ?? ''] = +p.uiTokenAmount.amount;
+                }
+                for (const p of parsedTransactionWithMeta.meta
+                  ?.postTokenBalances ?? []) {
+                  amounts[p.owner ?? ''] =
+                    (+p.uiTokenAmount.amount - amounts[p.owner ?? '']) /
+                    10 ** p.uiTokenAmount.decimals;
+                }
+                const amount = amounts[publicKey?.toBase58() || ''] ?? 0;
+                return (
+                  <div
+                    className="flex flex-row gap-2 w-full border-primary-100 p-4 rounded bg-bg-200"
+                    key={parsedTransactionWithMeta.transaction.signatures.join(
+                      ','
+                    )}
+                  >
+                    <div className="truncate flex-1">
+                      {confirmedSignatureInfo.signature}
+                    </div>
+                    <div className="flex-1 text-center">
+                      <div>{date.toLocaleDateString()}</div>
+                      <div>{date.toLocaleTimeString()}</div>
+                    </div>
+                    <div
+                      className={
+                        'flex-1 text-center' +
+                        (amount > 0 ? ' text-green-500' : '') +
+                        (amount < 0 ? ' text-red-500' : '')
+                      }
+                    >
+                      {amount > 0 ? '+' : ''}
+                      {amount}
+                    </div>
+                    <div className="flex-1 text-center">
+                      {(parsedTransactionWithMeta.meta?.fee ?? 0) / 1000000000}
+                    </div>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 };
