@@ -2,7 +2,13 @@
 
 import { getVaquinhaProgram, getVaquinhaProgramId } from '@vaquinha/anchor';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Cluster, Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+import {
+  Cluster,
+  Keypair,
+  PublicKey,
+  SystemProgram,
+  SYSVAR_RENT_PUBKEY,
+} from '@solana/web3.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -10,7 +16,11 @@ import { useCluster } from '../cluster/cluster-data-access';
 import { useAnchorProvider } from '../solana/solana-provider';
 import { useTransactionToast } from '../ui/ui-layout';
 import { BN } from '@coral-xyz/anchor';
-import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from "@solana/spl-token";
+import {
+  TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddress,
+  createAssociatedTokenAccountInstruction,
+} from '@solana/spl-token';
 
 export const useProgramMethods = () => {
   const provider = useAnchorProvider();
@@ -25,15 +35,15 @@ export const useProgramMethods = () => {
       numberOfPlayers: number,
       frequencyOfTurns: number,
       tokenMintAddress: string,
-      position: number) {
-
+      position: number
+    ) {
       const paymentAmountBN = new BN(paymentAmount);
       const frequencyOfTurnsBN = new BN(frequencyOfTurns);
 
       const tokenMint = new PublicKey(tokenMintAddress);
 
       const [roundPDA, _bump] = await PublicKey.findProgramAddress(
-        [Buffer.from("round"), Buffer.from(roundId)],
+        [Buffer.from('round'), Buffer.from(roundId)],
         program.programId
       );
 
@@ -58,7 +68,13 @@ export const useProgramMethods = () => {
 
       try {
         const tx = await program.methods
-          .initializeRound(roundId, paymentAmountBN, numberOfPlayers, frequencyOfTurnsBN, position - 1) // 0-indexed position
+          .initializeRound(
+            roundId,
+            paymentAmountBN,
+            numberOfPlayers,
+            frequencyOfTurnsBN,
+            position - 1
+          ) // 0-indexed position
           .accounts({
             round: roundPDA,
             initializer: wallet.publicKey as PublicKey,
@@ -66,30 +82,33 @@ export const useProgramMethods = () => {
             initializerTokenAccount: initializerTokenAccount,
             roundTokenAccount: roundTokenAccount,
             tokenProgram: TOKEN_PROGRAM_ID,
-            systemProgram: SystemProgram.programId
+            systemProgram: SystemProgram.programId,
           })
           .preInstructions([createAtaIx])
           .rpc();
 
-        console.log("Transaction signature:", tx);
-        console.log("Round initialized:", roundPDA.toString());
+        console.log('Transaction signature:', tx);
+        console.log('Round initialized:', roundPDA.toString());
         transactionToast(tx);
         return { tx };
-
       } catch (error) {
-        console.error("Error initializing round:", error);
-        return { error }
+        console.error('Error initializing round:', error);
+        return { error };
       }
     },
 
-    addPlayer: async function (roundId: string, tokenMintAddress: string, position: number) {
+    addPlayer: async function (
+      roundId: string,
+      tokenMintAddress: string,
+      position: number
+    ) {
       const tokenMint = new PublicKey(tokenMintAddress);
       const playerTokenAccount = await getAssociatedTokenAddress(
         tokenMint,
         wallet.publicKey as PublicKey
       );
       const [roundPDA, _bump] = await PublicKey.findProgramAddress(
-        [Buffer.from("round"), Buffer.from(roundId)],
+        [Buffer.from('round'), Buffer.from(roundId)],
         program.programId
       );
       const roundTokenAccount = await getAssociatedTokenAddress(
@@ -106,37 +125,41 @@ export const useProgramMethods = () => {
             player: wallet.publicKey as PublicKey,
             playerTokenAccount: playerTokenAccount,
             roundTokenAccount: roundTokenAccount,
-            tokenProgram: TOKEN_PROGRAM_ID
+            tokenProgram: TOKEN_PROGRAM_ID,
           })
           .rpc();
 
-        console.log("Transaction signature:", tx);
-        console.log("Round Joined:", roundPDA.toString());
+        console.log('Transaction signature:', tx);
+        console.log('Round Joined:', roundPDA.toString());
         transactionToast(tx);
         return { tx };
       } catch (error) {
-        console.error("Error adding player:", error);
-        return { error }
+        console.error('Error adding player:', error);
+        return { error };
       }
     },
 
-    payTurn: async function (roundId: string, tokenMintAddress: string, turn: number) {
+    payTurn: async function (
+      roundId: string,
+      tokenMintAddress: string,
+      turn: number
+    ) {
       const tokenMint = new PublicKey(tokenMintAddress);
-       const playerTokenAccount = await getAssociatedTokenAddress(
-         tokenMint,
-         wallet.publicKey as PublicKey
-       );
-       const [roundPDA, _bump] = await PublicKey.findProgramAddress(
-         [Buffer.from("round"), Buffer.from(roundId)],
-         program.programId
-       );
-       const roundTokenAccount = await getAssociatedTokenAddress(
-         tokenMint,
-         roundPDA,
-         true
-       );
+      const playerTokenAccount = await getAssociatedTokenAddress(
+        tokenMint,
+        wallet.publicKey as PublicKey
+      );
+      const [roundPDA, _bump] = await PublicKey.findProgramAddress(
+        [Buffer.from('round'), Buffer.from(roundId)],
+        program.programId
+      );
+      const roundTokenAccount = await getAssociatedTokenAddress(
+        tokenMint,
+        roundPDA,
+        true
+      );
 
-       try {
+      try {
         const tx = await program.methods
           .payTurn(turn)
           .accounts({
@@ -144,93 +167,96 @@ export const useProgramMethods = () => {
             player: wallet.publicKey as PublicKey,
             playerTokenAccount: playerTokenAccount,
             roundTokenAccount: roundTokenAccount,
-            tokenProgram: TOKEN_PROGRAM_ID
+            tokenProgram: TOKEN_PROGRAM_ID,
           })
           .rpc();
 
-            console.log("Transaction signature:", tx);
-            console.log("Round Joined:", roundPDA.toString());
-            transactionToast(tx);
-            return { tx };
-          } catch (error) {
-            console.error("Error paying turn:", error);
-           return { error }
-         }
+        console.log('Transaction signature:', tx);
+        console.log('Round Joined:', roundPDA.toString());
+        transactionToast(tx);
+        return { tx };
+      } catch (error) {
+        console.error('Error paying turn:', error);
+        return { error };
+      }
     },
 
     withdrawTurn: async function (roundId: string, tokenMintAddress: string) {
       const tokenMint = new PublicKey(tokenMintAddress);
-       const playerTokenAccount = await getAssociatedTokenAddress(
-         tokenMint,
-         wallet.publicKey as PublicKey
-       );
-       const [roundPDA, _bump] = await PublicKey.findProgramAddress(
-         [Buffer.from("round"), Buffer.from(roundId)],
-         program.programId
-       );
-       const roundTokenAccount = await getAssociatedTokenAddress(
-         tokenMint,
-         roundPDA,
-         true
-       );
-       try {
+      const playerTokenAccount = await getAssociatedTokenAddress(
+        tokenMint,
+        wallet.publicKey as PublicKey
+      );
+      const [roundPDA, _bump] = await PublicKey.findProgramAddress(
+        [Buffer.from('round'), Buffer.from(roundId)],
+        program.programId
+      );
+      const roundTokenAccount = await getAssociatedTokenAddress(
+        tokenMint,
+        roundPDA,
+        true
+      );
+      try {
         const tx = await program.methods
-         .withdrawTurn()
-         .accounts({
-           round: roundPDA,
-           player: wallet.publicKey as PublicKey,
-           playerTokenAccount: playerTokenAccount,
-           roundTokenAccount: roundTokenAccount,
-           tokenProgram: TOKEN_PROGRAM_ID
-         })
-         .rpc();
+          .withdrawTurn()
+          .accounts({
+            round: roundPDA,
+            player: wallet.publicKey as PublicKey,
+            playerTokenAccount: playerTokenAccount,
+            roundTokenAccount: roundTokenAccount,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .rpc();
 
-          console.log("Transaction signature:", tx);
-          console.log("Round Withdrawal successful:", roundPDA.toString());
-          transactionToast(tx);
-          return { tx };
+        console.log('Transaction signature:', tx);
+        console.log('Round Withdrawal successful:', roundPDA.toString());
+        transactionToast(tx);
+        return { tx };
       } catch (error) {
-        console.error("Error withdrawing turn:", error);
-        return { error }
+        console.error('Error withdrawing turn:', error);
+        return { error };
       }
     },
-    withdrawCollateral: async function (roundId: string, tokenMintAddress: string) {
+    withdrawCollateral: async function (
+      roundId: string,
+      tokenMintAddress: string
+    ) {
       const tokenMint = new PublicKey(tokenMintAddress);
-       const playerTokenAccount = await getAssociatedTokenAddress(
-         tokenMint,
-         wallet.publicKey as PublicKey
-       );
-       const [roundPDA, _bump] = await PublicKey.findProgramAddress(
-         [Buffer.from("round"), Buffer.from(roundId)],
-         program.programId
-       );
-       const roundTokenAccount = await getAssociatedTokenAddress(
-         tokenMint,
-         roundPDA,
-         true
-       );
-       try {
+      const playerTokenAccount = await getAssociatedTokenAddress(
+        tokenMint,
+        wallet.publicKey as PublicKey
+      );
+      const [roundPDA, _bump] = await PublicKey.findProgramAddress(
+        [Buffer.from('round'), Buffer.from(roundId)],
+        program.programId
+      );
+      const roundTokenAccount = await getAssociatedTokenAddress(
+        tokenMint,
+        roundPDA,
+        true
+      );
+      try {
         const tx = await program.methods
-         .withdrawCollateral()
-         .accounts({
-           round: roundPDA,
-           player: wallet.publicKey as PublicKey,
-           playerTokenAccount: playerTokenAccount,
-           roundTokenAccount: roundTokenAccount,
-           tokenProgram: TOKEN_PROGRAM_ID
-         })
-         .rpc();
+          .withdrawCollateral()
+          .accounts({
+            round: roundPDA,
+            player: wallet.publicKey as PublicKey,
+            playerTokenAccount: playerTokenAccount,
+            roundTokenAccount: roundTokenAccount,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .rpc();
 
-          console.log("Transaction signature:", tx);
-          console.log("Collateral Withdrawal successful:", roundPDA.toString());
-          transactionToast(tx);
-          return { tx };
+        console.log('Transaction signature:', tx);
+        console.log('Collateral Withdrawal successful:', roundPDA.toString());
+        transactionToast(tx);
+        return { tx };
       } catch (error) {
-        console.error("Error withdrawing collateral:", error);
-        return { error }
+        console.error('Error withdrawing collateral:', error);
+        return { error };
       }
-    }
-  }
+    },
+  };
 };
 
 export function useVaquinhaProgram() {
