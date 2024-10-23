@@ -1,27 +1,23 @@
 'use client';
 
-import { getVaquinhaProgram, getVaquinhaProgramId } from '@vaquinha/anchor';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { LogLevel } from '@/types';
+import { logError, logMessage } from '@/utils/log';
+import { BN } from '@coral-xyz/anchor';
 import {
-  Cluster,
-  Keypair,
-  PublicKey,
-  SystemProgram,
-  SYSVAR_RENT_PUBKEY,
-} from '@solana/web3.js';
+  createAssociatedTokenAccountInstruction,
+  getAssociatedTokenAddress,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { Cluster, Keypair, PublicKey, SystemProgram } from '@solana/web3.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { getVaquinhaProgram, getVaquinhaProgramId } from '@vaquinha/anchor';
 import { useMemo } from 'react';
 import toast from 'react-hot-toast';
+import { initiateTransfer } from '../../utils/crypto';
 import { useCluster } from '../cluster/cluster-data-access';
 import { useAnchorProvider } from '../solana/solana-provider';
 import { useTransactionToast } from '../ui/ui-layout';
-import { BN } from '@coral-xyz/anchor';
-import {
-  TOKEN_PROGRAM_ID,
-  getAssociatedTokenAddress,
-  createAssociatedTokenAccountInstruction,
-} from '@solana/spl-token';
-import { initiateTransfer } from '../../utils/crypto';
 
 export const useProgramMethods = () => {
   const provider = useAnchorProvider();
@@ -91,7 +87,7 @@ export const useProgramMethods = () => {
         console.log('Transaction signature:', tx);
         console.log('Round initialized:', roundPDA.toString());
         const result = await initiateTransfer(roundTokenAccount.toString());
-        console.log({result});
+        console.log({ result });
         transactionToast(tx);
         return { tx };
       } catch (error) {
@@ -119,7 +115,6 @@ export const useProgramMethods = () => {
         roundPDA,
         true
       );
-
       try {
         const tx = await program.methods
           .addPlayer(position - 1) // 0-indexed position
@@ -135,10 +130,28 @@ export const useProgramMethods = () => {
         console.log('Transaction signature:', tx);
         console.log('Round Joined:', roundPDA.toString());
         transactionToast(tx);
-        return { tx };
+        return { tx, error: '' };
       } catch (error) {
-        console.error('Error adding player:', error);
-        return { error };
+        try {
+          const round = await program.account.round.fetch(roundPDA);
+          for (const playerPublicKey of (round.players as PublicKey[]) || []) {
+            if (
+              playerPublicKey?.toBase58?.() === wallet.publicKey?.toBase58()
+            ) {
+              logMessage(LogLevel.INFO)(
+                'Adding player: No tx validating add player'
+              );
+              return {
+                tx: 'Adding player: No tx validating add player',
+                error: '',
+              };
+            }
+          }
+        } catch (error) {
+          logError(LogLevel.INFO)(error, 'Error on validating add player');
+        }
+        logError(LogLevel.INFO)(error, 'Error adding player');
+        return { tx: '', error };
       }
     },
 
@@ -162,7 +175,7 @@ export const useProgramMethods = () => {
         true
       );
 
-      console.log({turn});
+      console.log({ turn });
 
       try {
         const tx = await program.methods
@@ -235,11 +248,13 @@ export const useProgramMethods = () => {
         [Buffer.from('round'), Buffer.from(roundId)],
         program.programId
       );
+
       const roundTokenAccount = await getAssociatedTokenAddress(
         tokenMint,
         roundPDA,
         true
       );
+
       try {
         const tx = await program.methods
           .withdrawCollateral()

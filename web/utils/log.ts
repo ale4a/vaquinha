@@ -20,7 +20,9 @@ export const logMessage = (logLevel: LogLevel) => (message: any) => {
 export const logError =
   (logLevel: LogLevel) => (content: any, title?: string) => {
     // if (shouldDisplayLog(logLevel)) {
-    console.log(`[ERROR] ${printDate()}` + (title ? `, ${title}:` : ':'));
-    console.log(stringifyObject(content, 5));
+    console.log(
+      `[ERROR] ${printDate()}` + (title ? `, ${title}:` : ':'),
+      stringifyObject(content, 5)
+    );
     // }
   };

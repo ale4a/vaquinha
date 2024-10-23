@@ -69,32 +69,11 @@ export const useVaquinhaDeposit = () => {
       group: GroupResponseDTO
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
-      let tx, error;
-      try {
-        const result = await addPlayer(
-          group.id,
-          tokenMintAddress,
-          group.myPosition
-        );
-        tx = result.tx || '';
-        error = result.error;
-      } catch (error: any) {
-        console.log(error);
-        console.log(error?.message);
-        console.log(error?.stack);
-        console.log({ ...(error || {}) });
-        if (
-          error?.message ===
-          'failed to send transaction: Transaction simulation failed: This transaction has already been processed'
-        ) {
-          return {
-            tx: 'failed to send transaction: Transaction simulation failed: This transaction has already been processed',
-            error: '',
-            success: true,
-          };
-        }
-        throw error;
-      }
+      const { tx, error } = await addPlayer(
+        group.id,
+        tokenMintAddress,
+        group.myPosition
+      );
 
       if (NO_TRANSACTION_ERRORS) {
         return { tx: 'testing', error: '', success: true };

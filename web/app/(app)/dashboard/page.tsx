@@ -1,4 +1,5 @@
 'use client';
+import { Activity } from '@/app/(app)/dashboard/Activity';
 import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
 import { useWallet } from '@solana/wallet-adapter-react';
 import React from 'react';
@@ -41,7 +42,7 @@ const Page = () => {
         <MyWalletCard />
         <h1>Statistics</h1>
         <Statistics />
-        <h1>Activity</h1>
+        <Activity />
       </div>
     </div>
   );
