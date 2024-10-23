@@ -74,7 +74,7 @@ export const useProgramMethods = () => {
             paymentAmountBN,
             numberOfPlayers,
             frequencyOfTurnsBN,
-            position - 1
+            position
           ) // 0-indexed position
           .accounts({
             round: roundPDA,
@@ -122,7 +122,7 @@ export const useProgramMethods = () => {
 
       try {
         const tx = await program.methods
-          .addPlayer(position - 1) // 0-indexed position
+          .addPlayer(position) // 0-indexed position
           .accounts({
             round: roundPDA,
             player: wallet.publicKey as PublicKey,
