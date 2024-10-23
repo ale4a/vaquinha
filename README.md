@@ -1,14 +1,14 @@
-# Protocol Vaquinha
+# Protocol Vaquita
 
 ![Texto alternativo](/vaquina.png)
 
-Protocol Vaquinha is a community savings protocol inspired by the traditional Andean savings system known as Pasanaku. This protocol leverages blockchain technology to solve trust issues, allowing users to organize and participate in group savings systems with complete transparency and security. Vaquinha Protocol scales these traditional systems to the digital world, providing global access to communities that need reliable shared savings solutions.
+Protocol Vaquita is a community savings protocol inspired by the traditional Andean savings system known as Pasanaku. This protocol leverages blockchain technology to solve trust issues, allowing users to organize and participate in group savings systems with complete transparency and security. Vaquita Protocol scales these traditional systems to the digital world, providing global access to communities that need reliable shared savings solutions.
 
 ## 🌐 Resources
 
 - 🚀 **Demo:** Check out the live demo of the project [here](https://vaquinha-seven.vercel.app/groups)
 - 🎥 **Pitch Deck:** This is the pitch deck for the project, providing a concise overview of its key elements. It helps to understand the problem, solution, business model, and overall impact more clearly. [Watch the Pitch Deck](https://www.loom.com/share/7a54b3ddaea740f597c0d814a34cd45a?sid=ace57d15-6671-4d06-9139-15d29a708d1b)
-- 💻 **Devnet Program ID:** `qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f` — View the [Vaquinha Program](https://explorer.solana.com/address/qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f?cluster=devnet) on Solana Explorer.
+- 💻 **Devnet Program ID:** `qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f` — View the [Vaquita Program](https://explorer.solana.com/address/qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f?cluster=devnet) on Solana Explorer.
 
   **Methods:**
 

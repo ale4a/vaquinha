@@ -13,6 +13,7 @@ import Message from '@/components/message/Message';
 import { ONE_DAY } from '@/config/constants';
 import { useGroup, useVaquinhaDeposit } from '@/hooks';
 import { GroupCreateDTO, GroupCrypto, GroupPeriod, LogLevel } from '@/types';
+import { showNotification } from '@/utils/commons';
 import { logError } from '@/utils/log';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Link from 'next/link';
@@ -123,8 +124,10 @@ const Page = () => {
       }
       await depositGroupCollateral(group.id, publicKey, tx, amount);
       router.push('/my-groups?tab=pending');
+      showNotification('Group created successfully!', 'success');
     } catch (error) {
       logError(LogLevel.INFO)(error);
+      showNotification('Failed to create group.', 'error');
     }
     setLoading(false);
   };
@@ -138,7 +141,7 @@ const Page = () => {
   };
 
   return (
-    <div>
+    <div className="px-4">
       <TabTitleHeader text="Create new group" />
       <div className="flex flex-col justify-center gap-2">
         <div className="flex flex-col gap-2 w-full ">

@@ -8,6 +8,7 @@ import { logError } from '@/utils/log';
 import { useWallet } from '@solana/wallet-adapter-react';
 import React, { useState } from 'react';
 import { GroupTablePaymentsProps } from './GroupTablePayments.types';
+import { showNotification } from '@/utils/commons';
 
 export default function GroupTablePayments({
   group,
@@ -38,7 +39,7 @@ export default function GroupTablePayments({
     }
   };
 
-  const handleClick = async (round: number, turn: number) => {
+  const handleTurnPayment = async (round: number, turn: number) => {
     setIsLoading(true);
     try {
       const amount = group.amount;
@@ -49,8 +50,13 @@ export default function GroupTablePayments({
       }
       await depositGroupPayment(group.id, publicKey, tx, round, amount);
       await refetch();
+      showNotification("Payment successful! You've paid your turn.", 'success');
     } catch (error) {
       logError(LogLevel.INFO)(error);
+      showNotification(
+        'Payment unsuccessful. Please check and try again.',
+        'error'
+      );
     }
     setIsLoading(false);
   };
@@ -87,7 +93,7 @@ export default function GroupTablePayments({
                 <ButtonComponent
                   label={status}
                   type={getStatusType(status)}
-                  onClick={() => handleClick(round, i)}
+                  onClick={() => handleTurnPayment(round, i)}
                   disabled={status !== 'Pay'}
                 />
               )}

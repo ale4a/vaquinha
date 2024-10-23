@@ -11,7 +11,7 @@ import { getPaymentsTable } from '@/helpers';
 import { useGroup, useVaquinhaDeposit } from '@/hooks';
 import { useVaquinhaWithdrawal } from '@/hooks/web3/useVaquinhaWithdrawal';
 import { GroupResponseDTO, GroupStatus, LogLevel } from '@/types';
-import { showAlert } from '@/utils/commons';
+import { showAlert, showNotification } from '@/utils/commons';
 import { logError } from '@/utils/log';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
@@ -85,9 +85,11 @@ const GroupDetailPage = () => {
       }
       await depositGroupCollateral(joinedGroup.id, publicKey, tx, amount);
       await refetch();
+      showNotification("You've successfully joined the group!", 'success');
     } catch (error) {
       await disjoinGroup(group.id, publicKey);
       logError(LogLevel.INFO)(error);
+      showNotification('Failed to join the group.', 'error');
     }
     setIsLoading(false);
   };
@@ -106,8 +108,13 @@ const GroupDetailPage = () => {
       }
       await withdrawalGroupEarnedRound(group.id, publicKey, tx, amount);
       await refetch();
+      showNotification(
+        "Withdrawal successful! You've earned your round.",
+        'success'
+      );
     } catch (error) {
       logError(LogLevel.INFO)(error);
+      showNotification('Failed to withdraw your earned round.', 'error');
     }
     setIsLoading(false);
   };
@@ -126,8 +133,13 @@ const GroupDetailPage = () => {
       }
       await withdrawalGroupEarnedInterest(group.id, publicKey, tx, amount);
       await refetch();
+      showNotification(
+        'Withdrawal successful! Your earned interest has been withdrawn.',
+        'success'
+      );
     } catch (error) {
       logError(LogLevel.INFO)(error);
+      showNotification('Failed to withdraw your earned interest.', 'error');
     }
     setIsLoading(false);
   };
@@ -146,8 +158,13 @@ const GroupDetailPage = () => {
       const amount = group.collateralAmount;
       await withdrawalGroupCollateral(group.id, publicKey, tx, amount);
       await refetch();
+      showNotification(
+        'Withdrawal successful! Your collateral has been withdrawn.',
+        'success'
+      );
     } catch (error) {
       logError(LogLevel.INFO)(error);
+      showNotification('Failed to withdraw your collateral."', 'error');
     }
     setIsLoading(false);
   };
@@ -286,7 +303,7 @@ const GroupDetailPage = () => {
                   } else {
                     showAlert(
                       'Ups',
-                      'The collateral cannot be withdrawn if the Vaquinha has not finished yet',
+                      'The collateral cannot be withdrawn if the Vaquita has not finished yet',
                       'warning',
                       'Understood'
                     );
@@ -321,7 +338,7 @@ const GroupDetailPage = () => {
           <div className="flex flex-col gap-5 justify-between mb-4">
             {!step1 && !!group.slots && publicKey && (
               <ButtonComponent
-                label="Join And Deposit Collateral"
+                label="Join and deposit collateral"
                 type="primary"
                 size="large"
                 onClick={handleDepositCollateral}

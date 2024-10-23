@@ -10,7 +10,7 @@ export const showAlert = (
     title: title,
     text: text,
     icon: icon,
-    iconColor: '#FFA109',
+    // iconColor: '#FFA109',
     backdrop: 'rgba(0, 0, 0, 0.6)',
     background: '#1D1F21',
     color: '#FFFFFF',
@@ -48,5 +48,28 @@ export const showAlertWithConfirmation = (
     } else {
       Swal.fire('Changes are not saved', '', 'info');
     }
+  });
+};
+
+export const showNotification = (
+  title: string,
+  iconType: 'warning' | 'error' | 'success' | 'info' | 'question'
+) => {
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
+    background: '#2C2E30',
+    color: '#F5F5F5',
+  });
+  Toast.fire({
+    icon: iconType,
+    title: title,
   });
 };
