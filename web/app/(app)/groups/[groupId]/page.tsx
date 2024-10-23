@@ -74,6 +74,7 @@ const GroupDetailPage = () => {
     }
     try {
       const joinedGroup = await joinGroup(group.id, publicKey);
+      console.log({ joinedGroup });
       const amount = joinedGroup.collateralAmount;
       const { tx, error, success } = await depositCollateralAndJoin(
         joinedGroup
