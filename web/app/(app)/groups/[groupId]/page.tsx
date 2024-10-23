@@ -119,10 +119,7 @@ const GroupDetailPage = () => {
     }
     try {
       const amount = 0;
-      const { tx, error, success } = await withdrawalEarnedInterest(
-        group,
-        amount
-      );
+      const { tx, error, success } = await withdrawalEarnedInterest(group);
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
