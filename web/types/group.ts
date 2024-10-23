@@ -1,5 +1,3 @@
-import { EntityDocument } from '@/types/commons';
-
 export enum GroupStatus {
   PENDING = 'pending',
   ACTIVE = 'active',
@@ -116,8 +114,6 @@ export interface GroupResponseDTO {
     };
   };
 }
-
-export type GroupDocument = EntityDocument<GroupBaseDocument>;
 
 export interface GroupFilters {
   period: GroupPeriod;

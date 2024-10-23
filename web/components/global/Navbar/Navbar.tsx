@@ -1,6 +1,9 @@
+import { ClusterUiSelect } from '@/components/cluster/cluster-ui';
+import { WalletButton } from '@/components/solana/solana-provider';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import React from 'react';
 
 type LinkItem = {
   label: string;
@@ -88,27 +91,44 @@ const Navbar: React.FC<NavbarProps> = ({ links }) => {
   const mainPath = '/' + pathSegments[0];
 
   return (
-    <nav className=" bottom-0 w-full bg-bg-100 text-white shadow-top-custom">
-      <ul className="h-20 flex justify-around items-center pt-5 pb-3">
-        {links.map(({ label, path }) => {
-          const isActive = mainPath === path;
-          return (
-            <li key={label} className="text-center flex-1">
-              <Link
-                href={path}
-                className={`flex flex-col items-center ${
-                  isActive
-                    ? 'text-primary-200'
-                    : 'text-gray-400 hover:text-primary-200'
-                }`}
-              >
-                {getIcon(label, isActive)}
-                <span>{label}</span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+    <nav className=" bottom-0 w-full bg-bg-100 text-white shadow-top-custom sm:shadow-bottom-custom sm:flex sm:items-center sm:gap-6 sm:px-4">
+      <div className="flex items-center flex-1 gap-6">
+        <div className="hidden sm:flex gap-0.5">
+          <Image
+            src="/favicon.ico"
+            alt="Groups Active"
+            width={30}
+            height={15}
+          />
+          <span className="font-medium text-xl text-end flex justify-end items-end ">
+            VAQUITA
+          </span>
+        </div>
+        <ul className="h-20 flex justify-around items-center pt-5 pb-3 flex-1 sm:gap-4 sm:justify-start">
+          {links.map(({ label, path }) => {
+            const isActive = mainPath === path;
+            return (
+              <li key={label} className="text-center flex-1 sm:flex-initial">
+                <Link
+                  href={path}
+                  className={`flex flex-col sm:flex-row sm:gap-1 items-center ${
+                    isActive
+                      ? 'text-primary-200'
+                      : 'text-gray-400 hover:text-primary-200'
+                  }`}
+                >
+                  {getIcon(label, isActive)}
+                  <span>{label}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <div className="hidden sm:flex space-x-1 wallets-buttons">
+        <WalletButton />
+        <ClusterUiSelect />
+      </div>
     </nav>
   );
 };

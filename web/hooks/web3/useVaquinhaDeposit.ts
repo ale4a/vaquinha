@@ -1,4 +1,5 @@
 import { useProgramMethods } from '@/components/vaquinha/vaquinha-data-access';
+import { NO_TRANSACTION_ERRORS } from '@/config/settings';
 import { GroupPeriod, GroupResponseDTO } from '@/types';
 import { BN } from '@coral-xyz/anchor';
 import { useCallback } from 'react';
@@ -33,6 +34,10 @@ export const useVaquinhaDeposit = () => {
         group.myPosition
       );
 
+      if (NO_TRANSACTION_ERRORS) {
+        return { tx: 'testing', error: '', success: true };
+      }
+
       return { tx: tx || '', error, success: !!tx && !error };
     },
     [initializeRound]
@@ -49,6 +54,10 @@ export const useVaquinhaDeposit = () => {
         group.myPosition
       );
 
+      if (NO_TRANSACTION_ERRORS) {
+        return { tx: 'testing', error: '', success: true };
+      }
+
       return { tx: tx || '', error, success: !!tx && !error };
     },
     [addPlayer]
@@ -61,6 +70,10 @@ export const useVaquinhaDeposit = () => {
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
       const { tx, error } = await payTurn(group.id, tokenMintAddress, turn);
+
+      if (NO_TRANSACTION_ERRORS) {
+        return { tx: 'testing', error: '', success: true };
+      }
 
       return { tx: tx || '', error, success: !!tx && !error };
     },

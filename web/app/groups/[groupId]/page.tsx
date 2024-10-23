@@ -1,7 +1,6 @@
 'use client';
 
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
-import ErrorView from '@/components/global/Error/ErrorView';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import SummaryAction from '@/components/global/SummaryAction/SummaryAction';
@@ -48,7 +47,6 @@ const GroupDetailPage = () => {
   } = useQuery<{
     content: GroupResponseDTO;
   }>({
-    enabled: !!publicKey,
     queryKey: ['group', publicKey],
     queryFn: () => getGroup(groupId as string, publicKey!),
   });
@@ -61,9 +59,6 @@ const GroupDetailPage = () => {
   if (!data) {
     return <LoadingSpinner />;
   }
-  if (!publicKey) {
-    return <ErrorView />;
-  }
 
   const group = data.content;
   const isActive = group.status === GroupStatus.ACTIVE;
@@ -74,6 +69,9 @@ const GroupDetailPage = () => {
 
   const handleDepositCollateral = async () => {
     setIsLoading(true);
+    if (!publicKey) {
+      return;
+    }
     try {
       const joinedGroup = await joinGroup(group.id, publicKey);
       const amount = joinedGroup.collateralAmount;
@@ -95,6 +93,9 @@ const GroupDetailPage = () => {
 
   const handleWithdrawEarnedRound = async () => {
     setIsLoading(true);
+    if (!publicKey) {
+      return;
+    }
     try {
       const amount = group.amount;
       const { tx, error, success } = await withdrawalEarnedRound(group);
@@ -112,6 +113,9 @@ const GroupDetailPage = () => {
 
   const handleWithdrawEarnedInterest = async () => {
     setIsLoading(true);
+    if (!publicKey) {
+      return;
+    }
     try {
       const amount = 0;
       const { tx, error, success } = await withdrawalEarnedInterest(
@@ -132,6 +136,9 @@ const GroupDetailPage = () => {
 
   const handleWithdrawCollateral = async () => {
     setIsLoading(true);
+    if (!publicKey) {
+      return;
+    }
     try {
       const { tx, error, success } = await withdrawalCollateral(group);
       if (!success) {
@@ -159,6 +166,7 @@ const GroupDetailPage = () => {
     0
   );
   const allPaymentsDone = totalPayments === group.totalMembers - 1;
+
   return (
     <>
       <TabTitleHeader text="Group Information" />
@@ -182,7 +190,7 @@ const GroupDetailPage = () => {
               label3="Waiting for starting date"
             />
           )}
-          {(isActive || isConcluded) && (
+          {(isActive || isConcluded) && publicKey && (
             <>
               <SummaryAction
                 title="Payments"
@@ -313,7 +321,7 @@ const GroupDetailPage = () => {
             />
           )}
           <div className="flex flex-col gap-5 justify-between mb-4">
-            {!step1 && !!group.slots && (
+            {!step1 && !!group.slots && publicKey && (
               <ButtonComponent
                 label="Join And Deposit Collateral"
                 type="primary"

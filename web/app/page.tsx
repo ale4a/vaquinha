@@ -1,5 +1,4 @@
 'use client';
-import Home from '@/components/Home';
 // import DashboardFeature from '@/components/dashboard/dashboard-feature';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -11,5 +10,5 @@ export default function Page() {
     router.replace('/groups');
   }, [router]);
 
-  return <Home />;
+  return null;
 }

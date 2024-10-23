@@ -1,4 +1,5 @@
 import { useProgramMethods } from '@/components/vaquinha/vaquinha-data-access';
+import { NO_TRANSACTION_ERRORS } from '@/config/settings';
 import { GroupResponseDTO } from '@/types';
 import { useCallback } from 'react';
 
@@ -15,6 +16,10 @@ export const useVaquinhaWithdrawal = () => {
         tokenMintAddress
       );
 
+      if (NO_TRANSACTION_ERRORS) {
+        return { tx: 'testing', error: '', success: true };
+      }
+
       return { tx: tx || '', error, success: !!tx && !error };
     },
     [withdrawCollateral]
@@ -26,6 +31,10 @@ export const useVaquinhaWithdrawal = () => {
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
       const { tx, error } = await withdrawTurn(group.id, tokenMintAddress);
+
+      if (NO_TRANSACTION_ERRORS) {
+        return { tx: 'testing', error: '', success: true };
+      }
 
       return { tx: tx || '', error, success: !!tx && !error };
     },

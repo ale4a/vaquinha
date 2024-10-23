@@ -14,7 +14,7 @@ export const ListGroups = ({
     <>
       {loading && <LoadingSpinner />}
       {!!groups.length && (
-        <div className="flex flex-1 flex-col overflow-x-auto gap-4 pt-1 pb-4">
+        <div className="flex flex-1 flex-col overflow-x-auto sm:overflow-visible gap-4 pt-1 pb-4">
           {!loading &&
             groups.map(
               ({

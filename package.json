@@ -1,6 +1,6 @@
 {
   "name": "@vaquinha/source",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "scripts": {
     "anchor": "nx run anchor:anchor",
@@ -37,7 +37,6 @@
     "framer-motion": "^11.11.8",
     "jotai": "2.8.3",
     "json-diff-ts": "^4.1.0",
-    "mongodb": "^6.9.0",
     "next": "14.2.3",
     "react": "18.3.1",
     "react-datepicker": "^7.4.0",

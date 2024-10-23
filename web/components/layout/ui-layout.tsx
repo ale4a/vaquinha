@@ -44,20 +44,14 @@ export function UiLayout({
 }) {
   return (
     <div className="h-full flex justify-center bg-bg-200">
-      <div className="w-full h-full sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl bg-bg-100 flex flex-col">
-        {/* <div className="h-20 ">
-          <MainTabsHeader />
-        </div> */}
-        {/* <div className="navbar bg-base-300 text-neutral-content flex-col space-y-2">
-          <div className="flex-none space-x-2">
-            <WalletButton />
-            <ClusterUiSelect />
-          </div>
-        </div> */}
-        <div className="flex flex-col flex-1 mx-2 overflow-y-auto">
+      <div className="w-full h-full bg-bg-100 flex flex-col">
+        <div className="hidden sm:block bg-gray-900 z-10">
+          <Navbar links={links} />
+        </div>
+        <div className="flex flex-col flex-1 mx-2 overflow-y-auto sm:px-20 md:px-28 lg:px-32 xl:px-36 2xl:px-44">
           {children}
         </div>
-        <div className="bg-gray-900">
+        <div className="block sm:hidden bg-gray-900">
           <Navbar links={links} />
         </div>
       </div>

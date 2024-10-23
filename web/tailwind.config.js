@@ -10,7 +10,7 @@ module.exports = {
       '{src,pages,components,app}/**/*!(*.stories|*.spec).{ts,tsx,html}'
     ),
     ...createGlobPatternsForDependencies(__dirname),
-    "../node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+    '../node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -33,10 +33,10 @@ module.exports = {
     },
     fontFamily: {
       clash: ['ClashDisplay', 'sans-serif'],
-      satoshi: ['Satoshi', 'sans-serif'],
     },
     boxShadow: {
       'top-custom': '0 -4px 6px -2px rgba(245, 245, 245, 0.1)',
+      'bottom-custom': '0 4px 6px 2px rgba(245, 245, 245, 0.1)',
     },
   },
   darkMode: 'class',
