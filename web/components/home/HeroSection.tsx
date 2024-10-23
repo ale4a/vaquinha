@@ -6,7 +6,7 @@ import Link from 'next/link';
 const HeroSection = () => {
   const { connected } = useWallet();
   return (
-    <section className="text-center mt-10 px-4">
+    <section className="text-center mt-10 px-4 pb-12 lg:pb-24 md:py-12">
       <h1 className="text-4xl font-bold">Save Together, Earn More</h1>
       <p className="text-lg mt-4">
         Join a community savings protocol powered by blockchain technology.
@@ -24,7 +24,7 @@ const HeroSection = () => {
         </Link>
       )}
 
-      <div className="mt-8 flex  justify-center">
+      <div className="mt-8 flex justify-center">
         <Image
           src="/Saving money-amico.svg"
           alt="Saving money"
