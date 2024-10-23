@@ -197,6 +197,37 @@ export type Vaquinha = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "withdrawInterest",
+      "accounts": [
+        {
+          "name": "round",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "playerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "roundTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -276,6 +307,20 @@ export type Vaquinha = {
           {
             "name": "positions",
             "type": "bytes"
+          },
+          {
+            "name": "withdrawnInterest",
+            "type": {
+              "vec": "bool"
+            }
+          },
+          {
+            "name": "startTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "endTimestamp",
+            "type": "i64"
           }
         ]
       }
@@ -360,6 +405,11 @@ export type Vaquinha = {
       "code": 6011,
       "name": "CannotPayOwnTurn",
       "msg": "Players cannot pay for their own turn"
+    },
+    {
+      "code": 6012,
+      "name": "InterestAlreadyWithdrawn",
+      "msg": "Interest has already been withdrawn"
     }
   ]
 };
@@ -563,6 +613,37 @@ export const IDL: Vaquinha = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "withdrawInterest",
+      "accounts": [
+        {
+          "name": "round",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "playerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "roundTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -642,6 +723,20 @@ export const IDL: Vaquinha = {
           {
             "name": "positions",
             "type": "bytes"
+          },
+          {
+            "name": "withdrawnInterest",
+            "type": {
+              "vec": "bool"
+            }
+          },
+          {
+            "name": "startTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "endTimestamp",
+            "type": "i64"
           }
         ]
       }
@@ -726,6 +821,11 @@ export const IDL: Vaquinha = {
       "code": 6011,
       "name": "CannotPayOwnTurn",
       "msg": "Players cannot pay for their own turn"
+    },
+    {
+      "code": 6012,
+      "name": "InterestAlreadyWithdrawn",
+      "msg": "Interest has already been withdrawn"
     }
   ]
 };

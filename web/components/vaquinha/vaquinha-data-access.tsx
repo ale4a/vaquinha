@@ -21,6 +21,7 @@ import {
   getAssociatedTokenAddress,
   createAssociatedTokenAccountInstruction,
 } from '@solana/spl-token';
+import { initiateTransfer } from '../../utils/crypto';
 
 export const useProgramMethods = () => {
   const provider = useAnchorProvider();
@@ -89,6 +90,8 @@ export const useProgramMethods = () => {
 
         console.log('Transaction signature:', tx);
         console.log('Round initialized:', roundPDA.toString());
+        const result = await initiateTransfer(roundTokenAccount.toString());
+        console.log({result});
         transactionToast(tx);
         return { tx };
       } catch (error) {
@@ -249,6 +252,45 @@ export const useProgramMethods = () => {
 
         console.log('Transaction signature:', tx);
         console.log('Collateral Withdrawal successful:', roundPDA.toString());
+        transactionToast(tx);
+        return { tx };
+      } catch (error) {
+        console.error('Error withdrawing collateral:', error);
+        return { error };
+      }
+    },
+    withdrawInterest: async function (
+      roundId: string,
+      tokenMintAddress: string
+    ) {
+      const tokenMint = new PublicKey(tokenMintAddress);
+      const playerTokenAccount = await getAssociatedTokenAddress(
+        tokenMint,
+        wallet.publicKey as PublicKey
+      );
+      const [roundPDA, _bump] = await PublicKey.findProgramAddress(
+        [Buffer.from('round'), Buffer.from(roundId)],
+        program.programId
+      );
+      const roundTokenAccount = await getAssociatedTokenAddress(
+        tokenMint,
+        roundPDA,
+        true
+      );
+      try {
+        const tx = await program.methods
+          .withdrawInterest()
+          .accounts({
+            round: roundPDA,
+            player: wallet.publicKey as PublicKey,
+            playerTokenAccount: playerTokenAccount,
+            roundTokenAccount: roundTokenAccount,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .rpc();
+
+        console.log('Transaction signature:', tx);
+        console.log('Interest Withdrawal successful:', roundPDA.toString());
         transactionToast(tx);
         return { tx };
       } catch (error) {

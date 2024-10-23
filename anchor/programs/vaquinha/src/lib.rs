@@ -29,6 +29,7 @@ pub mod vaquinha {
         round.turn_accumulations = vec![0; number_of_players as usize];
         round.paid_turns = vec![0; number_of_players as usize];
         round.withdrawn_turns = vec![false; number_of_players as usize];
+        round.withdrawn_interest = vec![false; number_of_players as usize];
 
         // Lock tokens for the initializer
         let amount_to_lock = payment_amount * (number_of_players as u64);
@@ -81,6 +82,7 @@ pub mod vaquinha {
         // If this was the last player, activate the round
         if round.available_slots == 0 {
             round.status = RoundStatus::Active;
+            round.start_timestamp = Clock::get()?.unix_timestamp;
         }
 
         Ok(())
@@ -117,6 +119,7 @@ pub mod vaquinha {
         // Check if all turns are completed
         if round.turn_accumulations.iter().all(|&amount| amount == round.payment_amount * (round.number_of_players as u64 - 1)) {
             round.status = RoundStatus::Completed;
+            round.end_timestamp = Clock::get()?.unix_timestamp;
         }
 
         Ok(())
@@ -204,6 +207,54 @@ pub mod vaquinha {
     
         Ok(())
     }
+
+    pub fn withdraw_interest(ctx: Context<WithdrawInterest>) -> Result<()> {
+        let round = &ctx.accounts.round;
+        require!(round.status == RoundStatus::Completed, ErrorCode::RoundNotCompleted);
+    
+        let player_index = round.players.iter().position(|&p| p == ctx.accounts.player.key())
+            .ok_or(ErrorCode::PlayerNotInRound)?;
+    
+        require!(!round.withdrawn_interest[player_index], ErrorCode::InterestAlreadyWithdrawn);
+    
+        let position = round.positions[player_index] as f64;
+        let apy = 0.12;
+        let seconds_per_day = 86400;
+        let seconds_per_year = seconds_per_day * 365;
+        let seconds_played = round.start_timestamp.max(round.end_timestamp) - round.start_timestamp;
+        let calc_interest = seconds_played as f64 / seconds_per_year as f64;
+        let base_interest_of_round = round.total_amount_locked as f64 * (apy/2.0) * calc_interest as f64;
+        let base_interest_of_player = base_interest_of_round / round.number_of_players as f64;
+        let number_of_positions = (round.number_of_players as f64 * (round.number_of_players as f64 - 1.0)) / 2.0;
+        let variable_interest_of_player = base_interest_of_round * (position / number_of_positions);
+        let interest_amount = base_interest_of_player + variable_interest_of_player;
+    
+        let round_seeds = &[
+            b"round",
+            round.round_id.as_bytes(),
+            &[ctx.bumps.round]
+        ];
+    
+        token::transfer(
+            CpiContext::new_with_signer(
+                ctx.accounts.token_program.to_account_info(),
+                Transfer {
+                    from: ctx.accounts.round_token_account.to_account_info(),
+                    to: ctx.accounts.player_token_account.to_account_info(),
+                    authority: ctx.accounts.round.to_account_info(),
+                },
+                &[round_seeds]
+            ),
+            interest_amount as u64,
+        )?;
+    
+        let round = &mut ctx.accounts.round;
+        round.withdrawn_interest[player_index] = true;
+    
+        msg!("Player {} withdrew interest of {} tokens", ctx.accounts.player.key(), interest_amount);
+    
+        Ok(())
+    }
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, PartialEq, Eq)]
@@ -230,6 +281,9 @@ pub struct Round {
     pub paid_turns: Vec<u64>,
     pub withdrawn_turns: Vec<bool>,
     pub positions: Vec<u8>,
+    pub withdrawn_interest: Vec<bool>,
+    pub start_timestamp: i64,
+    pub end_timestamp: i64,
 }
 
 #[derive(Accounts)]
@@ -253,6 +307,9 @@ pub struct InitializeRound<'info> {
                 (8 * 50) + // paid_turns (assuming max 50 players)
                 50 + // withdrawn_turns (assuming max 50 players)
                 50 + // position (assuming max 50 players)
+                50 + // withdrawn_interest (assuming max 50 players)
+                8 + // start_timestamp
+                8 + // end_timestamp
                 50,  // some extra space for future use
         seeds = [b"round".as_ref(), round_id.as_bytes()],
         bump
@@ -325,6 +382,22 @@ pub struct WithdrawCollateral<'info> {
     pub token_program: Program<'info, Token>,
 }
 
+#[derive(Accounts)]
+pub struct WithdrawInterest<'info> {
+    #[account(
+        mut,
+        seeds = [b"round", round.round_id.as_bytes()],
+        bump
+    )]
+    pub round: Account<'info, Round>,
+    pub player: Signer<'info>,
+    #[account(mut)]
+    pub player_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub round_token_account: Account<'info, TokenAccount>,
+    pub token_program: Program<'info, Token>,
+}
+
 #[error_code]
 pub enum ErrorCode {
     #[msg("The round is not in pending status")]
@@ -351,4 +424,6 @@ pub enum ErrorCode {
     CollateralAlreadyWithdrawn,
     #[msg("Players cannot pay for their own turn")]
     CannotPayOwnTurn,
+    #[msg("Interest has already been withdrawn")]
+    InterestAlreadyWithdrawn,
 }
