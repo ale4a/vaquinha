@@ -32,7 +32,7 @@ const Page = () => {
   }
 
   return (
-    <>
+    <div className="px-4">
       <div className="h-20 ">
         <MainTabsHeader />
       </div>
@@ -43,7 +43,7 @@ const Page = () => {
         <Statistics />
         <h1>Activity</h1>
       </div>
-    </>
+    </div>
   );
 };
 

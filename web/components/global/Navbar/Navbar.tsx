@@ -80,6 +80,22 @@ const getIcon = (label: string, isActive: boolean) => {
           height={24}
         />
       );
+    case 'Dashboard':
+      return isActive ? (
+        <Image
+          src="/icons/dashboard-active.svg"
+          alt="Profile Active"
+          width={24}
+          height={24}
+        />
+      ) : (
+        <Image
+          src="/icons/dashboard-disabled.svg"
+          alt="Profile Disabled"
+          width={24}
+          height={24}
+        />
+      );
     default:
       return null;
   }
@@ -93,7 +109,7 @@ const Navbar: React.FC<NavbarProps> = ({ links }) => {
   return (
     <nav className="bottom-0 w-full bg-bg-100 text-white shadow-top-custom sm:shadow-bottom-custom sm:flex sm:items-center sm:gap-6 sm:px-4">
       <div className="flex items-center flex-1 gap-6">
-        <div className="hidden sm:flex gap-0.5">
+        <Link className="hidden sm:flex gap-0.5" href={'/'}>
           <Image
             src="/favicon.ico"
             alt="Groups Active"
@@ -103,7 +119,7 @@ const Navbar: React.FC<NavbarProps> = ({ links }) => {
           <span className="font-medium text-xl text-end flex justify-end items-end ">
             VAQUITA
           </span>
-        </div>
+        </Link>
         <ul className="h-20 flex justify-around items-center pt-5 pb-3 flex-1 sm:gap-4 sm:justify-start">
           {links.map(({ label, path }) => {
             const isActive = mainPath === path;
