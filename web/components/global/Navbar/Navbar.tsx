@@ -91,7 +91,7 @@ const Navbar: React.FC<NavbarProps> = ({ links }) => {
   const mainPath = '/' + pathSegments[0];
 
   return (
-    <nav className=" bottom-0 w-full bg-bg-100 text-white shadow-top-custom sm:shadow-bottom-custom sm:flex sm:items-center sm:gap-6 sm:px-4">
+    <nav className="bottom-0 w-full bg-bg-100 text-white shadow-top-custom sm:shadow-bottom-custom sm:flex sm:items-center sm:gap-6 sm:px-4">
       <div className="flex items-center flex-1 gap-6">
         <div className="hidden sm:flex gap-0.5">
           <Image

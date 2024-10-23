@@ -1,7 +1,6 @@
 import { ONE_DAY, ONE_HOUR, ONE_MINUTE } from '@/config/constants';
 
 export const getRelativeTime = (relativeTime: number) => {
-  console.log({ relativeTime });
   const rtf1 = new Intl.RelativeTimeFormat('en', {
     style: 'short',
     numeric: 'auto',

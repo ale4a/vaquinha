@@ -38,6 +38,12 @@ module.exports = {
       'top-custom': '0 -4px 6px -2px rgba(245, 245, 245, 0.1)',
       'bottom-custom': '0 4px 6px 2px rgba(245, 245, 245, 0.1)',
     },
+    keyframes: {
+      fadeIn: {
+        '0%': { opacity: 0 },
+        '100%': { opacity: 1 },
+      },
+    }
   },
   darkMode: 'class',
   plugins: [require('daisyui'), nextui()],

@@ -1,31 +1,14 @@
 import { ClusterUiSelect } from '@/components/cluster/cluster-ui';
 import { WalletButton } from '@/components/solana/solana-provider';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import React from 'react';
 
 const MainTabsHeader = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const handleBack = () => {
-    router.back();
-  };
-
   return (
-    <div className="text-primary-200 text-3xl text-center flex justify-around items-center gap-2 pt-4 pb-2 h-14 sm:hidden">
-      {pathname.split('/').length > 2 && (
-        <button onClick={handleBack}>
-          <Image
-            src="/icons/back-arrow.svg"
-            alt="Groups Active"
-            width={1}
-            height={1}
-          />
-        </button>
-      )}
+    <div className="text-white text-3xl text-center flex justify-around items-center gap-2 pt-6 pb-2 sm:hidden">
       <div className="flex flex-1 flex-wrap justify-between items-center">
-        <div className="flex gap-0.5">
+        <Link className="flex gap-0.5" href={'/'}>
           <Image
             src="/favicon.ico"
             alt="Groups Active"
@@ -35,7 +18,7 @@ const MainTabsHeader = () => {
           <span className="font-medium text-xl text-end flex justify-end items-end ">
             VAQUITA
           </span>
-        </div>
+        </Link>
         <div className="flex-none space-x-1 flex wallets-buttons">
           <WalletButton />
           <ClusterUiSelect />
