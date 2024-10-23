@@ -141,54 +141,39 @@ const Page = () => {
     <div>
       <TabTitleHeader text="Create new group" />
       <div className="flex flex-col justify-center gap-2">
-        <div className="flex gap-2 w-full ">
-          <div className="w-1/2">
-            <label className="text-sm mb-0.5 text-accent-100">
-              Name of the Group *
-            </label>
-            <InputText
-              label="Group Name *"
-              type="text"
-              placeHolder="Group Name"
-              value={newGroup.name}
-              onChange={(name) =>
-                setNewGroup((prevState) => ({
-                  ...prevState,
-                  name: name,
-                }))
-              }
-            />
-          </div>
+        <div className="flex flex-col gap-2 w-full ">
+          <label className="text-sm mb-0.5 text-accent-100">Name *</label>
+          <InputText
+            label="Group Name *"
+            type="text"
+            placeHolder="e.g. Pasanaku 2024"
+            value={newGroup.name}
+            onChange={(name) =>
+              setNewGroup((prevState) => ({
+                ...prevState,
+                name: name,
+              }))
+            }
+          />
+
           {/* {!newGroup.name && <p className="text-accent-100">Required</p>} */}
-          <div className="w-1/2">
-            <label className="text-sm mb-0.5 text-accent-100">
-              Number of the members
-            </label>
-            <InputSelect<number>
-              label="Members"
-              options={optionsMembers}
-              value={newGroup.totalMembers}
-              onChange={(totalMembers) =>
-                setNewGroup((prevState) => ({
-                  ...prevState,
-                  totalMembers: +totalMembers,
-                }))
-              }
-            />
-          </div>
         </div>
         <div className="flex gap-2 w-full">
           <div className="w-1/2">
-            <label className="text-sm mb-0.5 text-accent-100">
-              Amount of the Group
-            </label>
+            <label className="text-sm mb-0.5 text-accent-100">Amount *</label>
             <InputText<number>
               label="Amount"
               type="number"
               value={newGroup.amount}
-              onChange={(amount) =>
-                setNewGroup((prevState) => ({ ...prevState, amount: +amount }))
-              }
+              placeHolder="e.g. 300"
+              onChange={(amount) => {
+                const updatedAmount = amount === undefined ? 0 : amount;
+
+                setNewGroup((prevState) => ({
+                  ...prevState,
+                  amount: updatedAmount,
+                }));
+              }}
             />
           </div>
           <div className="w-1/2">
@@ -227,7 +212,7 @@ const Page = () => {
               }
             />
           </div>
-          <div className="w-1/2">
+          {/* <div className="w-1/2">
             <label className="text-sm mb-0.5 text-accent-100">Starts in</label>
             <InputDate
               label="Starts in"
@@ -241,6 +226,20 @@ const Page = () => {
               filterTime={filterDateTime}
               filterDate={filterDateTime}
             />
+          </div> */}
+          <div className="w-1/2">
+            <label className="text-sm mb-0.5 text-accent-100">Members</label>
+            <InputSelect<number>
+              label="Members"
+              options={optionsMembers}
+              value={newGroup.totalMembers}
+              onChange={(totalMembers) =>
+                setNewGroup((prevState) => ({
+                  ...prevState,
+                  totalMembers: +totalMembers,
+                }))
+              }
+            />
           </div>
         </div>
         <div className="flex justify-center text-2xl text-accent-100">
@@ -252,11 +251,11 @@ const Page = () => {
         <Message messageText={messageText} />
         <div className="flex flex-col gap-5 my-5 justify-between">
           <Button
-            label="Create And Deposit Collateral"
+            label="Create and deposit collateral"
             type="primary"
             size="large"
             onClick={onSave}
-            disabled={!newGroup.name.length}
+            disabled={!(newGroup.name.length > 2 && newGroup.amount > 0)}
           />
           <Link href="/my-groups" className="contents">
             <Button label="Cancel" type="secondary" size="large" />
