@@ -1,31 +1,16 @@
-'use client';
-import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
 import InfoCard from '@/components/global/InfoCard/InfoCard';
+import { ANCHOR_PROVIDER_URL, USDC_MINT_ADDRESS } from '@/config/settings';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import React, { useEffect, useMemo, useState } from 'react';
 
-// Validación de variables de entorno
-if (!process.env.NEXT_PUBLIC_ANCHOR_PROVIDER_URL) {
-  throw new Error(
-    'La variable NEXT_PUBLIC_ANCHOR_PROVIDER_URL no está definida en el archivo .env'
-  );
-}
-if (!process.env.NEXT_PUBLIC_USDC_MINT_ADDRESS) {
-  throw new Error(
-    'La variable NEXT_PUBLIC_USDC_MINT_ADDRESS no está definida en el archivo .env'
-  );
-}
-
-const USDC_MINT_ADDRESS = process.env.NEXT_PUBLIC_USDC_MINT_ADDRESS;
-
-const Page = () => {
-  const { publicKey } = useWallet();
+export const MyWalletCard = () => {
   const [formattedAddress, setFormattedAddress] = useState<string | null>(null);
   const [usdcBalance, setUsdcBalance] = useState<number | null>(null);
+  const { publicKey } = useWallet();
 
   const connection = useMemo(
-    () => new Connection(process.env.NEXT_PUBLIC_ANCHOR_PROVIDER_URL!),
+    () => new Connection(ANCHOR_PROVIDER_URL!),
     [] // Solo se crea una vez ya que la URL no cambia
   );
 
@@ -61,31 +46,11 @@ const Page = () => {
     }
   }, [publicKey, connection]);
 
-  if (!publicKey) {
-    return (
-      <>
-        <MainTabsHeader />
-        <div className="flex-1 flex flex-col gap-4 justify-center items-center">
-          <p className="text-accent-100">Please select a wallet</p>
-        </div>
-      </>
-    );
-  }
-
   return (
-    <>
-      <div className="h-20 ">
-        <MainTabsHeader />
-      </div>
-      <div className="mt-4">
-        <InfoCard
-          address={formattedAddress}
-          savedAmount={usdcBalance || 0}
-          growth="+0.00 (1D)"
-        />
-      </div>
-    </>
+    <InfoCard
+      address={formattedAddress}
+      savedAmount={usdcBalance || 0}
+      growth="+0.00 (1D)"
+    />
   );
 };
-
-export default Page;
