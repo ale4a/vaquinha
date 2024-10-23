@@ -264,7 +264,12 @@ const GroupDetailPage = () => {
               />
               <SummaryAction
                 title="Intersed earned"
-                content={<p>1.5 USDC 6%</p>}
+                content={
+                  <p>
+                    {(group.collateralAmount * 0.0003).toFixed(4)}{' '}
+                    {group.crypto}
+                  </p>
+                }
                 actionLabel={
                   group.myWithdrawals.interest.successfullyWithdrawn
                     ? 'Withdrawn'
