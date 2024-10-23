@@ -10,8 +10,11 @@ export const showAlert = (
     title: title,
     text: text,
     icon: icon,
+    iconColor: '#FFA109',
     backdrop: 'rgba(0, 0, 0, 0.6)',
     background: '#1D1F21',
+    color: '#FFFFFF',
+    confirmButtonColor: '#FFA109',
     confirmButtonText: confirmButtonText,
   });
 };

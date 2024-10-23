@@ -287,7 +287,7 @@ const GroupDetailPage = () => {
                     showAlert(
                       'Ups',
                       'The collateral cannot be withdrawn if the Vaquinha has not finished yet',
-                      'info',
+                      'warning',
                       'Understood'
                     );
                   }
