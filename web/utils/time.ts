@@ -1,30 +1,32 @@
 import { ONE_DAY, ONE_HOUR, ONE_MINUTE } from '@/config/constants';
 
 export const getRelativeTime = (relativeTime: number) => {
+  const now = Date.now();
+  const difference = relativeTime - now;
   const rtf1 = new Intl.RelativeTimeFormat('en', {
     style: 'short',
     numeric: 'auto',
   });
-  const days = Math.floor(relativeTime / ONE_DAY);
-  const hours = Math.floor((relativeTime % ONE_DAY) / ONE_HOUR);
-  const minutes = Math.floor(
-    ((relativeTime % ONE_DAY) % ONE_HOUR) / ONE_MINUTE
-  );
 
+  const days = Math.floor(Math.abs(difference) / ONE_DAY);
+  const hours = Math.floor((Math.abs(difference) % ONE_DAY) / ONE_HOUR);
+  const minutes = Math.floor(
+    ((Math.abs(difference) % ONE_DAY) % ONE_HOUR) / ONE_MINUTE
+  );
   const seconds = Math.floor(
-    (((relativeTime % ONE_DAY) % ONE_HOUR) % ONE_MINUTE) / 1000
+    (((Math.abs(difference) % ONE_DAY) % ONE_HOUR) % ONE_MINUTE) / 1000
   );
 
   if (days) {
-    return rtf1.format(days, 'day');
+    return rtf1.format(difference >= 0 ? days : -days, 'day');
   }
   if (hours) {
-    return rtf1.format(hours, 'hour');
+    return rtf1.format(difference >= 0 ? hours : -hours, 'hour');
   }
   if (minutes) {
-    return rtf1.format(minutes, 'minute');
+    return rtf1.format(difference >= 0 ? minutes : -minutes, 'minute');
   }
-  return rtf1.format(seconds, 'second');
+  return rtf1.format(difference >= 0 ? seconds : -seconds, 'second');
 };
 
 export const getTimeElapsedSince = (timestamp: number): string => {
