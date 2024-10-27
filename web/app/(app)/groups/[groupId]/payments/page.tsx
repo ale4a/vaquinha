@@ -45,7 +45,7 @@ const PaymentsPage = () => {
   }
 
   return (
-    <div className="px-4">
+    <>
       <TabTitleHeader text="Group Information" />
       {loading && <LoadingSpinner />}
       {error && !loading && !data && <ErrorView />}
@@ -60,7 +60,7 @@ const PaymentsPage = () => {
           onClick={() => router.back()}
         />
       </div>
-    </div>
+    </>
   );
 };
 

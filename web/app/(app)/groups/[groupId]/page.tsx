@@ -184,7 +184,7 @@ const GroupDetailPage = () => {
   console.log({ group });
 
   return (
-    <div className="px-4">
+    <>
       <TabTitleHeader text="Group Information" />
       {loading && <LoadingSpinner />}
       {!loading && data && (
@@ -369,7 +369,7 @@ const GroupDetailPage = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { Suspense, useCallback, useEffect } from 'react';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
@@ -58,12 +59,13 @@ const TabsComponent = <T extends string = string>({
           }`}
         >
           {tab.label}
-          <span
-            className={`absolute bottom-0 left-0 w-full h-0.5 ${
-              currentTab === tab.value ? 'bg-primary-200' : ''
-            }`}
-            style={{ bottom: '0.05rem' }}
-          ></span>
+          {currentTab === tab.value && (
+            <motion.span
+              layoutId="undeline"
+              className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary-200`}
+              style={{ bottom: '0.05rem' }}
+            ></motion.span>
+          )}
         </button>
       ))}
     </div>

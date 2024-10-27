@@ -23,17 +23,17 @@ const Page = () => {
 
   if (!publicKey) {
     return (
-      <div className="px-4">
+      <>
         <MainTabsHeader />
         <div className="flex-1 flex flex-col gap-4 justify-center items-center">
           <p className="text-accent-100">Please select a wallet</p>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="px-4">
+    <>
       <MainTabsHeader />
       <div className="flex flex-col gap-6 mt-6">
         <div>
@@ -43,7 +43,7 @@ const Page = () => {
         <Statistics />
         <Activity />
       </div>
-    </div>
+    </>
   );
 };
 
