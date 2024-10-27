@@ -3,7 +3,7 @@
 import { includeApi } from '@/helpers/api';
 import { ReactNode, useState } from 'react';
 import { BsCalendar2Date } from 'react-icons/bs';
-import Navbar from '../global/Navbar/Navbar';
+import { MainNavbar } from 'web/components/MainNavbar';
 
 declare global {
   interface Window {
@@ -36,13 +36,7 @@ if (typeof window !== 'undefined') {
   };
 }
 
-export function UiLayout({
-  children,
-  links,
-}: {
-  children: ReactNode;
-  links: { label: string; path: string }[];
-}) {
+export function UiLayout({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
 
   return (
@@ -62,16 +56,16 @@ export function UiLayout({
         ) : (
           <>
             <div className="hidden sm:block bg-gray-900 z-10">
-              <Navbar links={links} />
+              <MainNavbar />
             </div>
             <div
-              className="flex flex-col flex-1 overflow-y-auto sm:px-20 md:px-28 lg:px-32 xl:px-36 2xl:px-44 "
+              className="flex flex-col flex-1 overflow-y-auto px-4 sm:px-20 md:px-28 lg:px-32 xl:px-36 2xl:px-44"
               style={{ maxHeight: 'calc(100vh - 5rem)' }}
             >
               {children}
             </div>
             <div className="block sm:hidden bg-gray-900 ">
-              <Navbar links={links} />
+              <MainNavbar />
             </div>
           </>
         )}

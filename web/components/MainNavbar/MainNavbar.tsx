@@ -1,53 +1,26 @@
+'use client';
+
 import { ClusterUiSelect } from '@/components/cluster/cluster-ui';
 import { WalletButton } from '@/components/solana/solana-provider';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
-
-type LinkItem = {
-  label: string;
-  path: string;
-};
-
-type NavbarProps = {
-  links: LinkItem[];
-};
+import {
+  DashboardActiveIcon,
+  DashboardIcon,
+  GroupsActiveIcon,
+  GroupsIcon,
+  MyGroupsActiveIcon,
+  MyGroupsIcon,
+} from './icons';
 
 const getIcon = (label: string, isActive: boolean) => {
   switch (label) {
     case 'Join Group':
-      return isActive ? (
-        <Image
-          src="/icons/groups-active.svg"
-          alt="Groups Active"
-          width={24}
-          height={24}
-        />
-      ) : (
-        <Image
-          src="/icons/groups-disabled.svg"
-          alt="Groups Disabled"
-          width={24}
-          height={24}
-        />
-      );
+      return isActive ? <GroupsActiveIcon /> : <GroupsIcon />;
     case 'My Groups':
-      return isActive ? (
-        <Image
-          src="/icons/my-groups-active.svg"
-          alt="My Groups Active"
-          width={30}
-          height={24}
-        />
-      ) : (
-        <Image
-          src="/icons/my-groups-disabled.svg"
-          alt="My Groups Disabled"
-          width={30}
-          height={24}
-        />
-      );
+      return isActive ? <MyGroupsActiveIcon /> : <MyGroupsIcon />;
     case 'On-ramp':
       return isActive ? (
         <Image
@@ -81,30 +54,22 @@ const getIcon = (label: string, isActive: boolean) => {
         />
       );
     case 'Dashboard':
-      return isActive ? (
-        <Image
-          src="/icons/dashboard-active.svg"
-          alt="Profile Active"
-          width={24}
-          height={24}
-        />
-      ) : (
-        <Image
-          src="/icons/dashboard-disabled.svg"
-          alt="Profile Disabled"
-          width={24}
-          height={24}
-        />
-      );
+      return isActive ? <DashboardActiveIcon /> : <DashboardIcon />;
     default:
       return null;
   }
 };
 
-const Navbar: React.FC<NavbarProps> = ({ links }) => {
+const MainNavbar = () => {
   const pathname = usePathname();
   const pathSegments = pathname.split('/').filter((segment) => segment);
   const mainPath = '/' + pathSegments[0];
+
+  const links: { label: string; path: string }[] = [
+    { label: 'Join Group', path: '/groups' },
+    { label: 'My Groups', path: '/my-groups' },
+    { label: 'Dashboard', path: '/dashboard' },
+  ];
 
   return (
     <nav className="bottom-0 w-full bg-bg-100 text-white shadow-top-custom sm:shadow-bottom-custom sm:flex sm:items-center sm:gap-6 sm:px-4">
@@ -124,13 +89,14 @@ const Navbar: React.FC<NavbarProps> = ({ links }) => {
           {links.map(({ label, path }) => {
             const isActive = mainPath === path;
             return (
-              <li key={label} className="text-center flex-1 sm:flex-initial">
+              <li
+                key={label}
+                className="text-center flex-1 sm:flex-initial sm:flex sm:h-full"
+              >
                 <Link
                   href={path}
-                  className={`flex flex-col sm:flex-row sm:gap-1 items-center ${
-                    isActive
-                      ? 'text-primary-200'
-                      : 'text-gray-400 hover:text-primary-200'
+                  className={`flex flex-col sm:flex-row sm:gap-1 items-center transition-colors duration-500 ${
+                    isActive ? 'text-primary-200' : 'text-gray-400'
                   }`}
                 >
                   {getIcon(label, isActive)}
@@ -149,4 +115,4 @@ const Navbar: React.FC<NavbarProps> = ({ links }) => {
   );
 };
 
-export default Navbar;
+export default MainNavbar;

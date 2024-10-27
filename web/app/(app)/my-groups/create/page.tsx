@@ -2,7 +2,6 @@
 
 import Button from '@/components/global/ButtonComponent/ButtonComponent';
 import ErrorView from '@/components/global/Error/ErrorView';
-import { InputDate } from '@/components/global/form';
 import InputSelect from '@/components/global/form/InputSelect/InputSelect';
 import { Option } from '@/components/global/form/InputSelect/InputSelect.types';
 import InputText from '@/components/global/form/InputText/InputText';
@@ -142,7 +141,7 @@ const Page = () => {
   };
 
   return (
-    <div className="px-4">
+    <>
       <TabTitleHeader text="Create new group" />
       <div className="flex flex-col justify-center gap-2">
         <div className="flex flex-col gap-2 w-full ">
@@ -266,7 +265,7 @@ const Page = () => {
           </Link>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
