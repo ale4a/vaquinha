@@ -49,3 +49,5 @@ test-ledger
 .yarn
 
 .env
+
+.dfx

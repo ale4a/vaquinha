@@ -9,12 +9,13 @@ import { useGroup } from '@/hooks';
 import { GroupResponseDTO } from '@/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 
 const PaymentsPage = () => {
   const router = useRouter();
-  const { groupId } = useParams();
+  const searchParams = useSearchParams();
+  const groupId = searchParams.get('groupId');
   const { publicKey } = useWallet();
   const { getGroup } = useGroup();
   const {

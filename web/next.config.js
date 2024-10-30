@@ -7,6 +7,7 @@ const { composePlugins, withNx } = require('@nx/next');
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
+  output: 'export',
   webpack: (config) => {
     config.externals = [
       ...(config.externals || []),

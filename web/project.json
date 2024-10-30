@@ -7,16 +7,30 @@
   "targets": {
     "build": {
       "executor": "@nx/next:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/web"
+        "outputPath": "dist/web",
+        "nextConfig": "web/next.config.js"
       },
       "configurations": {
         "development": {
           "outputPath": "web"
         },
         "production": {}
+      }
+    },
+    "deploy": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "npx nx build web",
+          "dfx start",
+          "dfx deploy"
+        ],
+        "parallel": false
       }
     },
     "serve": {

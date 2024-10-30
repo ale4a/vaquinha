@@ -15,13 +15,14 @@ import { showAlert, showNotification } from '@/utils/commons';
 import { logError } from '@/utils/log';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 
 const GroupDetailPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { groupId } = useParams();
+  const searchParams = useSearchParams();
+  const groupId = searchParams.get('groupId');
   const { publicKey } = useWallet();
   const { depositCollateralAndJoin } = useVaquinhaDeposit();
   const {

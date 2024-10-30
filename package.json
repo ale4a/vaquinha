@@ -10,6 +10,7 @@
     "feature": "nx generate @solana-developers/preset-react:feature",
     "build": "nx build web",
     "dev": "nx serve web",
+    "deploy": "nx deploy web",
     "play": "node playground.js"
   },
   "private": true,
@@ -49,6 +50,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@nrwl/workspace": "^19.8.4",
     "@nx/eslint": "19.3.2",
     "@nx/eslint-plugin": "19.3.2",
     "@nx/jest": "19.3.2",

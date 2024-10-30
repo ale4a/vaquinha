@@ -80,7 +80,6 @@ const Page = () => {
     period: GroupPeriod.MONTHLY,
     startsOnTimestamp: now.getTime() + ONE_DAY,
   });
-  console.log({ newGroup });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { publicKey } = useWallet();
