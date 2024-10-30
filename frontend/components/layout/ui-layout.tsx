@@ -3,7 +3,7 @@
 import { includeApi } from '@/helpers/api';
 import { ReactNode, useState } from 'react';
 import { BsCalendar2Date } from 'react-icons/bs';
-import { MainNavbar } from 'web/components/MainNavbar';
+import { MainNavbar } from '../MainNavbar';
 
 declare global {
   interface Window {

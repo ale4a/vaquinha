@@ -19,7 +19,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./web/*"
+        "./frontend/*"
       ],
       "@vaquinha/anchor": [
         "anchor/src/index.ts"
