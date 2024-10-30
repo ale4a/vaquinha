@@ -1,10 +1,11 @@
 {
   "canisters": {
-    "frontend": {
-      "type": "assets",
-      "source": [
-        "out"
-      ]
+    "vaquita": {
+      "frontend": {
+        "entrypoint": "out/index.html"
+      },
+      "source": ["out"],
+      "type": "assets"
     }
   }
 }
