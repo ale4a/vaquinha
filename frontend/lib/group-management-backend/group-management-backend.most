@@ -1,0 +1,16 @@
+// Version: 1.0.0
+type Group =
+  {
+    amount : Int;
+    crypto : GroupCrypto;
+    id : Text;
+    memberPositions : [Int];
+    memberPublicKeys : [Text];
+    name : Text;
+    period : GroupPeriod
+  };
+type GroupCrypto = {#SOL; #USDC};
+type GroupPeriod = {#monthly; #weekly};
+actor {
+  stable var groups : [Group]
+};

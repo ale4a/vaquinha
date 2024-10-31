@@ -1,7 +1,7 @@
 import { Actor, HttpAgent } from '@dfinity/agent';
-import type { _SERVICE as CanisterService } from '../../group-management/.dfx/local/canisters/group-management-backend/service.did.d';
+import type { _SERVICE as CanisterService } from './group-management-backend/service.did.d';
 // import { idlFactory } from './group-management-backend/group-management-backend.did.js';
-import { idlFactory } from '../../group-management/.dfx/local/canisters/group-management-backend/service.did.js';
+import { idlFactory } from './group-management-backend/service.did.js';
 
 /* CANISTER_ID is replaced by webpack based on node environment
  * Note: canister environment variable will be standardized as

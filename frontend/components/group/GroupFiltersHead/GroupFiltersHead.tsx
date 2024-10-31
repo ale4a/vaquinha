@@ -1,15 +1,15 @@
 import { InputSelect } from '@/components/global/form';
 import { CurrencyInputText } from '@/components/global/form/InputCurrency/InputCurrency';
-import { GroupCrypto, GroupFilters, GroupPeriod } from '@/types';
-import React, { Dispatch, SetStateAction } from 'react';
+import { GroupCrypto, GroupFilters, GroupPeriodFilter } from '@/types';
 import {
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalBody,
+  ModalContent,
   ModalFooter,
+  ModalHeader,
   useDisclosure,
 } from '@nextui-org/react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 import { FiFilter } from 'react-icons/fi';
 
@@ -51,15 +51,15 @@ const sortingOptions = [
 const periodOptions = [
   {
     text: 'All Period',
-    value: GroupPeriod.ALL,
+    value: GroupPeriodFilter.ALL,
   },
   {
     text: 'Monthly',
-    value: GroupPeriod.MONTHLY,
+    value: GroupPeriodFilter.MONTHLY,
   },
   {
     text: 'Weekly',
-    value: GroupPeriod.WEEKLY,
+    value: GroupPeriodFilter.WEEKLY,
   },
 ];
 export const GroupFiltersHead = ({
@@ -101,7 +101,7 @@ export const GroupFiltersHead = ({
       </button>
 
       <div className="hidden md:flex gap-2 w-1/4">
-        <InputSelect<GroupPeriod>
+        <InputSelect<GroupPeriodFilter>
           label="Filter by period"
           options={periodOptions}
           value={filters.period}
@@ -151,7 +151,7 @@ export const GroupFiltersHead = ({
               size="small"
               className="flex-1"
             />
-            <InputSelect<GroupPeriod>
+            <InputSelect<GroupPeriodFilter>
               label="Filter by period"
               options={periodOptions}
               value={filters.period}

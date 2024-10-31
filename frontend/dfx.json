@@ -4,7 +4,9 @@
       "frontend": {
         "entrypoint": "out/index.html"
       },
-      "source": ["out"],
+      "source": [
+        "out"
+      ],
       "type": "assets"
     }
   }
