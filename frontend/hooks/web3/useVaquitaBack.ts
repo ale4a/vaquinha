@@ -1,7 +1,11 @@
 import { groupManagementBackend } from '@/lib/icp-backend';
 import { GroupCrypto, GroupPeriod } from '@/types';
 import { useCallback } from 'react';
-import { Group } from '../../../group-management/.dfx/local/canisters/group-management-backend/service.did';
+import {
+  Group,
+  GroupCrypto as GroupCrypto1,
+  GroupPeriod as GroupPeriod1,
+} from '../../../group-management/.dfx/local/canisters/group-management-backend/service.did';
 
 function randomHash(nChar: number) {
   const nBytes = Math.ceil((nChar = (+nChar || 8) / 2));
@@ -47,9 +51,9 @@ export const useVaquitaBack = () => {
       });
       const result = await groupManagementBackend.listGroups(
         publicKey ? [publicKey] : [],
-        period ? [period] : [],
-        amount ? [amount] : [],
-        crypto ? [crypto] : []
+        period ? [period as GroupPeriod1] : [],
+        amount ? [amount as unknown as bigint] : [],
+        crypto ? [crypto as GroupCrypto1] : []
       );
       if (result?.success && result?.contents) {
         return {
@@ -100,9 +104,9 @@ export const useVaquitaBack = () => {
         newId,
         name,
         memberPositions as unknown as bigint[],
-        { [period]: null },
-        amount,
-        { [crypto]: null }
+        { [period]: null } as GroupPeriod1,
+        amount as unknown as bigint,
+        { [crypto]: null } as GroupCrypto1
       );
       console.log({ result });
       if (result.success) {
