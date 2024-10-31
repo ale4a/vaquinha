@@ -11,9 +11,12 @@ import { idlFactory } from './group-management-backend/service.did.js';
 export const canisterId =
   process.env.NEXT_PUBLIC_CANISTER_ID_GROUP_MANAGEMENT_BACKEND!;
 
+export const canisterHost =
+  process.env.NEXT_PUBLIC_CANISTER_HOST_GROUP_MANAGEMENT_BACKEND!;
+
 export const createActor = (canisterId: string, options = {}) => {
   // const agent = options.agent || new HttpAgent({ ...options.agentOptions });
-  const agent = new HttpAgent({ host: 'http://127.0.0.1:4943' });
+  const agent = new HttpAgent({ host: canisterHost });
 
   // if (options.agent && options.agentOptions) {
   //   console.warn(
