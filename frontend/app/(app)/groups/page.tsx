@@ -4,27 +4,26 @@ import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
 import { GroupFiltersHead } from '@/components/group/GroupFiltersHead/GroupFiltersHead';
 import { ListGroups } from '@/components/group/ListGroups/ListGroups';
 import { REFETCH_INTERVAL } from '@/config/constants';
-import { useGroup } from '@/hooks';
-import { GroupCrypto, GroupFilters, GroupPeriod } from '@/types';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useVaquita } from '@/hooks';
+import { groupManagementBackend } from '@/lib/icp-backend';
+import { GroupCrypto, GroupFilters, GroupPeriodFilter } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 
 const GroupPage = () => {
   const [filters, setFilters] = useState<GroupFilters>({
-    period: GroupPeriod.ALL,
+    period: GroupPeriodFilter.ALL,
     orderBy: '+amount',
     crypto: GroupCrypto.USDC,
     amount: 0,
   });
-  const { publicKey } = useWallet();
-  const { getGroups } = useGroup();
+  const { listGroups } = useVaquita();
   const { isPending, isLoading, data } = useQuery({
     refetchInterval: REFETCH_INTERVAL,
-    queryKey: ['groups', filters, publicKey],
+    queryKey: ['groups', filters],
     queryFn: () =>
-      getGroups({
-        publicKey,
+      listGroups({
+        publicKey: null,
         crypto: filters.crypto,
         orderBy: filters.orderBy,
         amount: filters.amount,
@@ -34,6 +33,7 @@ const GroupPage = () => {
 
   const loading = isPending || isLoading; // || isFetching;
   const groups = data?.contents || [];
+  console.log({ groups, groupManagementBackend });
 
   return (
     <>

@@ -6,6 +6,8 @@ export const ONE_DAY = ONE_HOUR * 24;
 
 export const REFETCH_INTERVAL = 3000;
 
+export const USDC_DECIMALS = 1000000;
+
 export const EMPTY_WITHDRAWALS_DOCUMENT = {
   [GroupWithdrawalType.COLLATERAL]: {
     amount: 0,

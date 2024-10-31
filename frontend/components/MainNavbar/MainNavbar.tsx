@@ -75,12 +75,8 @@ const MainNavbar = () => {
     <nav className="bottom-0 w-full bg-bg-100 text-white shadow-top-custom sm:shadow-bottom-custom sm:flex sm:items-center sm:gap-6 sm:px-4">
       <div className="flex items-center flex-1 gap-6">
         <Link className="hidden sm:flex gap-0.5" href={'/'}>
-          <Image
-            src="/favicon.ico"
-            alt="Groups Active"
-            width={30}
-            height={15}
-          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/favicon.ico" alt="Groups Active" width={30} height={15} />
           <span className="font-medium text-xl text-end flex justify-end items-end ">
             VAQUITA
           </span>

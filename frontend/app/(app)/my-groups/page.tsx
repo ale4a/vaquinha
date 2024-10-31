@@ -7,11 +7,11 @@ import Tabs from '@/components/global/Tabs/TabsComponent';
 import { GroupFiltersHead } from '@/components/group/GroupFiltersHead/GroupFiltersHead';
 import { ListGroups } from '@/components/group/ListGroups/ListGroups';
 import { REFETCH_INTERVAL } from '@/config/constants';
-import { useGroup } from '@/hooks';
+import { useVaquita } from '@/hooks';
 import {
   GroupCrypto,
   GroupFilters,
-  GroupPeriod,
+  GroupPeriodFilter,
   GroupResponseDTO,
   GroupStatus,
 } from '@/types';
@@ -39,28 +39,27 @@ const Page = () => {
   const tab = searchParams.get('tab');
   const [currentTab, setCurrentTab] = useState(tab || MyGroupsTab.ACTIVE);
   const [filters, setFilters] = useState<GroupFilters>({
-    period: GroupPeriod.ALL,
+    period: GroupPeriodFilter.ALL,
     orderBy: '+amount',
     crypto: GroupCrypto.USDC,
     amount: 0,
   });
-  const { getGroups } = useGroup();
   const { publicKey } = useWallet();
-  const { isPending, isLoading, isFetching, data } = useQuery<{
+  const { listGroups } = useVaquita();
+  const { isPending, isLoading, data } = useQuery<{
     contents: GroupResponseDTO[];
   }>({
     refetchInterval: REFETCH_INTERVAL,
     enabled: !!publicKey,
     queryKey: ['groups', currentTab, publicKey, filters],
     queryFn: () =>
-      getGroups({
-        myGroups: true,
-        publicKey,
+      listGroups({
         crypto: filters.crypto,
         orderBy: filters.orderBy,
         amount: filters.amount,
         period: filters.period,
         status: currentTab as GroupStatus,
+        publicKey,
       }),
   });
 

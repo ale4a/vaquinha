@@ -13,6 +13,11 @@ export enum GroupCrypto {
 export enum GroupPeriod {
   MONTHLY = 'monthly',
   WEEKLY = 'weekly',
+}
+
+export enum GroupPeriodFilter {
+  MONTHLY = GroupPeriod.MONTHLY,
+  WEEKLY = GroupPeriod.WEEKLY,
   ALL = 'all',
 }
 
@@ -106,7 +111,7 @@ export interface GroupResponseDTO {
   status: GroupStatus;
   isOwner: boolean;
   myWithdrawals: {
-    [key in GroupWithdrawalType]: {
+    [key: string]: {
       amount: number;
       type: GroupWithdrawalType;
       timestamp: number;
@@ -116,8 +121,14 @@ export interface GroupResponseDTO {
 }
 
 export interface GroupFilters {
-  period: GroupPeriod;
+  period: GroupPeriodFilter;
   orderBy: string;
   crypto: GroupCrypto;
   amount: number;
+}
+
+export interface GroupBackResponseDTO {
+  id: string;
+  name: string;
+  memberPublicKeys: string[];
 }

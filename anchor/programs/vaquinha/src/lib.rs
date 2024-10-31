@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 
-declare_id!("qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f");
+declare_id!("Hau5pBj6xZ9WHBe9uF9rL92tHJPaHihwDG9SigRfUvxd");
 
 #[program]
 pub mod vaquinha {
@@ -128,26 +128,26 @@ pub mod vaquinha {
     pub fn withdraw_turn(ctx: Context<WithdrawTurn>) -> Result<()> {
         let round = &ctx.accounts.round;
         require!(round.status == RoundStatus::Active || round.status == RoundStatus::Completed, ErrorCode::RoundNotActive);
-    
+
         let player_index = round.players.iter().position(|&p| p == ctx.accounts.player.key())
             .ok_or(ErrorCode::PlayerNotInRound)?;
-    
+
         // let turn = player_index as u8;
         require!((player_index as u8) < round.number_of_players, ErrorCode::InvalidTurn);
-    
+
         // Check if the turn has already been withdrawn
         require!(!round.withdrawn_turns[player_index as usize], ErrorCode::TurnAlreadyWithdrawn);
-    
+
         let expected_amount = round.payment_amount * ((round.players.len() as u64) - 1);
         require!(round.turn_accumulations[player_index as usize] == expected_amount, ErrorCode::InsufficientFunds);
-    
+
         let transfer_amount = expected_amount;
         let round_seeds = &[
             b"round",
             round.round_id.as_bytes(),
             &[ctx.bumps.round]
         ];
-    
+
         token::transfer(
             CpiContext::new_with_signer(
                 ctx.accounts.token_program.to_account_info(),
@@ -160,33 +160,33 @@ pub mod vaquinha {
             ),
             transfer_amount,
         )?;
-    
+
         // Update round state
         let round = &mut ctx.accounts.round;
         round.withdrawn_turns[player_index] = true;
-    
+
         msg!("Player {} withdrew {} tokens for turn {}", ctx.accounts.player.key(), transfer_amount, player_index);
-    
+
         Ok(())
     }
 
     pub fn withdraw_collateral(ctx: Context<WithdrawCollateral>) -> Result<()> {
         let round = &ctx.accounts.round;
         require!(round.status == RoundStatus::Completed, ErrorCode::RoundNotCompleted);
-    
+
         let player_index = round.players.iter().position(|&p| p == ctx.accounts.player.key())
             .ok_or(ErrorCode::PlayerNotInRound)?;
-    
+
         require!(!round.withdrawn_collateral[player_index], ErrorCode::CollateralAlreadyWithdrawn);
-    
+
         let withdraw_amount = round.payment_amount * (round.number_of_players as u64);
-    
+
         let round_seeds = &[
             b"round",
             round.round_id.as_bytes(),
             &[ctx.bumps.round]
         ];
-    
+
         token::transfer(
             CpiContext::new_with_signer(
                 ctx.accounts.token_program.to_account_info(),
@@ -199,24 +199,24 @@ pub mod vaquinha {
             ),
             withdraw_amount,
         )?;
-    
+
         let round = &mut ctx.accounts.round;
         round.withdrawn_collateral[player_index] = true;
-    
+
         msg!("Player {} withdrew collateral of {} tokens", ctx.accounts.player.key(), withdraw_amount);
-    
+
         Ok(())
     }
 
     pub fn withdraw_interest(ctx: Context<WithdrawInterest>) -> Result<()> {
         let round = &ctx.accounts.round;
         require!(round.status == RoundStatus::Completed, ErrorCode::RoundNotCompleted);
-    
+
         let player_index = round.players.iter().position(|&p| p == ctx.accounts.player.key())
             .ok_or(ErrorCode::PlayerNotInRound)?;
-    
+
         require!(!round.withdrawn_interest[player_index], ErrorCode::InterestAlreadyWithdrawn);
-    
+
         let position = round.positions[player_index] as f64;
         let apy = 0.12;
         let seconds_per_day = 86400;
@@ -228,13 +228,13 @@ pub mod vaquinha {
         let number_of_positions = (round.number_of_players as f64 * (round.number_of_players as f64 - 1.0)) / 2.0;
         let variable_interest_of_player = base_interest_of_round * (position / number_of_positions);
         let interest_amount = base_interest_of_player + variable_interest_of_player;
-    
+
         let round_seeds = &[
             b"round",
             round.round_id.as_bytes(),
             &[ctx.bumps.round]
         ];
-    
+
         token::transfer(
             CpiContext::new_with_signer(
                 ctx.accounts.token_program.to_account_info(),
@@ -247,12 +247,12 @@ pub mod vaquinha {
             ),
             interest_amount as u64,
         )?;
-    
+
         let round = &mut ctx.accounts.round;
         round.withdrawn_interest[player_index] = true;
-    
+
         msg!("Player {} withdrew interest of {} tokens", ctx.accounts.player.key(), interest_amount);
-    
+
         Ok(())
     }
 }
@@ -290,8 +290,8 @@ pub struct Round {
 #[instruction(round_id: String)]
 pub struct InitializeRound<'info> {
     #[account(
-        init, 
-        payer = initializer, 
+        init,
+        payer = initializer,
         space = 8 + // discriminator
                 8 + // payment_amount
                 32 +

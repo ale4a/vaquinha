@@ -9,8 +9,8 @@ import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
-import { ONE_DAY } from '@/config/constants';
-import { useGroup, useVaquinhaDeposit } from '@/hooks';
+import { ONE_DAY, USDC_DECIMALS } from '@/config/constants';
+import { useVaquita } from '@/hooks';
 import { GroupCreateDTO, GroupCrypto, GroupPeriod, LogLevel } from '@/types';
 import { showNotification } from '@/utils/commons';
 import { logError } from '@/utils/log';
@@ -83,8 +83,8 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { publicKey } = useWallet();
-  const { depositCollateralAndCreate } = useVaquinhaDeposit();
-  const { createGroup, depositGroupCollateral, deleteGroup } = useGroup();
+  const { createGroup } = useVaquita();
+
   useEffect(() => {
     if (!publicKey) {
       router.push('/groups');
@@ -101,30 +101,17 @@ const Page = () => {
 
   const onSave = async () => {
     setLoading(true);
-    try {
-      const group = await createGroup(
-        newGroup.name,
-        newGroup.amount,
-        newGroup.crypto,
-        newGroup.totalMembers,
-        newGroup.period,
-        newGroup.startsOnTimestamp,
-        publicKey
-      );
-      if (typeof group.id !== 'string') {
-        throw new Error('group not created');
-      }
-      const amount = group.collateralAmount;
-      const { tx, error, success } = await depositCollateralAndCreate(group);
-      if (!success) {
-        await deleteGroup(group.id);
-        logError(LogLevel.INFO)(error);
-        throw new Error('transaction error');
-      }
-      await depositGroupCollateral(group.id, publicKey, tx, amount);
+    const { success, error } = await createGroup({
+      name: newGroup.name,
+      totalMembers: +newGroup.totalMembers,
+      period: newGroup.period,
+      amount: +newGroup.amount * USDC_DECIMALS,
+      crypto: newGroup.crypto,
+    });
+    if (success) {
       router.push('/my-groups?tab=pending');
       showNotification('Group created successfully!', 'success');
-    } catch (error) {
+    } else {
       logError(LogLevel.INFO)(error);
       showNotification('Failed to create group.', 'error');
     }

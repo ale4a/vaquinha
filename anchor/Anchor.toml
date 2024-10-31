@@ -6,7 +6,7 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-vaquinha = "qjRm9YEVnGNoY2vCn4LsroiYixVnkn4Fwrta2qgxa1f"
+vaquinha = "Hau5pBj6xZ9WHBe9uF9rL92tHJPaHihwDG9SigRfUvxd"
 
 [registry]
 url = "https://api.apr.dev"

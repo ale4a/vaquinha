@@ -1,5 +1,4 @@
 import { LogLevel } from '@/types/commons';
-import { stringifyObject } from '@/utils/obj';
 
 export const printDate = () => {
   const now = new Date();
@@ -22,7 +21,8 @@ export const logError =
     // if (shouldDisplayLog(logLevel)) {
     console.log(
       `[ERROR] ${printDate()}` + (title ? `, ${title}:` : ':'),
-      stringifyObject(content, 5)
+      // stringifyObject(content, 5),
+      content
     );
     // }
   };

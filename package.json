@@ -13,7 +13,12 @@
     "deploy": "nx deploy web",
     "play": "node playground.js",
     "frontend:install": "cd ./frontend && npm install",
-    "frontend:build": "cd ./frontend && npm run build"
+    "frontend:build": "cd ./frontend && npm run build",
+    "frontend:dev": "cd ./frontend && npm run dev",
+    "anchor:build": "cd ./anchor && anchor build",
+    "anchor:deploy": "cd ./anchor && anchor deploy",
+    "backend:dev:deploy:": "cd ./group-management && dfx stop && dfx start --background && dfx deploy && dfx generate && cd .. && rm -rf frontend/lib/group-management-backend && cp -r group-management/src/declarations/group-management-backend frontend/lib",
+    "backend:dev:deploy": "cd ./group-management && dfx stop && dfx start --background && dfx deploy"
   },
   "private": true,
   "dependencies": {
