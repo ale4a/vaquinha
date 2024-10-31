@@ -8,8 +8,9 @@ import SummaryAction from '@/components/global/SummaryAction/SummaryAction';
 import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
 import BuildingStatus from '@/components/status/BuildingStatus';
+import { USDC_DECIMALS } from '@/config/constants';
 import { getPaymentsTable } from '@/helpers';
-import { useGroup, useVaquita } from '@/hooks';
+import { useVaquita } from '@/hooks';
 import { useVaquinhaWithdrawal } from '@/hooks/web3/useVaquinhaWithdrawal';
 import { GroupResponseDTO, GroupStatus, LogLevel } from '@/types';
 import { showAlert, showNotification } from '@/utils/commons';
@@ -30,11 +31,6 @@ const GroupDetailPage = () => {
     withdrawalEarnedInterest,
     withdrawalCollateral,
   } = useVaquinhaWithdrawal();
-  const {
-    withdrawalGroupCollateral,
-    withdrawalGroupEarnedInterest,
-    withdrawalGroupEarnedRound,
-  } = useGroup();
   const { getGroup, joinGroup } = useVaquita();
   const {
     isPending: isPendingData,
@@ -65,7 +61,7 @@ const GroupDetailPage = () => {
 
   const group = data.content;
   const isActive = group.status === GroupStatus.ACTIVE;
-  const isConcluded = group.status === GroupStatus.CONCLUDED;
+  const isConcluded = group.status === GroupStatus.COMPLETED;
   const step1 = !!group.myDeposits[0]?.successfullyDeposited;
   const step2 = step1 && group.slots === 0;
   const step3 = step1 && step2 && isActive;
@@ -107,7 +103,6 @@ const GroupDetailPage = () => {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
-      await withdrawalGroupEarnedRound(group.id, publicKey, tx, amount);
       await refetch();
       showNotification(
         "Withdrawal successful! You've earned your round.",
@@ -126,13 +121,11 @@ const GroupDetailPage = () => {
       return;
     }
     try {
-      const amount = 0;
       const { tx, error, success } = await withdrawalEarnedInterest(group);
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
-      await withdrawalGroupEarnedInterest(group.id, publicKey, tx, amount);
       await refetch();
       showNotification(
         'Withdrawal successful! Your earned interest has been withdrawn.',
@@ -156,8 +149,6 @@ const GroupDetailPage = () => {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
-      const amount = group.collateralAmount;
-      await withdrawalGroupCollateral(group.id, publicKey, tx, amount);
       await refetch();
       showNotification(
         'Withdrawal successful! Your collateral has been withdrawn.',
@@ -251,13 +242,15 @@ const GroupDetailPage = () => {
                     : 'Withdraw'
                 }
                 type={
-                  group.myPosition <= group.currentPosition &&
+                  // group.myPosition <= group.currentPosition &&
+                  isConcluded &&
                   !group.myWithdrawals?.round?.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
                 }
                 onAction={
-                  group.myPosition <= group.currentPosition &&
+                  // group.myPosition <= group.currentPosition &&
+                  isConcluded &&
                   !group.myWithdrawals?.round?.successfullyWithdrawn
                     ? handleWithdrawEarnedRound
                     : undefined
@@ -277,13 +270,13 @@ const GroupDetailPage = () => {
                     : 'Withdraw'
                 }
                 type={
-                  group.status === GroupStatus.CONCLUDED &&
+                  group.status === GroupStatus.COMPLETED &&
                   !group.myWithdrawals?.interest?.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
                 }
                 onAction={
-                  group.status === GroupStatus.CONCLUDED &&
+                  group.status === GroupStatus.COMPLETED &&
                   !group.myWithdrawals?.interest?.successfullyWithdrawn
                     ? handleWithdrawEarnedInterest
                     : undefined
@@ -291,14 +284,14 @@ const GroupDetailPage = () => {
               />
               <SummaryAction
                 title="Claim Collateral"
-                content={<p>{group.collateralAmount} USDC</p>}
+                content={<p>{group.collateralAmount / USDC_DECIMALS} USDC</p>}
                 actionLabel={
                   group.myWithdrawals?.collateral?.successfullyWithdrawn
                     ? 'Withdrawn ✔'
                     : 'Withdraw'
                 }
                 type={
-                  group.status === GroupStatus.CONCLUDED &&
+                  group.status === GroupStatus.COMPLETED &&
                   !group.myWithdrawals?.collateral?.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
@@ -313,7 +306,7 @@ const GroupDetailPage = () => {
                   //     'Pay Now Test'
                   //   );
                   // }
-                  if (group.status === GroupStatus.CONCLUDED) {
+                  if (group.status === GroupStatus.COMPLETED) {
                     void handleWithdrawCollateral();
                   } else {
                     showAlert(

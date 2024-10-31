@@ -5,6 +5,7 @@ import {
   GroupPeriod,
   GroupResponseDTO,
   GroupStatus,
+  GroupWithdrawalType,
   LogLevel,
 } from '@/types';
 import { initiateTransfer } from '@/utils/crypto';
@@ -39,9 +40,17 @@ export const useVaquitaProgram = () => {
         availableSlots: number;
         status: any;
         paidTurns: BN[];
+        players: PublicKey[];
+        withdrawnTurns: boolean[];
+        withdrawnCollateral: boolean[];
+        withdrawnInterest: boolean[];
       };
 
-      console.log({ round, paidTurns: round.paidTurns.map((a) => +a) });
+      console.log({
+        round,
+        paidTurns: round.paidTurns.map((a) => +a),
+        players: round.players.map((a) => a.toBase58()),
+      });
 
       const myIndex = group.memberPublicKeys.findIndex(
         (pK) => pK === publicKey?.toBase58()
@@ -65,7 +74,32 @@ export const useVaquitaProgram = () => {
           };
         }
       }
+
+      const myWithdrawals: GroupResponseDTO['myWithdrawals'] = {};
+      if (round.withdrawnTurns?.[myIndex]) {
+        myWithdrawals[GroupWithdrawalType.ROUND] = {
+          amount: Number(group.amount),
+          type: GroupWithdrawalType.ROUND,
+          successfullyWithdrawn: true,
+        };
+      }
+      if (round.withdrawnCollateral?.[myIndex]) {
+        myWithdrawals[GroupWithdrawalType.COLLATERAL] = {
+          amount: Number(group.amount),
+          type: GroupWithdrawalType.COLLATERAL,
+          successfullyWithdrawn: true,
+        };
+      }
+      if (round.withdrawnInterest?.[myIndex]) {
+        myWithdrawals[GroupWithdrawalType.INTEREST] = {
+          amount: Number(group.amount),
+          type: GroupWithdrawalType.INTEREST,
+          successfullyWithdrawn: true,
+        };
+      }
+
       console.log('>>>', { group });
+
       const responseGroup: GroupResponseDTO = {
         id: group.id,
         crypto: GroupCrypto.USDC, // TODO:
@@ -89,14 +123,16 @@ export const useVaquitaProgram = () => {
             group.memberPublicKeys.length
           ] as unknown as number) ?? -1
         ),
-        startsOnTimestamp: 0,
+        startsOnTimestamp: Date.now(),
         status: round.status.pending
           ? GroupStatus.PENDING
           : round.status.active
           ? GroupStatus.ACTIVE
+          : round.status.completed
+          ? GroupStatus.COMPLETED
           : GroupStatus.ABANDONED,
         isOwner: false,
-        myWithdrawals: {},
+        myWithdrawals,
       };
       return { success: true, content: responseGroup, error: null };
     },

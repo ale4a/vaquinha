@@ -1,7 +1,7 @@
 export enum GroupStatus {
   PENDING = 'pending',
   ACTIVE = 'active',
-  CONCLUDED = 'concluded',
+  COMPLETED = 'completed',
   ABANDONED = 'abandoned',
 }
 
@@ -115,7 +115,7 @@ export interface GroupResponseDTO {
     [key: string]: {
       amount: number;
       type: GroupWithdrawalType;
-      timestamp: number;
+      // timestamp: number;
       successfullyWithdrawn: boolean;
     };
   };

@@ -24,7 +24,7 @@ import React, { Suspense, useState } from 'react';
 enum MyGroupsTab {
   PENDING = GroupStatus.PENDING,
   ACTIVE = GroupStatus.ACTIVE,
-  CONCLUDED = GroupStatus.CONCLUDED,
+  CONCLUDED = GroupStatus.COMPLETED,
 }
 
 const tabs = [
