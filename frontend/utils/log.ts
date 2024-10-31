@@ -26,3 +26,14 @@ export const logError =
     );
     // }
   };
+
+export const logInfo =
+  (logLevel: LogLevel) => (content: any, title?: string) => {
+    // if (shouldDisplayLog(logLevel)) {
+    console.log(
+      `[INFO] ${printDate()}` + (title ? `, ${title}:` : ':'),
+      // stringifyObject(content, 5),
+      content
+    );
+    // }
+  };

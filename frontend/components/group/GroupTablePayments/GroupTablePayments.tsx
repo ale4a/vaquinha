@@ -2,13 +2,11 @@ import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent
 import ErrorView from '@/components/global/Error/ErrorView';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import { getPaymentsTable } from '@/helpers';
-import { useGroup, useVaquinhaDeposit } from '@/hooks';
-import { LogLevel } from '@/types';
-import { logError } from '@/utils/log';
+import { useVaquita } from '@/hooks';
+import { showNotification } from '@/utils/commons';
 import { useWallet } from '@solana/wallet-adapter-react';
 import React, { useState } from 'react';
 import { GroupTablePaymentsProps } from './GroupTablePayments.types';
-import { showNotification } from '@/utils/commons';
 
 export default function GroupTablePayments({
   group,
@@ -16,8 +14,8 @@ export default function GroupTablePayments({
 }: GroupTablePaymentsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { publicKey } = useWallet();
-  const { depositRoundPayment } = useVaquinhaDeposit();
-  const { depositGroupPayment } = useGroup();
+
+  const { payRound } = useVaquita();
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -39,20 +37,13 @@ export default function GroupTablePayments({
     }
   };
 
-  const handleTurnPayment = async (round: number, turn: number) => {
+  const handleTurnPayment = async (round: number) => {
     setIsLoading(true);
-    try {
-      const amount = group.amount;
-      const { tx, error, success } = await depositRoundPayment(group, turn);
-      if (!success) {
-        logError(LogLevel.INFO)(error);
-        throw new Error('transaction error');
-      }
-      await depositGroupPayment(group.id, publicKey, tx, round, amount);
+    const { success } = await payRound(group, round);
+    if (success) {
       await refetch();
       showNotification("Payment successful! You've paid your turn.", 'success');
-    } catch (error) {
-      logError(LogLevel.INFO)(error);
+    } else {
       showNotification(
         'Payment unsuccessful. Please check and try again.',
         'error'
@@ -60,6 +51,8 @@ export default function GroupTablePayments({
     }
     setIsLoading(false);
   };
+
+  console.log({ group, items });
 
   return (
     <>
@@ -93,7 +86,7 @@ export default function GroupTablePayments({
                 <ButtonComponent
                   label={status}
                   type={getStatusType(status)}
-                  onClick={() => handleTurnPayment(round, i)}
+                  onClick={() => handleTurnPayment(round)}
                   disabled={status !== 'Pay'}
                 />
               )}

@@ -1,0 +1,17 @@
+{
+  "canisters": {
+    "group-management-backend": {
+      "main": "src/group-management-backend/main.mo",
+      "type": "motoko",
+      "candid": ".dfx/local/canisters/group-management-backend/group-management-backend.did"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}

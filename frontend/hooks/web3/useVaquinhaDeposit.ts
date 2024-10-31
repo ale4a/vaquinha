@@ -13,27 +13,7 @@ const convertFrequencyToTimestamp = (period: GroupPeriod): BN => {
 };
 
 export const useVaquinhaDeposit = () => {
-  const { addPlayer, payTurn } = useProgramMethods();
-
-  const depositCollateralAndJoin = useCallback(
-    async (
-      group: GroupResponseDTO
-    ): Promise<{ tx: string; error: any; success: boolean }> => {
-      const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
-      const { tx, error } = await addPlayer(
-        group.id,
-        tokenMintAddress,
-        group.myPosition
-      );
-
-      if (NO_TRANSACTION_ERRORS) {
-        return { tx: 'testing', error: '', success: true };
-      }
-
-      return { tx: tx || '', error, success: !!tx && !error };
-    },
-    [addPlayer]
-  );
+  const { payTurn } = useProgramMethods();
 
   const depositRoundPayment = useCallback(
     async (
@@ -53,7 +33,6 @@ export const useVaquinhaDeposit = () => {
   );
 
   return {
-    depositCollateralAndJoin,
     depositRoundPayment,
   };
 };

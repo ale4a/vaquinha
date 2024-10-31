@@ -4,6 +4,7 @@ import {
   GroupCrypto,
   GroupDepositDTO,
   GroupPeriod,
+  GroupPeriodFilter,
   GroupResponseDTO,
   GroupStatus,
   GroupWithdrawalDTO,
@@ -28,7 +29,7 @@ export const useGroup = () => {
       myGroups?: true;
       publicKey?: PublicKey | null;
       status?: GroupStatus;
-      period?: GroupPeriod;
+      period?: GroupPeriodFilter;
       amount?: number;
     }): Promise<{ contents: GroupResponseDTO[] }> => {
       const response = await fetch(
@@ -36,7 +37,7 @@ export const useGroup = () => {
           '/group' +
             `?orderBy=${encodeURIComponent(orderBy)}` +
             `&crypto=${crypto}` +
-            `${period !== GroupPeriod.ALL ? `&period=${period}` : ''}` +
+            `${period !== GroupPeriodFilter.ALL ? `&period=${period}` : ''}` +
             `${myGroups ? `&myGroups=true` : ''}` +
             `${amount ? `&amount=${amount}` : ''}` +
             `${publicKey ? `&customerPublicKey=${publicKey.toBase58()}` : ''}` +

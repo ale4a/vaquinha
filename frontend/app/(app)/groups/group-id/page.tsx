@@ -1,6 +1,7 @@
 'use client';
 
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
+import ErrorView from '@/components/global/Error/ErrorView';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import SummaryAction from '@/components/global/SummaryAction/SummaryAction';
@@ -8,7 +9,7 @@ import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
 import BuildingStatus from '@/components/status/BuildingStatus';
 import { getPaymentsTable } from '@/helpers';
-import { useGroup, useVaquinhaDeposit } from '@/hooks';
+import { useGroup, useVaquita } from '@/hooks';
 import { useVaquinhaWithdrawal } from '@/hooks/web3/useVaquinhaWithdrawal';
 import { GroupResponseDTO, GroupStatus, LogLevel } from '@/types';
 import { showAlert, showNotification } from '@/utils/commons';
@@ -24,21 +25,17 @@ const GroupDetailPage = () => {
   const searchParams = useSearchParams();
   const groupId = searchParams.get('groupId');
   const { publicKey } = useWallet();
-  const { depositCollateralAndJoin } = useVaquinhaDeposit();
   const {
     withdrawalEarnedRound,
     withdrawalEarnedInterest,
     withdrawalCollateral,
   } = useVaquinhaWithdrawal();
   const {
-    getGroup,
-    joinGroup,
-    disjoinGroup,
-    depositGroupCollateral,
     withdrawalGroupCollateral,
     withdrawalGroupEarnedInterest,
     withdrawalGroupEarnedRound,
   } = useGroup();
+  const { getGroup, joinGroup } = useVaquita();
   const {
     isPending: isPendingData,
     isLoading: isLoadingData,
@@ -46,10 +43,12 @@ const GroupDetailPage = () => {
     data,
     refetch,
   } = useQuery<{
-    content: GroupResponseDTO;
+    success: boolean;
+    content: GroupResponseDTO | null;
+    error: any;
   }>({
     queryKey: ['group', publicKey],
-    queryFn: () => getGroup(groupId as string, publicKey!),
+    queryFn: () => getGroup(groupId as string),
   });
 
   const loading = isPendingData || isLoadingData || isFetchingData;
@@ -60,6 +59,9 @@ const GroupDetailPage = () => {
   if (!data) {
     return <LoadingSpinner />;
   }
+  if (!data.content) {
+    return <ErrorView />;
+  }
 
   const group = data.content;
   const isActive = group.status === GroupStatus.ACTIVE;
@@ -67,6 +69,7 @@ const GroupDetailPage = () => {
   const step1 = !!group.myDeposits[0]?.successfullyDeposited;
   const step2 = step1 && group.slots === 0;
   const step3 = step1 && step2 && isActive;
+  console.log({ step1, step2, step3 });
 
   const handleDepositCollateral = async () => {
     setIsLoading(true);
@@ -74,21 +77,18 @@ const GroupDetailPage = () => {
       return;
     }
     try {
-      const joinedGroup = await joinGroup(group.id, publicKey);
-      console.log({ joinedGroup });
-      const amount = joinedGroup.collateralAmount;
-      const { tx, error, success } = await depositCollateralAndJoin(
-        joinedGroup
+      console.log({ group });
+      const { error, success } = await joinGroup(
+        group.id,
+        group.myFuturePosition
       );
       if (!success) {
         logError(LogLevel.INFO)(error);
         throw new Error('transaction error');
       }
-      await depositGroupCollateral(joinedGroup.id, publicKey, tx, amount);
       await refetch();
       showNotification("You've successfully joined the group!", 'success');
     } catch (error) {
-      await disjoinGroup(group.id, publicKey);
       logError(LogLevel.INFO)(error);
       showNotification('Failed to join the group.', 'error');
     }
@@ -171,7 +171,7 @@ const GroupDetailPage = () => {
   };
 
   const handleNavigateToPayments = () => {
-    router.push(`/groups/${groupId}/payments`);
+    router.push(`/groups/group-id/payments?groupId=${groupId}`);
   };
 
   const { items, firstUnpaidItemIndex } = getPaymentsTable(group);
@@ -246,19 +246,19 @@ const GroupDetailPage = () => {
                   </>
                 }
                 actionLabel={
-                  group.myWithdrawals.round.successfullyWithdrawn
+                  group.myWithdrawals?.round?.successfullyWithdrawn
                     ? 'Withdrawn ✔'
                     : 'Withdraw'
                 }
                 type={
                   group.myPosition <= group.currentPosition &&
-                  !group.myWithdrawals.round.successfullyWithdrawn
+                  !group.myWithdrawals?.round?.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
                 }
                 onAction={
                   group.myPosition <= group.currentPosition &&
-                  !group.myWithdrawals.round.successfullyWithdrawn
+                  !group.myWithdrawals?.round?.successfullyWithdrawn
                     ? handleWithdrawEarnedRound
                     : undefined
                 }
@@ -272,19 +272,19 @@ const GroupDetailPage = () => {
                   </p>
                 }
                 actionLabel={
-                  group.myWithdrawals.interest.successfullyWithdrawn
+                  group.myWithdrawals?.interest?.successfullyWithdrawn
                     ? 'Withdrawn'
                     : 'Withdraw'
                 }
                 type={
                   group.status === GroupStatus.CONCLUDED &&
-                  !group.myWithdrawals.interest.successfullyWithdrawn
+                  !group.myWithdrawals?.interest?.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
                 }
                 onAction={
                   group.status === GroupStatus.CONCLUDED &&
-                  !group.myWithdrawals.interest.successfullyWithdrawn
+                  !group.myWithdrawals?.interest?.successfullyWithdrawn
                     ? handleWithdrawEarnedInterest
                     : undefined
                 }
@@ -293,13 +293,13 @@ const GroupDetailPage = () => {
                 title="Claim Collateral"
                 content={<p>{group.collateralAmount} USDC</p>}
                 actionLabel={
-                  group.myWithdrawals.collateral.successfullyWithdrawn
+                  group.myWithdrawals?.collateral?.successfullyWithdrawn
                     ? 'Withdrawn ✔'
                     : 'Withdraw'
                 }
                 type={
                   group.status === GroupStatus.CONCLUDED &&
-                  !group.myWithdrawals.collateral.successfullyWithdrawn
+                  !group.myWithdrawals?.collateral?.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
                 }

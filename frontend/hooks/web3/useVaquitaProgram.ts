@@ -5,8 +5,10 @@ import {
   GroupPeriod,
   GroupResponseDTO,
   GroupStatus,
+  LogLevel,
 } from '@/types';
 import { initiateTransfer } from '@/utils/crypto';
+import { logInfo } from '@/utils/log';
 import { BN } from '@coral-xyz/anchor';
 import {
   createAssociatedTokenAccountInstruction,
@@ -36,9 +38,34 @@ export const useVaquitaProgram = () => {
         numberOfPlayers: number;
         availableSlots: number;
         status: any;
+        paidTurns: BN[];
       };
 
-      console.log({ round });
+      console.log({ round, paidTurns: round.paidTurns.map((a) => +a) });
+
+      const myIndex = group.memberPublicKeys.findIndex(
+        (pK) => pK === publicKey?.toBase58()
+      );
+      console.log({ myIndex, mpk: group.memberPublicKeys, publicKey });
+      const myDeposits: GroupResponseDTO['myDeposits'] = {};
+      if (myIndex !== -1) {
+        myDeposits[0] = {
+          amount: Number(group.amount),
+          round: 0,
+          successfullyDeposited: true,
+        };
+      }
+
+      for (let i = 0; i < group.memberPublicKeys.length; i++) {
+        if ((1 << i) & +(round.paidTurns[myIndex] ?? 0)) {
+          myDeposits[i + 1] = {
+            amount: Number(group.amount),
+            round: i + 1,
+            successfullyDeposited: true,
+          };
+        }
+      }
+      console.log('>>>', { group });
       const responseGroup: GroupResponseDTO = {
         id: group.id,
         crypto: GroupCrypto.USDC, // TODO:
@@ -46,16 +73,21 @@ export const useVaquitaProgram = () => {
         amount: (round.paymentAmount?.toNumber?.() ?? 0) / USDC_DECIMALS,
         collateralAmount:
           round.paymentAmount.toNumber() * round.numberOfPlayers,
-        myDeposits: {},
+        myDeposits,
         totalMembers: round.numberOfPlayers,
         slots: round.availableSlots,
         period:
-          (group.period as any)?.[GroupPeriod.MONTHLY] == null
+          (group.period as { [key in GroupPeriod]: null })?.[
+            GroupPeriod.MONTHLY
+          ] == null
             ? GroupPeriod.MONTHLY
             : GroupPeriod.WEEKLY,
         currentPosition: 1,
-        myPosition: group.memberPublicKeys.findIndex(
-          (pK) => pK === publicKey?.toBase58()
+        myPosition: Number(group.memberPositions[myIndex] ?? -1),
+        myFuturePosition: Number(
+          (group.memberPositions[
+            group.memberPublicKeys.length
+          ] as unknown as number) ?? -1
         ),
         startsOnTimestamp: 0,
         status: round.status.pending
@@ -133,10 +165,11 @@ export const useVaquitaProgram = () => {
         .preInstructions([createAtaIx])
         .rpc();
 
-      console.log('Transaction signature:', tx);
-      console.log('Round initialized:', roundPDA.toString());
       const result = await initiateTransfer(roundTokenAccount.toString());
-      console.log({ result });
+      logInfo(LogLevel.INFO)(
+        { result, tx, roundPDA: roundPDA.toString() },
+        'initializeGroup'
+      );
       return { success: true, content: tx, error: null };
     },
     [program.methods, program.programId, publicKey]

@@ -66,6 +66,21 @@ export const useVaquitaBack = () => {
     []
   );
 
+  const getGroup = useCallback(async (id: string) => {
+    const result = await groupManagementBackend.getGroup(id);
+    if (result?.success && result?.content && result?.content?.[0]) {
+      return {
+        success: true,
+        content: result.content?.[0] as Group,
+      };
+    }
+
+    return {
+      success: false,
+      content: null,
+    };
+  }, []);
+
   const createGroup = useCallback(
     async (
       name: string,
@@ -128,6 +143,7 @@ export const useVaquitaBack = () => {
   return {
     createGroup,
     listGroups,
+    getGroup,
     joinGroup,
   };
 };

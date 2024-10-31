@@ -98,7 +98,7 @@ export interface GroupResponseDTO {
     [key: number]: {
       amount: number;
       round: number; // 0: collateral, [1, N] rounds
-      timestamp: number;
+      // timestamp: number;
       successfullyDeposited: boolean;
     };
   };
@@ -107,6 +107,7 @@ export interface GroupResponseDTO {
   period: GroupPeriod;
   currentPosition: number;
   myPosition: number;
+  myFuturePosition: number;
   startsOnTimestamp: number;
   status: GroupStatus;
   isOwner: boolean;

@@ -5,7 +5,7 @@ import ErrorView from '@/components/global/Error/ErrorView';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import GroupTablePayments from '@/components/group/GroupTablePayments/GroupTablePayments';
-import { useGroup } from '@/hooks';
+import { useVaquita } from '@/hooks';
 import { GroupResponseDTO } from '@/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
@@ -17,7 +17,7 @@ const PaymentsPage = () => {
   const searchParams = useSearchParams();
   const groupId = searchParams.get('groupId');
   const { publicKey } = useWallet();
-  const { getGroup } = useGroup();
+  const { getGroup } = useVaquita();
   const {
     isPending: isPendingData,
     isLoading: isLoadingData,
@@ -26,11 +26,13 @@ const PaymentsPage = () => {
     error,
     refetch,
   } = useQuery<{
-    content: GroupResponseDTO;
+    success: boolean;
+    content: GroupResponseDTO | null;
+    error: any;
   }>({
     enabled: !!publicKey,
     queryKey: ['group', publicKey],
-    queryFn: () => getGroup(groupId as string, publicKey!),
+    queryFn: () => getGroup(groupId as string),
   });
 
   const loading = isPendingData || isLoadingData || isFetchingData;
@@ -42,8 +44,20 @@ const PaymentsPage = () => {
     return <LoadingSpinner />;
   }
   if (!publicKey) {
+    return (
+      <>
+        <div className="flex-1 flex flex-col gap-4 justify-center items-center">
+          <p className="text-accent-100">Please select a wallet</p>
+        </div>
+      </>
+    );
+  }
+
+  if (!data.success || !data.content) {
     return <ErrorView />;
   }
+
+  console.log({ data });
 
   return (
     <>

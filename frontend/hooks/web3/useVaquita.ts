@@ -1,4 +1,6 @@
-import { NO_TRANSACTION_ERRORS } from '@/config/settings';
+import { useProgramMethods } from '@/components/vaquinha/vaquinha-data-access';
+import { NO_TRANSACTION_ERRORS, USDC_MINT_ADDRESS } from '@/config/settings';
+import { useVaquinhaDeposit } from '@/hooks';
 import {
   GroupCrypto,
   GroupPeriod,
@@ -29,6 +31,7 @@ export const useVaquita = () => {
     createGroup: createGroupBack,
     joinGroup: joinGroupBack,
     listGroups: listGroupsBack,
+    getGroup: getGroupBack,
   } = useVaquitaBack();
   const { publicKey } = useWallet();
 
@@ -86,6 +89,30 @@ export const useVaquita = () => {
       return { success: false, contents: [], error: null };
     },
     [getGroupData, listGroupsBack]
+  );
+
+  const getGroup = useCallback(
+    async (id: string) => {
+      try {
+        const result = await getGroupBack(id);
+        if (!result?.success && !result?.content) {
+          throw new Error('error on getGroupBack');
+        }
+        const groupData = await getGroupData(result.content!);
+        if (groupData.success && groupData.content) {
+          return { success: true, content: groupData.content, error: null };
+        }
+        return {
+          success: false,
+          content: null,
+          error: new Error('error on getGroupData'),
+        };
+      } catch (error) {
+        logError(LogLevel.INFO)(error, 'error on getGroup');
+        return { success: true, content: null, error: error };
+      }
+    },
+    [getGroupBack, getGroupData]
   );
 
   const createGroup = useCallback(
@@ -181,8 +208,64 @@ export const useVaquita = () => {
     [createGroupBack, initializeGroup, joinGroupBack, publicKey]
   );
 
+  const { addPlayer, payTurn } = useProgramMethods();
+  const { depositRoundPayment } = useVaquinhaDeposit();
+  const joinGroup = useCallback(
+    async (groupId: string, position: number) => {
+      try {
+        const { tx, error } = await addPlayer(
+          groupId,
+          USDC_MINT_ADDRESS,
+          position
+        );
+
+        const resultJoinGroup = await joinGroupBack(
+          groupId,
+          publicKey!.toBase58()
+        );
+        if (!resultJoinGroup.success) {
+          throw new Error('member not joined');
+        }
+        return { success: true, content: tx, error: null };
+      } catch (error) {
+        logMessage(LogLevel.INFO)(error);
+        if (NO_TRANSACTION_ERRORS) {
+          return { content: 'testing', error: '', success: true };
+        }
+        return { success: false, content: null, error };
+      }
+    },
+    [addPlayer, joinGroupBack, publicKey]
+  );
+
+  const payRound = useCallback(
+    async (group: GroupResponseDTO, round: number) => {
+      try {
+        const { tx, error, success } = await depositRoundPayment(
+          group,
+          round - 1
+        );
+        if (!success) {
+          logError(LogLevel.INFO)(error);
+          throw new Error('transaction error');
+        }
+        return { success: true, content: tx, error: null };
+      } catch (error) {
+        logMessage(LogLevel.INFO)(error);
+        if (NO_TRANSACTION_ERRORS) {
+          return { content: 'testing', error: '', success: true };
+        }
+        return { success: false, content: null, error };
+      }
+    },
+    [depositRoundPayment]
+  );
+
   return {
     listGroups,
+    getGroup,
     createGroup,
+    joinGroup,
+    payRound,
   };
 };

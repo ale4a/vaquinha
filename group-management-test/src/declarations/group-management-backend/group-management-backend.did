@@ -1,0 +1,20 @@
+type Group = 
+ record {
+   id: text;
+   memberPositions: vec int;
+   memberPublicKeys: vec text;
+   name: text;
+ };
+service : {
+  createGroup: (text, text, vec int) -> (record {success: bool;});
+  joinGroup: (text, text) -> (record {success: bool;});
+  listGroups: () -> (record {
+                       contents: vec Group;
+                       success: bool;
+                     });
+  listMyGroups: (text) -> (record {
+                             contents: vec Group;
+                             success: bool;
+                           });
+  say: (text) -> (text) query;
+}
