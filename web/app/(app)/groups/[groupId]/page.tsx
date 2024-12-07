@@ -250,13 +250,13 @@ const GroupDetailPage = () => {
                     : 'Withdraw'
                 }
                 type={
-                  group.myPosition <= group.currentPosition &&
+                  group.myWithdrawals.round.enabled &&
                   !group.myWithdrawals.round.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
                 }
                 onAction={
-                  group.myPosition <= group.currentPosition &&
+                  group.myWithdrawals.round.enabled &&
                   !group.myWithdrawals.round.successfullyWithdrawn
                     ? handleWithdrawEarnedRound
                     : undefined
@@ -276,13 +276,13 @@ const GroupDetailPage = () => {
                     : 'Withdraw'
                 }
                 type={
-                  group.status === GroupStatus.CONCLUDED &&
+                  group.myWithdrawals.round.enabled &&
                   !group.myWithdrawals.interest.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
                 }
                 onAction={
-                  group.status === GroupStatus.CONCLUDED &&
+                  group.myWithdrawals.round.enabled &&
                   !group.myWithdrawals.interest.successfullyWithdrawn
                     ? handleWithdrawEarnedInterest
                     : undefined
@@ -297,7 +297,7 @@ const GroupDetailPage = () => {
                     : 'Withdraw'
                 }
                 type={
-                  group.status === GroupStatus.CONCLUDED &&
+                  group.myWithdrawals.round.enabled &&
                   !group.myWithdrawals.collateral.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'

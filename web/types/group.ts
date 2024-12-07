@@ -111,6 +111,7 @@ export interface GroupResponseDTO {
       type: GroupWithdrawalType;
       timestamp: number;
       successfullyWithdrawn: boolean;
+      enabled: boolean;
     };
   };
 }
