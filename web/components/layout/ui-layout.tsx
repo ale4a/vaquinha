@@ -3,7 +3,7 @@
 import { includeApi } from '@/helpers/api';
 import { ReactNode, useState } from 'react';
 import { BsCalendar2Date } from 'react-icons/bs';
-import { MainNavbar } from 'web/components/MainNavbar';
+import { MainNavbar } from '../MainNavbar';
 
 declare global {
   interface Window {
@@ -37,15 +37,15 @@ if (typeof window !== 'undefined') {
 }
 
 export function UiLayout({ children }: { children: ReactNode }) {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   return (
     <div
       className="h-full flex justify-center"
-      onDoubleClick={() => setLoading(!loading)}
-      onDrag={() => {
-        setLoading(!loading);
-      }}
+      // onDoubleClick={() => setLoading(!loading)}
+      // onDrag={() => {
+      //   setLoading(!loading);
+      // }}
       style={{ cursor: 'pointer' }}
     >
       <div className="w-full h-full bg-bg-100 flex flex-col">

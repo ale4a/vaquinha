@@ -1,0 +1,39 @@
+type GroupPeriod = 
+ variant {
+   monthly;
+   weekly;
+ };
+type GroupCrypto = 
+ variant {
+   SOL;
+   USDC;
+ };
+type Group = 
+ record {
+   amount: int;
+   crypto: GroupCrypto;
+   id: text;
+   memberPositions: vec int;
+   memberPublicKeys: vec text;
+   name: text;
+   period: GroupPeriod;
+ };
+service : {
+  createGroup: (text, text, vec int, GroupPeriod, int, GroupCrypto) ->
+   (record {success: bool;});
+  getGroup: (text) -> (record {
+                         content: opt Group;
+                         success: bool;
+                       });
+  joinGroup: (text, text) -> (record {success: bool;});
+  listAllGroups: () -> (record {
+                          contents: vec Group;
+                          success: bool;
+                        });
+  listGroups: (opt text, opt GroupPeriod, opt int, opt GroupCrypto) ->
+   (record {
+      contents: vec Group;
+      success: bool;
+    });
+  say: (text) -> (text) query;
+}
