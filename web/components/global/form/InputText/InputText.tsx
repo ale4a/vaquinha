@@ -35,7 +35,11 @@ export default function InputText<T extends string | number = string>({
         autoComplete="off"
         value={value}
         maxLength={maxLength}
-        onChange={({ target }) => onChange?.(target.value as T)}
+        onChange={({ target }) =>
+          onChange?.(
+            (type === 'number' ? target.valueAsNumber : target.value) as T
+          )
+        }
       />
     </div>
   );
