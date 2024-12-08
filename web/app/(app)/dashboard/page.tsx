@@ -35,11 +35,11 @@ const Page = () => {
   return (
     <>
       <MainTabsHeader />
-      <div className="flex flex-col gap-6 mt-6">
-        <div>
+      <div className="flex flex-col gap-6 mt-2">
+        {/* <div>
           <h1 className="text-lg font-medium">My wallet balance</h1>
           <MyWalletCard />
-        </div>
+        </div> */}
         <Statistics />
         <Activity />
       </div>

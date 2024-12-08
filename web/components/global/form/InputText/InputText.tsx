@@ -15,6 +15,7 @@ export default function InputText<T extends string | number = string>({
   className,
   placeHolder,
   size = 'medium',
+  maxLength = 20,
 }: Props<T>) {
   const id = useId();
   return (
@@ -33,6 +34,7 @@ export default function InputText<T extends string | number = string>({
         type={type}
         autoComplete="off"
         value={value}
+        maxLength={maxLength}
         onChange={({ target }) => onChange?.(target.value as T)}
       />
     </div>

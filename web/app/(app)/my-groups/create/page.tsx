@@ -24,10 +24,10 @@ const optionsCrypto: Option<GroupCrypto>[] = [
     text: 'USDC',
     value: GroupCrypto.USDC,
   },
-  {
-    text: 'SOL',
-    value: GroupCrypto.SOL,
-  },
+  // {
+  //   text: 'SOL',
+  //   value: GroupCrypto.SOL,
+  // },
 ];
 
 const optionsMembers: Option<number>[] = [

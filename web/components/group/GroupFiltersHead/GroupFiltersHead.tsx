@@ -74,17 +74,13 @@ export const GroupFiltersHead = ({
   return (
     <div className="flex gap-2 justify-center items-center py-2">
       <CurrencyInputText
-        placeHolder="Contribution Amount"
+        placeHolder="Amount"
         className="flex-1 w-2/4"
         size="small"
         options={[
           {
             text: 'USDC',
             value: GroupCrypto.USDC,
-          },
-          {
-            text: 'SOL',
-            value: GroupCrypto.SOL,
           },
         ]}
         value={filters.amount}

@@ -100,7 +100,7 @@ const MainNavbar = () => {
                   }`}
                 >
                   {getIcon(label, isActive)}
-                  <span>{label}</span>
+                  <span>{isActive && label}</span>
                 </Link>
               </li>
             );

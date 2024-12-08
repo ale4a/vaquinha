@@ -6,4 +6,5 @@ export interface Props<T extends string | number = string> {
   className?: string;
   size?: 'small' | 'medium' | 'large';
   placeHolder?: string;
+  maxLength?: number;
 }
