@@ -276,13 +276,13 @@ const GroupDetailPage = () => {
                     : 'Withdraw'
                 }
                 type={
-                  group.myWithdrawals.round.enabled &&
+                  group.myWithdrawals.interest.enabled &&
                   !group.myWithdrawals.interest.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
                 }
                 onAction={
-                  group.myWithdrawals.round.enabled &&
+                  group.myWithdrawals.interest.enabled &&
                   !group.myWithdrawals.interest.successfullyWithdrawn
                     ? handleWithdrawEarnedInterest
                     : undefined
@@ -297,7 +297,7 @@ const GroupDetailPage = () => {
                     : 'Withdraw'
                 }
                 type={
-                  group.myWithdrawals.round.enabled &&
+                  group.myWithdrawals.collateral.enabled &&
                   !group.myWithdrawals.collateral.successfullyWithdrawn
                     ? 'info'
                     : 'disabled'
