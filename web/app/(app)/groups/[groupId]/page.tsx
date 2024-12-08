@@ -310,7 +310,10 @@ const GroupDetailPage = () => {
                   //     'Pay Now Test'
                   //   );
                   // }
-                  if (group.status === GroupStatus.CONCLUDED) {
+                  if (
+                    group.myWithdrawals.collateral.enabled &&
+                    !group.myWithdrawals.collateral.successfullyWithdrawn
+                  ) {
                     void handleWithdrawCollateral();
                   } else {
                     showAlert(
