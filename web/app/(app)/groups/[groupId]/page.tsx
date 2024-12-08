@@ -197,13 +197,11 @@ const GroupDetailPage = () => {
               value2={step2}
               label2={
                 group.slots
-                  ? `Pending members ${group.totalMembers - group.slots} of ${
-                      group.totalMembers
-                    }`
+                  ? `Pending members`
                   : `Completed members (${group.totalMembers})`
               }
               value3={step3}
-              label3="Waiting for starting date"
+              label3="Awaiting Start"
             />
           )}
           {(isActive || isConcluded) && publicKey && (
@@ -358,14 +356,14 @@ const GroupDetailPage = () => {
                 onClick={handleDepositCollateral}
               />
             )}
-            <ButtonComponent
+            {/* <ButtonComponent
               label="Back"
               type="secondary"
               size="large"
               onClick={() => {
                 window.history.back();
               }}
-            />
+            /> */}
           </div>
         </div>
       )}

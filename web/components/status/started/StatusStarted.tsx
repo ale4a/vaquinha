@@ -5,7 +5,7 @@ import { NameStatus } from './Started.types';
 const StatusStarted = ({ nameStatus }: NameStatus) => {
   return (
     <div className="flex justify-evenly py-2 px-2">
-      <div className="mb-5 flex items-center flex-col text-center">
+      <div className="flex items-center flex-col text-center">
         <Image
           src="/icons/circle-status-started.svg"
           alt="Group Active"

@@ -40,7 +40,6 @@ export default function GroupCard({
         <p className="text-accent-100 text-2xl">
           {amount} <span className="text-lg">{crypto}</span>
         </p>
-        <p className="text-accent-200">{period}</p>
       </div>
       <div className="flex flex-col justify-evenly items-end w-1/3 gap-1">
         <div className="flex items-center gap-1">
@@ -56,9 +55,10 @@ export default function GroupCard({
         </div>
         {status !== GroupStatus.ACTIVE && (
           <div className="flex items-center gap-1 text-sm">
-            <p className="text-accent-100">
+            {/* <p className="text-accent-100">
               {getRelativeTime(startsOnTimestamp - Date.now())}
-            </p>
+            </p> */}
+            <p className="text-accent-200">{period}</p>
             <Image
               src="/icons/date-active.svg"
               alt="members"
