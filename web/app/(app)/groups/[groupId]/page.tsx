@@ -244,7 +244,7 @@ const GroupDetailPage = () => {
                 }
                 actionLabel={
                   group.myWithdrawals.round.successfullyWithdrawn
-                    ? 'Withdrawn ✔'
+                    ? 'Withdrawn'
                     : 'Withdraw'
                 }
                 type={
@@ -291,7 +291,7 @@ const GroupDetailPage = () => {
                 content={<p>{group.collateralAmount} USDC</p>}
                 actionLabel={
                   group.myWithdrawals.collateral.successfullyWithdrawn
-                    ? 'Withdrawn ✔'
+                    ? 'Withdrawn'
                     : 'Withdraw'
                 }
                 type={

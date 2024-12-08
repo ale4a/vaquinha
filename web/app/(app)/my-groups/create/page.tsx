@@ -248,11 +248,11 @@ const Page = () => {
         <div className="flex justify-center text-2xl text-accent-100">
           Group Information
         </div>
-        <div className="mb-5">
+        <div className="mb-1">
           <GroupSummary {...newGroup} />
         </div>
         <Message messageText={messageText} />
-        <div className="flex flex-col gap-5 my-5 justify-between">
+        <div className="flex flex-col gap-2 mt-1 mb-4 justify-between">
           <Button
             label="Create and deposit collateral"
             type="primary"
