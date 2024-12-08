@@ -174,7 +174,7 @@ const Page = () => {
 
                 setNewGroup((prevState) => ({
                   ...prevState,
-                  amount: updatedAmount,
+                  amount: Math.round(updatedAmount),
                 }));
               }}
             />
