@@ -2,7 +2,6 @@
 
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
 import { GroupCrypto, GroupStatus } from '@/types';
-import { getRelativeTime } from '@/utils/time';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -68,7 +67,7 @@ export default function GroupCard({
           </div>
         )}
         <Link
-          href={`/groups/${groupId}`}
+          href={`/groups/${groupId}?myGroups=true`}
           passHref
           style={{ display: 'contents' }}
         >

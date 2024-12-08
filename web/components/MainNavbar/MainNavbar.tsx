@@ -4,7 +4,7 @@ import { ClusterUiSelect } from '@/components/cluster/cluster-ui';
 import { WalletButton } from '@/components/solana/solana-provider';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import React from 'react';
 import {
   DashboardActiveIcon,
@@ -64,11 +64,24 @@ const MainNavbar = () => {
   const pathname = usePathname();
   const pathSegments = pathname.split('/').filter((segment) => segment);
   const mainPath = '/' + pathSegments[0];
+  const myGroups = useSearchParams().get('myGroups');
 
-  const links: { label: string; path: string }[] = [
-    { label: 'Join Group', path: '/groups' },
-    { label: 'My Groups', path: '/my-groups' },
-    { label: 'Dashboard', path: '/dashboard' },
+  const links: { label: string; path: string; isActive: boolean }[] = [
+    {
+      label: 'Join Group',
+      path: '/groups',
+      isActive: myGroups !== 'true' && mainPath === '/groups',
+    },
+    {
+      label: 'My Groups',
+      path: '/my-groups',
+      isActive: myGroups === 'true' || mainPath === '/my-groups',
+    },
+    {
+      label: 'Dashboard',
+      path: '/dashboard',
+      isActive: mainPath === '/dashboard',
+    },
   ];
 
   return (
@@ -86,8 +99,7 @@ const MainNavbar = () => {
           </span>
         </Link>
         <ul className="h-20 flex justify-around items-center pt-5 pb-3 flex-1 sm:gap-4 sm:justify-start">
-          {links.map(({ label, path }) => {
-            const isActive = mainPath === path;
+          {links.map(({ label, path, isActive }) => {
             return (
               <li
                 key={label}

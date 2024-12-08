@@ -111,7 +111,7 @@ const Page = () => {
             </div>
           </div>
         )}
-      <ListGroups groups={data?.contents || []} loading={loading} />
+      <ListGroups groups={data?.contents || []} loading={loading} myGroups />
     </>
   );
 };

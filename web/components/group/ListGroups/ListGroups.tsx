@@ -6,9 +6,11 @@ import React from 'react';
 export const ListGroups = ({
   loading,
   groups,
+  myGroups,
 }: {
   loading: boolean;
   groups: GroupResponseDTO[];
+  myGroups?: boolean;
 }) => {
   return (
     <>

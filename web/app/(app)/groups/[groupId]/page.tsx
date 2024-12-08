@@ -170,7 +170,7 @@ const GroupDetailPage = () => {
   };
 
   const handleNavigateToPayments = () => {
-    router.push(`/groups/${groupId}/payments`);
+    router.push(`/groups/${groupId}/payments?myGroups=true`);
   };
 
   const { items, firstUnpaidItemIndex } = getPaymentsTable(group);
