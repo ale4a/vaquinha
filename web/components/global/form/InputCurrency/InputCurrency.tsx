@@ -14,11 +14,11 @@ const SIZE_SELECT = {
   large: 'p-3 h-12',
 };
 
-const SIZE_LABEL = {
-  small: 'text-xs mb-0',
-  medium: 'text-sm mb-2',
-  large: 'text-sm mb-2',
-};
+// const SIZE_LABEL = {
+//   small: 'text-xs mb-0',
+//   medium: 'text-sm mb-2',
+//   large: 'text-sm mb-2',
+// };
 
 export interface CurrencyInputTextProps<T extends string | number = string> {
   label?: string;
@@ -55,7 +55,7 @@ export function CurrencyInputText<T extends string | number = string>({
       <div className="bg-bg-200 flex flex-row border border-white/40 rounded-lg px-2 focus-within:border-primary-200 hover:border-primary-200 transition-colors duration-500">
         <input
           className={
-            'flex-1 bg-transparent outline-0 text-accent-100 text-xs ' +
+            'flex-1 bg-transparent outline-0 text-accent-100 text-base ' +
             SIZE[size]
           }
           min={0}
@@ -73,7 +73,7 @@ export function CurrencyInputText<T extends string | number = string>({
           <select
             id={id}
             className={
-              'appearance-none w-14 bg-transparent outline-0 text-accent-100 focus:ring-primary-200 focus:ring-2 text-xs ' +
+              'appearance-none w-16 bg-transparent outline-0 text-accent-100 focus:ring-primary-200 focus:ring-2 text-base ' +
               SIZE_SELECT[size]
             }
             value={optionValue}

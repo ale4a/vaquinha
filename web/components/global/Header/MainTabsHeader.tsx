@@ -15,7 +15,7 @@ const MainTabsHeader = () => {
             width={30}
             height={15}
           />
-          <span className="font-medium text-xl text-end flex justify-end items-end ">
+          <span className="font-medium text-center flex align-center justify-center items-center text-xs sm:text-xl">
             VAQUITA
           </span>
         </Link>

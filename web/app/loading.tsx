@@ -1,5 +1,9 @@
 import { LoadingSpinner } from '@/components';
 
 export default function Loading() {
-  return <LoadingSpinner />;
+  return (
+    <div className="h-full">
+      <LoadingSpinner />
+    </div>
+  );
 }

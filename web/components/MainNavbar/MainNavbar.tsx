@@ -88,7 +88,7 @@ const MainNavbar = () => {
   ];
 
   return (
-    <nav className="bottom-0 w-full bg-bg-100 text-white shadow-top-custom lg:shadow-bottom-custom lg:flex lg:items-center lg:gap-6 lg:px-4">
+    <nav className="bottom-0 w-full bg-bg-100 text-white shadow-top-custom lg:rounded-full lg:shadow-bottom-custom lg:flex lg:items-center lg:gap-6 lg:px-4">
       <div className="flex items-center flex-1 gap-6">
         <Link className="hidden lg:flex gap-0.5" href={'/'}>
           <Image

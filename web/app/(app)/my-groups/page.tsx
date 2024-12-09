@@ -94,7 +94,7 @@ const Page = () => {
           </div>
         </div>
       )}
-      {!loading &&
+      {/* {!loading &&
         data?.contents?.length === 0 &&
         tab === MyGroupsTab.ACTIVE && (
           <div className="flex flex-1 justify-center items-center flex-col">
@@ -110,7 +110,7 @@ const Page = () => {
               />
             </div>
           </div>
-        )}
+        )} */}
       <ListGroups groups={data?.contents || []} loading={loading} myGroups />
     </>
   );

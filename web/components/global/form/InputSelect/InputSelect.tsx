@@ -3,16 +3,16 @@ import { useId } from 'react';
 import { Props } from './InputSelect.types';
 
 const SIZE_SELECT = {
-  small: 'p-0 h-8 text-xs',
+  small: 'p-0 h-8',
   medium: 'p-3 h-12 text-sm',
   large: 'p-3 h-12',
 };
 
-const SIZE_LABEL = {
-  small: 'text-xs mb-0',
-  medium: 'text-sm mb-2',
-  large: 'text-sm mb-2',
-};
+// const SIZE_LABEL = {
+//   small: 'text-xs mb-0',
+//   medium: 'text-sm mb-2',
+//   large: 'text-sm mb-2',
+// };
 
 export default function InputSelect<T extends string | number = string>({
   label,
