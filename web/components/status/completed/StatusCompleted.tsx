@@ -5,7 +5,7 @@ import { Completed } from './Completed';
 const StatusCompleted = ({ nameStatus }: Completed) => {
   return (
     <div className="flex justify-evenly w-full">
-      <div className="mb-5 flex items-center flex-col text-center">
+      <div className="flex items-center flex-col text-center">
         <Image
           src="/icons/circle-status-completed.svg"
           alt="Group Active"

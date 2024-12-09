@@ -3,9 +3,9 @@ import { Option } from '@/components/global/form/InputSelect/InputSelect.types';
 import React, { useId } from 'react';
 
 const SIZE = {
-  small: 'px-0 py-0.5 h-8',
-  medium: 'px-3 py-1.5 h-12',
-  large: 'px-3 py-1.5 h-12',
+  small: 'px-0 py-0.5 h-8 text-sm',
+  medium: 'px-3 py-1.5 h-12 text-base',
+  large: 'px-3 py-1.5 h-12 text-lg',
 };
 
 const SIZE_SELECT = {
@@ -73,7 +73,7 @@ export function CurrencyInputText<T extends string | number = string>({
           <select
             id={id}
             className={
-              'appearance-none w-14 bg-transparent outline-0 text-accent-100 focus:ring-bg-200 text-xs ' +
+              'appearance-none w-14 bg-transparent outline-0 text-accent-100 focus:ring-primary-200 focus:ring-2 text-xs ' +
               SIZE_SELECT[size]
             }
             value={optionValue}

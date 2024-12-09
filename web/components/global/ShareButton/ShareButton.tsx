@@ -7,10 +7,9 @@ interface ShareButtonProps {
 
 export const ShareButton: React.FC<ShareButtonProps> = ({ groupName }) => {
   const handleShare = () => {
-    const url = window.location.href; // Get the current URL
+    const url = window.location.href;
     const message = `It’s time to save with Vaquita! Join the ${groupName} group. ${url}`;
 
-    // Check if the browser supports the Web Share API
     if (navigator.share) {
       navigator
         .share({
@@ -21,7 +20,6 @@ export const ShareButton: React.FC<ShareButtonProps> = ({ groupName }) => {
         .then(() => console.log('Shared successfully'))
         .catch((error) => console.error('Error sharing: ', error));
     } else {
-      // Fallback for unsupported browsers
       const fallbackUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
       window.open(fallbackUrl, '_blank');
     }
