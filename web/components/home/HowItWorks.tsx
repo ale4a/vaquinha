@@ -7,8 +7,7 @@ const HowItWorks = () => {
       <h2 className="text-3xl font-bold mb-8">How It Works</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 max-w-screen-xl mx-auto">
-        {/* Step 1: Crear un grupo */}
-        <div className="flex flex-col md:flex-row items-center justify-center md:col-span-2  shadow-lg rounded-lg p-6 gap-10">
+        <div className="flex flex-col md:flex-row items-center justify-center md:col-span-2  shadow-lg rounded-lg gap-10">
           <Image
             src="/01-Mobile UX-rafiki.svg"
             alt="creating a group"
@@ -25,8 +24,7 @@ const HowItWorks = () => {
           </div>
         </div>
 
-        {/* Step 2: Unirse al grupo (Imagen a la derecha) */}
-        <div className="flex flex-col md:flex-row-reverse items-center justify-center md:col-span-2  shadow-lg rounded-lg p-6 gap-10">
+        <div className="flex flex-col md:flex-row-reverse items-center justify-center md:col-span-2  shadow-lg rounded-lg gap-10">
           <Image
             src="/02-Good team-bro.svg"
             alt="join to the group"
@@ -43,8 +41,7 @@ const HowItWorks = () => {
           </div>
         </div>
 
-        {/* Step 3: Realizar contribuciones */}
-        <div className="flex flex-col md:flex-row items-center justify-center md:col-span-2  shadow-lg rounded-lg p-6 gap-10">
+        <div className="flex flex-col md:flex-row items-center justify-center md:col-span-2  shadow-lg rounded-lg gap-10">
           <Image
             src="/03-Online transactions-pana.svg"
             alt="Pay vaquita"
@@ -63,8 +60,7 @@ const HowItWorks = () => {
           </div>
         </div>
 
-        {/* Step 4: Sorteo aleatorio (Imagen a la derecha) */}
-        <div className="flex flex-col md:flex-row-reverse items-center justify-center md:col-span-2  shadow-lg rounded-lg p-6 gap-10">
+        <div className="flex flex-col md:flex-row-reverse items-center justify-center md:col-span-2  shadow-lg rounded-lg gap-10">
           <Image
             src="/04-Selecting team-pana.svg"
             alt="Random draw"
@@ -81,8 +77,7 @@ const HowItWorks = () => {
           </div>
         </div>
 
-        {/* Step 5: Devolución de colateral */}
-        <div className="flex flex-col md:flex-row items-center justify-center md:col-span-2  shadow-lg rounded-lg p-6 gap-10">
+        <div className="flex flex-col md:flex-row items-center justify-center md:col-span-2  shadow-lg rounded-lg gap-10">
           <Image
             src="/05-Finance app-pana.svg"
             alt="Collateral return"

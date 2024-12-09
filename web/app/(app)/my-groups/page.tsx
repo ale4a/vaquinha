@@ -83,7 +83,7 @@ const Page = () => {
       <Tabs tabs={tabs} onTabClick={setCurrentTab} currentTab={currentTab} />
       <GroupFiltersHead filters={filters} setFilters={setFilters} />
       {!loading && (
-        <div className="absolute w-full flex justify-center bottom-16 left-0">
+        <div className="absolute w-full flex justify-center bottom-16 left-0 lg:hidden">
           <div onClick={() => router.push('/my-groups/create')}>
             <Image
               src="/icons/plus-filled-active.svg"

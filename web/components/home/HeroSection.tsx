@@ -10,7 +10,7 @@ const HeroSection = () => {
       <h1 className="text-4xl font-bold">Save Together, Earn More</h1>
       <p className="text-lg mt-4">
         Join a community savings protocol powered by blockchain technology.
-        Contribute to a shared pool and earn bigger rewards the longer you stay.
+        {/* Contribute to a shared pool and earn bigger rewards the longer you stay. */}
       </p>
       {!connected ? (
         <div className="py-2 px-6 flex flex-col items-center ">

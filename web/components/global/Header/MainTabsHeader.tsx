@@ -6,7 +6,7 @@ import React from 'react';
 
 const MainTabsHeader = () => {
   return (
-    <div className="text-white text-3xl text-center flex justify-around items-center gap-2 pt-6 pb-2 sm:hidden">
+    <div className="text-white text-3xl text-center flex justify-around items-center gap-2 pt-6 pb-2 lg:hidden">
       <div className="flex flex-1 flex-wrap justify-between items-center">
         <Link className="flex gap-0.5" href={'/'}>
           <Image

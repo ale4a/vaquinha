@@ -14,6 +14,8 @@ import {
   MyGroupsActiveIcon,
   MyGroupsIcon,
 } from './icons';
+import ButtonComponent from '../global/ButtonComponent/ButtonComponent';
+import { useRouter } from 'next/navigation';
 
 const getIcon = (label: string, isActive: boolean) => {
   switch (label) {
@@ -65,6 +67,7 @@ const MainNavbar = () => {
   const pathSegments = pathname.split('/').filter((segment) => segment);
   const mainPath = '/' + pathSegments[0];
   const myGroups = useSearchParams().get('myGroups');
+  const router = useRouter();
 
   const links: { label: string; path: string; isActive: boolean }[] = [
     {
@@ -85,9 +88,9 @@ const MainNavbar = () => {
   ];
 
   return (
-    <nav className="bottom-0 w-full bg-bg-100 text-white shadow-top-custom sm:shadow-bottom-custom sm:flex sm:items-center sm:gap-6 sm:px-4">
+    <nav className="bottom-0 w-full bg-bg-100 text-white shadow-top-custom lg:shadow-bottom-custom lg:flex lg:items-center lg:gap-6 lg:px-4">
       <div className="flex items-center flex-1 gap-6">
-        <Link className="hidden sm:flex gap-0.5" href={'/'}>
+        <Link className="hidden lg:flex gap-0.5" href={'/'}>
           <Image
             src="/favicon.ico"
             alt="Groups Active"
@@ -98,16 +101,16 @@ const MainNavbar = () => {
             VAQUITA
           </span>
         </Link>
-        <ul className="h-20 flex justify-around items-center pt-5 pb-3 flex-1 sm:gap-4 sm:justify-start">
+        <ul className="h-20 flex justify-around items-center pt-5 pb-3 flex-1 lg:gap-4 lg:justify-start">
           {links.map(({ label, path, isActive }) => {
             return (
               <li
                 key={label}
-                className="text-center flex-1 sm:flex-initial sm:flex sm:h-full"
+                className="text-center flex-1 lg:flex-initial lg:flex lg:h-full"
               >
                 <Link
                   href={path}
-                  className={`flex flex-col sm:flex-row sm:gap-1 items-center transition-colors duration-500 ${
+                  className={`flex flex-col lg:flex-row lg:gap-1 items-center transition-colors duration-500 ${
                     isActive ? 'text-primary-200' : 'text-gray-400'
                   }`}
                 >
@@ -119,7 +122,16 @@ const MainNavbar = () => {
           })}
         </ul>
       </div>
-      <div className="hidden sm:flex space-x-1 wallets-buttons">
+
+      <div className="hidden lg:flex space-x-1 wallets-buttons">
+        <ButtonComponent
+          label="Create Group"
+          type="primary"
+          size="small"
+          className="mr-2"
+          onClick={() => router.push('/my-groups/create')}
+          icon="plus"
+        />
         <WalletButton />
         <ClusterUiSelect />
       </div>

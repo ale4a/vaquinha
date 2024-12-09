@@ -55,7 +55,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
           </div>
         ) : (
           <>
-            <div className="hidden sm:block bg-gray-900 z-10">
+            <div className="hidden lg:block bg-gray-900 z-10">
               <MainNavbar />
             </div>
             <div
@@ -64,7 +64,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
             >
               {children}
             </div>
-            <div className="block sm:hidden bg-gray-900 ">
+            <div className="block lg:hidden bg-gray-900 ">
               <MainNavbar />
             </div>
           </>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaPlus, FaTrash, FaEdit } from 'react-icons/fa'; // Import the icons you need
 
 interface IButtonComponent {
   label: string;
@@ -7,6 +8,7 @@ interface IButtonComponent {
   onClick?: () => void;
   size?: 'small' | 'medium' | 'large';
   className?: string;
+  icon?: 'plus' | 'trash' | 'edit'; // Define the allowed icons
 }
 
 const getButtonStyles = (type: string) => {
@@ -22,7 +24,7 @@ const getButtonStyles = (type: string) => {
     case 'danger':
       return 'border border-error-red text-error-red hover:bg-error-red hover:text-white';
     case 'disabled':
-      return 'bg-accent-200 text-black cursor-not-allowed cursor-not-allowed';
+      return 'bg-accent-200 text-black cursor-not-allowed';
     case 'info':
       return 'border border-primary-200 text-white hover:bg-primary-200 hover:text-white';
     case 'success':
@@ -45,6 +47,19 @@ const getSizeStyles = (size: 'small' | 'medium' | 'large') => {
   }
 };
 
+const getIcon = (icon?: string) => {
+  switch (icon) {
+    case 'plus':
+      return <FaPlus />;
+    case 'trash':
+      return <FaTrash />;
+    case 'edit':
+      return <FaEdit />;
+    default:
+      return null;
+  }
+};
+
 const ButtonComponent = ({
   label,
   type,
@@ -52,9 +67,12 @@ const ButtonComponent = ({
   size = 'medium',
   onClick,
   className,
+  icon,
 }: IButtonComponent) => {
   const buttonStyles = getButtonStyles(type);
   const sizeStyles = getSizeStyles(size);
+  const IconComponent = getIcon(icon);
+
   return (
     <button
       className={
@@ -65,7 +83,8 @@ const ButtonComponent = ({
       disabled={disabled}
       onClick={onClick}
     >
-      <span className="text-base px-3">{label}</span>
+      {IconComponent && <span className="mx-2">{IconComponent}</span>}
+      <span className="text-base mr-2">{label}</span>
     </button>
   );
 };
