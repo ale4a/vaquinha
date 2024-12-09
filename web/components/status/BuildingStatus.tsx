@@ -21,7 +21,7 @@ const BuildingStatus = ({
   label3,
 }: BuildingStatusProps) => {
   return (
-    <div className="flex justify-evenly text-accent-200 my-4">
+    <div className="flex text-accent-200 my-4 ">
       {value1 ? (
         <>
           <StatusCompleted nameStatus={label1} />

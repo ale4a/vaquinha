@@ -3,6 +3,7 @@
 import ButtonComponent from '@/components/global/ButtonComponent/ButtonComponent';
 import TabTitleHeader from '@/components/global/Header/TabTitleHeader';
 import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
+import { ShareButton } from '@/components/global/ShareButton/ShareButton';
 import SummaryAction from '@/components/global/SummaryAction/SummaryAction';
 import { GroupSummary } from '@/components/group/GroupSummary/GroupSummary';
 import Message from '@/components/message/Message';
@@ -74,7 +75,6 @@ const GroupDetailPage = () => {
     }
     try {
       const joinedGroup = await joinGroup(group.id, publicKey);
-      console.log({ joinedGroup });
       const amount = joinedGroup.collateralAmount;
       const { tx, error, success } = await depositCollateralAndJoin(
         joinedGroup
@@ -181,7 +181,6 @@ const GroupDetailPage = () => {
     0
   );
   const allPaymentsDone = totalPayments === group.totalMembers - 1;
-  console.log({ group });
 
   return (
     <>
@@ -358,6 +357,9 @@ const GroupDetailPage = () => {
                 size="large"
                 onClick={handleDepositCollateral}
               />
+            )}
+            {group.status === GroupStatus.PENDING && step1 && !step2 && (
+              <ShareButton groupName={'vaquita'} />
             )}
             {/* <ButtonComponent
               label="Back"
