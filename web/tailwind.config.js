@@ -23,6 +23,7 @@ module.exports = {
         'accent-300': '#667085',
         'text-100': '#F5F5F5',
         'text-200': '#E0E0E0',
+        //bg-100: faeed6 // light version
         'bg-100': '#1D1F21',
         'bg-200': '#2C2E30',
         'bg-300': '#444648',

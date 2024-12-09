@@ -52,14 +52,16 @@ const PaymentsPage = () => {
       {!loading && data && (
         <GroupTablePayments group={data?.content} refetch={refetch} />
       )}
-      <div className="flex flex-col gap-5 my-5 justify-between">
-        <Button
-          label="Back"
-          type="secondary"
-          size="large"
-          onClick={() => router.back()}
-        />
-      </div>
+      {!loading && (
+        <div className="flex flex-col gap-5 my-5 justify-between">
+          <Button
+            label="Back"
+            type="secondary"
+            size="large"
+            onClick={() => router.back()}
+          />
+        </div>
+      )}
     </>
   );
 };
