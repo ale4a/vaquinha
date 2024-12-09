@@ -33,7 +33,7 @@ export const Activity = () => {
       setLoading(true);
       if (publicKey) {
         const signatures = await connection.getSignaturesForAddress(publicKey, {
-          limit: 10,
+          limit: 5,
         });
         const transactions: ItemTransaction[] = [];
         for (const signature of signatures) {
