@@ -69,11 +69,13 @@ export const Activity = () => {
         <LoadingSpinner />
       ) : (
         <>
-          <div className="flex flex-row gap-2 w-full border-primary-100 p-4 rounded bg-bg-200 mb-2">
+          <div className="flex flex-row gap-2 w-full border-primary-100 p-4 rounded bg-bg-200 mb-2 items-center">
             <div className="truncate flex-1 font-semibold">Signature</div>
             <div className="flex-1 text-center font-semibold">Date</div>
-            <div className="flex-1 text-center font-semibold">Amount</div>
-            <div className="flex-1 text-center font-semibold">Fee (SOL)</div>
+            <div className="flex-1 text-center font-semibold">
+              Amount (USDC)
+            </div>
+            {/* <div className="flex-1 text-center font-semibold">Fee (SOL)</div> */}
           </div>
           <div className="flex flex-col gap-2 items-center">
             {transactions.map(
@@ -117,9 +119,9 @@ export const Activity = () => {
                       {amount > 0 ? '+' : ''}
                       {amount}
                     </div>
-                    <div className="flex-1 text-center">
+                    {/* <div className="flex-1 text-center">
                       {(parsedTransactionWithMeta.meta?.fee ?? 0) / 1000000000}
-                    </div>
+                    </div> */}
                   </div>
                 );
               }

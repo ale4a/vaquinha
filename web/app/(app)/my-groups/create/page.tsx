@@ -192,7 +192,7 @@ const Page = () => {
             />
           </div>
         </div>
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2">
           <div className="w-1/2">
             <label className="text-sm mb-0.5 text-accent-100">
               Payment period
@@ -245,9 +245,9 @@ const Page = () => {
             />
           </div>
         </div>
-        <div className="flex justify-center text-2xl text-accent-100">
+        {/* <div className="flex justify-center text-2xl text-accent-100">
           Group Information
-        </div>
+        </div> */}
         <div className="mb-1">
           <GroupSummary {...newGroup} />
         </div>

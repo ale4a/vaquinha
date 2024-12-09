@@ -33,14 +33,23 @@ export default function GroupCard({
   };
 
   return (
-    <div className="flex justify-between bg-bg-200 px-5 py-6 rounded-lg">
+    <div className="flex justify-between bg-bg-200 px-5 pt-4 pb-6 rounded-lg">
       <div className="w-2/3">
         <p className="text-primary-200 text-xl">{name}</p>
         <p className="text-accent-100 text-2xl">
           {amount} <span className="text-lg">{crypto}</span>
         </p>
+        <p className="flex">
+          <span className="text-accent-200 mr-1">{period}</span>
+          <Image
+            src="/icons/date-active.svg"
+            alt="members"
+            width={12}
+            height={12}
+          />
+        </p>
       </div>
-      <div className="flex flex-col justify-evenly items-end w-1/3 gap-1">
+      <div className="flex flex-col justify-center items-end w-1/3 gap-1">
         <div className="flex items-center gap-1">
           <p className="text-accent-100">
             {totalMembers - slots} / {totalMembers}
@@ -57,13 +66,6 @@ export default function GroupCard({
             {/* <p className="text-accent-100">
               {getRelativeTime(startsOnTimestamp - Date.now())}
             </p> */}
-            <p className="text-accent-200">{period}</p>
-            <Image
-              src="/icons/date-active.svg"
-              alt="members"
-              width={14}
-              height={14}
-            />
           </div>
         )}
         <Link
