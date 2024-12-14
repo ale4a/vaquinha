@@ -1,7 +1,6 @@
-import LoadingSpinner from '@/components/global/LoadingSpinner/LoadingSpinner';
 import { ANCHOR_PROVIDER_URL } from '@/config/settings';
-import { LogLevel } from '@/types';
-import { logError } from '@/utils/log';
+import { LoadingSpinner } from '@/vaquita-ui-submodule/components/loadingSpinner';
+import { logError } from '@/vaquita-ui-submodule/helpers';
 import { useWallet } from '@solana/wallet-adapter-react';
 import {
   ConfirmedSignatureInfo,
@@ -49,7 +48,7 @@ export const Activity = () => {
               });
             }
           } catch (error) {
-            logError(LogLevel.INFO)(error);
+            logError('get parsed transaction error', error);
           }
         }
         setTransactions(transactions);
