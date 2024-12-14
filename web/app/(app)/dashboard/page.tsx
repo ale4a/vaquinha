@@ -2,11 +2,11 @@
 
 import { ClusterUiSelect } from '@/components/cluster/cluster-ui';
 import { WalletButton } from '@/components/solana/solana-provider';
+import { Statistics } from '@/vaquita-ui-submodule/components/dashboard/Statistics';
 import { MainHeader } from '@/vaquita-ui-submodule/components/header/MainHeader';
 import { useWallet } from '@solana/wallet-adapter-react';
 import React from 'react';
 import { Activity } from './Activity';
-import { Statistics } from './Statistics';
 
 // Validación de variables de entorno
 if (!process.env.NEXT_PUBLIC_ANCHOR_PROVIDER_URL) {
