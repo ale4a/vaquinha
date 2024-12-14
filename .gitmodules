@@ -1,0 +1,3 @@
+[submodule "web/vaquita-ui-submodule"]
+	path = web/vaquita-ui-submodule
+	url = git@github.com:OscarGauss/vaquita-ui-submodule.git
