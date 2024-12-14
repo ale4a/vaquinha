@@ -1,9 +1,9 @@
 'use client';
 
+import { LoadingSpinner } from '@/vaquita-ui-submodule/components/loadingSpinner/LoadingSpinner';
 import { motion } from 'framer-motion';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { Suspense, useCallback, useEffect } from 'react';
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 interface ITab<T> {
   label: string;

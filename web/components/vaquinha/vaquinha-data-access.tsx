@@ -1,7 +1,6 @@
 'use client';
 
-import { LogLevel } from '@/types';
-import { logError, logMessage } from '@/utils/log';
+import { logError, logMessage } from '@/vaquita-ui-submodule/helpers';
 import { BN } from '@coral-xyz/anchor';
 import {
   createAssociatedTokenAccountInstruction,
@@ -138,9 +137,7 @@ export const useProgramMethods = () => {
             if (
               playerPublicKey?.toBase58?.() === wallet.publicKey?.toBase58()
             ) {
-              logMessage(LogLevel.INFO)(
-                'Adding player: No tx validating add player'
-              );
+              logMessage('Adding player: No tx validating add player');
               return {
                 tx: 'Adding player: No tx validating add player',
                 error: '',
@@ -148,9 +145,9 @@ export const useProgramMethods = () => {
             }
           }
         } catch (error) {
-          logError(LogLevel.INFO)(error, 'Error on validating add player');
+          logError('Error on validating add player', error);
         }
-        logError(LogLevel.INFO)(error, 'Error adding player');
+        logError('Error adding player', error);
         return { tx: '', error };
       }
     },

@@ -1,10 +1,11 @@
 import { useProgramMethods } from '@/components/vaquinha/vaquinha-data-access';
 import { NO_TRANSACTION_ERRORS } from '@/config/settings';
-import { GroupResponseDTO } from '@/types';
+import { GroupResponseDTO } from '@/vaquita-ui-submodule/types';
 import { useCallback } from 'react';
 
-export const useVaquinhaWithdrawal = () => {
-  const { withdrawTurn, withdrawCollateral, withdrawInterest } = useProgramMethods();
+export const useVaquitaWithdrawal = () => {
+  const { withdrawTurn, withdrawCollateral, withdrawInterest } =
+    useProgramMethods();
 
   const withdrawalCollateral = useCallback(
     async (
@@ -43,7 +44,7 @@ export const useVaquinhaWithdrawal = () => {
 
   const withdrawalEarnedInterest = useCallback(
     async (
-      group: GroupResponseDTO,
+      group: GroupResponseDTO
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       const tokenMintAddress = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
       const { tx, error } = await withdrawInterest(group.id, tokenMintAddress);

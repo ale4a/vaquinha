@@ -1,9 +1,11 @@
 'use client';
-import { Activity } from '@/app/(app)/dashboard/Activity';
-import MainTabsHeader from '@/components/global/Header/MainTabsHeader';
+
+import { ClusterUiSelect } from '@/components/cluster/cluster-ui';
+import { WalletButton } from '@/components/solana/solana-provider';
+import { MainHeader } from '@/vaquita-ui-submodule/components/header/MainHeader';
 import { useWallet } from '@solana/wallet-adapter-react';
 import React from 'react';
-import { MyWalletCard } from './MyWalletCard';
+import { Activity } from './Activity';
 import { Statistics } from './Statistics';
 
 // Validación de variables de entorno
@@ -24,7 +26,14 @@ const Page = () => {
   if (!publicKey) {
     return (
       <>
-        <MainTabsHeader />
+        <MainHeader
+          walletButtons={
+            <>
+              <WalletButton />
+              <ClusterUiSelect />
+            </>
+          }
+        />
         <div className="flex-1 flex flex-col gap-4 justify-center items-center">
           <p className="text-accent-100">Please select a wallet</p>
         </div>
@@ -34,7 +43,14 @@ const Page = () => {
 
   return (
     <>
-      <MainTabsHeader />
+      <MainHeader
+        walletButtons={
+          <>
+            <WalletButton />
+            <ClusterUiSelect />
+          </>
+        }
+      />
       <div className="flex flex-col gap-6 mt-2">
         {/* <div>
           <h1 className="text-lg font-medium">My wallet balance</h1>

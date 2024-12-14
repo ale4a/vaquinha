@@ -1,6 +1,6 @@
 import { useProgramMethods } from '@/components/vaquinha/vaquinha-data-access';
 import { NO_TRANSACTION_ERRORS } from '@/config/settings';
-import { GroupPeriod, GroupResponseDTO } from '@/types';
+import { GroupPeriod, GroupResponseDTO } from '@/vaquita-ui-submodule/types';
 import { BN } from '@coral-xyz/anchor';
 import { useCallback } from 'react';
 
@@ -14,7 +14,7 @@ const convertFrequencyToTimestamp = (period: GroupPeriod): BN => {
   return new BN(frequencyInSeconds);
 };
 
-export const useVaquinhaDeposit = () => {
+export const useVaquitaDeposit = () => {
   const { initializeRound, addPlayer, payTurn } = useProgramMethods();
 
   const depositCollateralAndCreate = useCallback(
